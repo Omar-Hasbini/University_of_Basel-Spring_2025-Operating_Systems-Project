@@ -1,0 +1,16 @@
+Author: 
+Description: 
+Index: coreutils/src/dd.c
+===================================================================
+--- coreutils.orig/src/dd.c	2020-07-24 13:38:45.787065917 -0400
++++ coreutils/src/dd.c	2020-07-24 13:38:45.783065949 -0400
+@@ -1653,6 +1653,9 @@
+   if (multiple_bits_set (input_flags & (O_DIRECT | O_NOCACHE))
+       || multiple_bits_set (output_flags & (O_DIRECT | O_NOCACHE)))
+     die (EXIT_FAILURE, 0, _("cannot combine direct and nocache"));
++  if ((output_flags & O_APPEND) &&
++      ((conversions_mask & C_NOTRUNC) != C_NOTRUNC))
++    error (0, 0, _("you probably want conv=notrunc with oflag=append"));
+ 
+   if (input_flags & O_NOCACHE)
+     {

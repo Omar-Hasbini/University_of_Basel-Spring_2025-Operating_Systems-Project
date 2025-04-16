@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/nautilus">
+    <file compressed="true">ui/nautilus-preferences-dialog.ui</file>
+    <file alias="appdata" compressed="true" preprocess="xml-stripblanks">./../data/@appid@.metainfo.xml</file>
+    <file compressed="true">ui/nautilus-search-popover.ui</file>
+    <file>ui/nautilus-search-types-dialog.ui</file>
+    <file>ui/nautilus-app-chooser.ui</file>
+    <file>ui/nautilus-pathbar-context-menu.ui</file>
+    <file>ui/nautilus-toolbar.ui</file>
+    <file>ui/nautilus-history-controls.ui</file>
+    <file>ui/nautilus-progress-indicator.ui</file>
+    <file>ui/nautilus-view-controls.ui</file>
+    <file>ui/nautilus-toolbar-view-menu.ui</file>
+    <file>ui/nautilus-column-chooser.ui</file>
+    <file>ui/nautilus-new-folder-dialog.ui</file>
+    <file>ui/nautilus-compress-dialog.ui</file>
+    <file>ui/nautilus-rename-file-popover.ui</file>
+    <file>ui/nautilus-files-view-context-menus.ui</file>
+    <file>ui/nautilus-progress-info-widget.ui</file>
+    <file>ui/nautilus-window.ui</file>
+    <file>gtk/help-overlay.ui</file>
+    <file>ui/nautilus-batch-rename-dialog.ui</file>
+    <file>ui/nautilus-properties-window.ui</file>
+    <file>ui/nautilus-file-properties-change-permissions.ui</file>
+    <file>ui/nautilus-file-conflict-dialog.ui</file>
+    <file>ui/nautilus-files-view-select-items.ui</file>
+    <file>ui/nautilus-files-view.ui</file>
+    <file>ui/nautilus-operations-ui-manager-request-passphrase.ui</file>
+    <file>ui/nautilus-grid-cell.ui</file>
+    <file>ui/nautilus-name-cell.ui</file>
+    <file>ui/nautilus-network-address-bar.ui</file>
+    <file>ui/nautilus-network-cell.ui</file>
+    <file>ui/nautilus-file-chooser.ui</file>
+    <file alias="gtk/ui/nautilusgtksidebarrow.ui">../gtk/nautilusgtksidebarrow.ui</file>
+    <file alias="icons/filmholes.png">../../icons/filmholes.png</file>
+    <file>style.css</file>
+    <file>style-hc.css</file>
+    <file>text-x-preview.png</file>
+    <file>Checkerboard.png</file>
+  </gresource>
+  <gresource prefix="/org/gnome/nautilus/icons/scalable/actions/">
+    <file alias="cancel-operation-symbolic.svg" preprocess="xml-stripblanks">icons/cancel-operation-symbolic.svg</file>
+    <file alias="emblem-readonly-symbolic.svg" preprocess="xml-stripblanks">icons/emblem-readonly-symbolic.svg</file>
+    <file alias="emblem-symbolic-link-symbolic.svg" preprocess="xml-stripblanks">icons/emblem-symbolic-link-symbolic.svg</file>
+    <file alias="emblem-unwriteable-symbolic.svg" preprocess="xml-stripblanks">icons/emblem-unwriteable-symbolic.svg</file>
+    <file alias="external-link-symbolic.svg" preprocess="xml-stripblanks">icons/external-link-symbolic.svg</file>
+    <file alias="file-operation-cancelled-symbolic.svg" preprocess="xml-stripblanks">icons/file-operation-cancelled-symbolic.svg</file>
+    <file alias="file-operation-finished-symbolic.svg" preprocess="xml-stripblanks">icons/file-operation-finished-symbolic.svg</file>
+    <file alias="nautilus-folder-search-symbolic.svg" preprocess="xml-stripblanks">icons/nautilus-folder-search-symbolic.svg</file>
+    <file alias="nautilus-search-filters-symbolic.svg" preprocess="xml-stripblanks">icons/nautilus-search-filters-symbolic.svg</file>
+    <file alias="network-computer-symbolic.svg" preprocess="xml-stripblanks">icons/network-computer-symbolic.svg</file>
+    <file alias="quotation-symbolic.svg" preprocess="xml-stripblanks">icons/quotation-symbolic.svg</file>
+    <file alias="remove-custom-icon-symbolic.svg" preprocess="xml-stripblanks">icons/remove-custom-icon-symbolic.svg</file>
+    <file alias="info-outline-symbolic.svg" preprocess="xml-stripblanks">icons/info-outline-symbolic.svg</file>
+    <file alias="nautilus-file-chooser-options-symbolic.svg" preprocess="xml-stripblanks">icons/nautilus-file-chooser-options-symbolic.svg</file>
+    <file alias="funnel-outline-symbolic.svg" preprocess="xml-stripblanks">icons/funnel-outline-symbolic.svg</file>
+  </gresource>
+</gresources>

@@ -1,0 +1,43 @@
+commit 92cb8427c537f37edd43c5cef1909585201372ab 
+From: Pádraig Brady <P@draigBrady.com>
+Date: Mon, 7 Mar 2022 23:29:20 +0000
+Subject: stat: only automount with --cached=never
+ Revert to the default behavior before the introduction of statx().
+ 
+ * src/stat.c (do_stat): Set AT_NO_AUTOMOUNT without --cached=never.
+ * doc/coreutils.texi (stat invocation): Mention the automount
+ behavior with --cached=never.
+ 
+ Fixes https://bugs.gnu.org/54287
+ [mruffell: remove NEWS hunk]
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/2033892
+Bug: https://bugs.gnu.org/54287
+Origin: backport, https://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=commitdiff;h=92cb8427c53
+Last-Update: 2024-02-08
+
+Index: coreutils-8.32/doc/coreutils.texi
+===================================================================
+--- coreutils-8.32.orig/doc/coreutils.texi	2024-02-08 16:38:09.990659623 +1300
++++ coreutils-8.32/doc/coreutils.texi	2024-02-08 16:38:09.986659550 +1300
+@@ -12375,6 +12375,7 @@
+ 
+ @item never
+ Always sychronize with the latest file system attributes.
++This also mounts automounted files.
+ 
+ @item default
+ Leave the caching behavior to the underlying file system.
+Index: coreutils-8.32/src/stat.c
+===================================================================
+--- coreutils-8.32.orig/src/stat.c	2024-02-08 16:38:09.990659623 +1300
++++ coreutils-8.32/src/stat.c	2024-02-08 16:38:09.986659550 +1300
+@@ -1355,6 +1355,9 @@
+   else if (force_sync)
+     flags |= AT_STATX_FORCE_SYNC;
+ 
++  if (! force_sync)
++    flags |= AT_NO_AUTOMOUNT;
++
+   fd = statx (fd, pathname, flags, format_to_mask (format), &stx);
+   if (fd < 0)
+     {

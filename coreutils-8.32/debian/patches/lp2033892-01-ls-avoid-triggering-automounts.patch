@@ -1,0 +1,32 @@
+commit 85c975df2c25bd799370b04bb294e568e001102f
+From: Rohan Sable <rsable@redhat.com>
+Date: Mon, 7 Mar 2022 14:14:13 +0000
+Subject: ls: avoid triggering automounts
+ statx() has different defaults wrt automounting
+ compared to stat() or lstat(), so explicitly
+ set the AT_NO_AUTOMOUNT flag to suppress that behavior,
+ and avoid unintended operations or potential errors.
+ 
+ * src/ls.c (do_statx): Pass AT_NO_AUTOMOUNT to avoid this behavior.
+ Fixes https://bugs.gnu.org/54286
+ 
+ Signed-off-by: Rohan Sable <rsable@redhat.com>
+ [mruffell: remove NEWS hunk]
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/2033892
+Bug: https://bugs.gnu.org/54286
+Origin: backport, https://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=commitdiff;h=85c975df2c2
+Last-Update: 2024-02-08
+
+Index: coreutils-8.32/src/ls.c
+===================================================================
+--- coreutils-8.32.orig/src/ls.c	2024-02-08 16:37:56.558416206 +1300
++++ coreutils-8.32/src/ls.c	2024-02-08 16:37:56.554416133 +1300
+@@ -1154,7 +1154,7 @@
+ {
+   struct statx stx;
+   bool want_btime = mask & STATX_BTIME;
+-  int ret = statx (fd, name, flags, mask, &stx);
++  int ret = statx (fd, name, flags | AT_NO_AUTOMOUNT, mask, &stx);
+   if (ret >= 0)
+     {
+       statx_to_stat (&stx, st);

@@ -1,0 +1,2 @@
+version=4
+opts=pgpsigurlmangle=s/$/.sig/ ftp://ftp.gnu.org/gnu/coreutils/coreutils-([\d+\.]+)\.tar\.(?:gz|bz2|lzma|xz) 

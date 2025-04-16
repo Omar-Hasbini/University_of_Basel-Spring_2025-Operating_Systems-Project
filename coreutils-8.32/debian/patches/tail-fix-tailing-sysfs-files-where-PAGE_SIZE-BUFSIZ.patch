@@ -1,0 +1,209 @@
+From 73d119f4f8052a9fb6cef13cd9e75d5a4e23311a Mon Sep 17 00:00:00 2001
+From: dann frazier <dann.frazier@canonical.com>
+Date: Wed, 29 Nov 2023 18:32:34 -0700
+Subject: [PATCH] tail: fix tailing sysfs files where PAGE_SIZE > BUFSIZ
+
+* src/tail.c (file_lines): Ensure we use a buffer size >= PAGE_SIZE when
+searching backwards to avoid seeking within a file,
+which on sysfs files is accepted but also returns no data.
+* tests/tail/tail-sysfs.sh: Add a new test.
+* tests/local.mk: Reference the new test.
+[dannf: move test to tests/tail-2 since tests/tail didn't exist in 9.1;
+ #include "affirm.h" in tail.c; use ptrdiff_t instead of idx_t, which
+ didn't exist in 8.32; adjust context to apply]
+
+Origin: upstream, https://github.com/coreutils/coreutils/commit/73d119f4f
+Bug: https://bugs.gnu.org/67490
+Bug-Ubuntu: https://launchpad.net/bugs/2047450
+Last-Update: 2024-01-07
+
+Index: coreutils-8.32/src/tail.c
+===================================================================
+--- coreutils-8.32.orig/src/tail.c
++++ coreutils-8.32/src/tail.c
+@@ -37,6 +37,7 @@
+ 
+ #include "system.h"
+ #include "argmatch.h"
++#include "assure.h"
+ #include "cl-strtod.h"
+ #include "die.h"
+ #include "error.h"
+@@ -210,6 +211,9 @@ static uintmax_t max_n_unchanged_stats_b
+    that is writing to all followed files.  */
+ static pid_t pid;
+ 
++/* Used to determine the buffer size when scanning backwards in a file.  */
++static ptrdiff_t page_size;
++
+ /* True if we have ever read standard input.  */
+ static bool have_read_stdin;
+ 
+@@ -532,22 +536,40 @@ xlseek (int fd, off_t offset, int whence
+    Return true if successful.  */
+ 
+ static bool
+-file_lines (const char *pretty_filename, int fd, uintmax_t n_lines,
+-            off_t start_pos, off_t end_pos, uintmax_t *read_pos)
++file_lines (char const *pretty_filename, int fd, struct stat const *sb,
++            uintmax_t n_lines, off_t start_pos, off_t end_pos,
++            uintmax_t *read_pos)
+ {
+-  char buffer[BUFSIZ];
++  char *buffer;
+   size_t bytes_read;
++  blksize_t bufsize = BUFSIZ;
+   off_t pos = end_pos;
++  bool ok = true;
+ 
+   if (n_lines == 0)
+     return true;
+ 
++  /* Be careful with files with sizes that are a multiple of the page size,
++     as on /proc or /sys file systems these files accept seeking to within
++     the file, but then return no data when read.  So use a buffer that's
++     at least PAGE_SIZE to avoid seeking within such files.
++
++     We could also indirectly use a large enough buffer through io_blksize()
++     however this would be less efficient in the common case, as it would
++     generally pick a larger buffer size, resulting in reading more data
++     from the end of the file.  */
++  affirm (S_ISREG (sb->st_mode));
++  if (sb->st_size % page_size == 0)
++    bufsize = MAX (BUFSIZ, page_size);
++
++  buffer = xmalloc (bufsize);
++
+   /* Set 'bytes_read' to the size of the last, probably partial, buffer;
+-     0 < 'bytes_read' <= 'BUFSIZ'.  */
+-  bytes_read = (pos - start_pos) % BUFSIZ;
++     0 < 'bytes_read' <= 'bufsize'.  */
++  bytes_read = (pos - start_pos) % bufsize;
+   if (bytes_read == 0)
+-    bytes_read = BUFSIZ;
+-  /* Make 'pos' a multiple of 'BUFSIZ' (0 if the file is short), so that all
++    bytes_read = bufsize;
++  /* Make 'pos' a multiple of 'bufsize' (0 if the file is short), so that all
+      reads will be on block boundaries, which might increase efficiency.  */
+   pos -= bytes_read;
+   xlseek (fd, pos, SEEK_SET, pretty_filename);
+@@ -555,7 +577,8 @@ file_lines (const char *pretty_filename,
+   if (bytes_read == SAFE_READ_ERROR)
+     {
+       error (0, errno, _("error reading %s"), quoteaf (pretty_filename));
+-      return false;
++      ok = false;
++      goto free_buffer;
+     }
+   *read_pos = pos + bytes_read;
+ 
+@@ -583,7 +606,7 @@ file_lines (const char *pretty_filename,
+                 xwrite_stdout (nl + 1, bytes_read - (n + 1));
+               *read_pos += dump_remainder (false, pretty_filename, fd,
+                                            end_pos - (pos + bytes_read));
+-              return true;
++              goto free_buffer;
+             }
+         }
+ 
+@@ -595,23 +618,26 @@ file_lines (const char *pretty_filename,
+           xlseek (fd, start_pos, SEEK_SET, pretty_filename);
+           *read_pos = start_pos + dump_remainder (false, pretty_filename, fd,
+                                                   end_pos);
+-          return true;
++          goto free_buffer;
+         }
+-      pos -= BUFSIZ;
++      pos -= bufsize;
+       xlseek (fd, pos, SEEK_SET, pretty_filename);
+ 
+-      bytes_read = safe_read (fd, buffer, BUFSIZ);
++      bytes_read = safe_read (fd, buffer, bufsize);
+       if (bytes_read == SAFE_READ_ERROR)
+         {
+           error (0, errno, _("error reading %s"), quoteaf (pretty_filename));
+-          return false;
++          ok = false;
++          goto free_buffer;
+         }
+ 
+       *read_pos = pos + bytes_read;
+     }
+   while (bytes_read > 0);
+ 
+-  return true;
++free_buffer:
++  free (buffer);
++  return ok;
+ }
+ 
+ /* Print the last N_LINES lines from the end of the standard input,
+@@ -1936,7 +1962,7 @@ tail_lines (const char *pretty_filename,
+         {
+           *read_pos = end_pos;
+           if (end_pos != 0
+-              && ! file_lines (pretty_filename, fd, n_lines,
++              && ! file_lines (pretty_filename, fd, &stats, n_lines,
+                                start_pos, end_pos, read_pos))
+             return false;
+         }
+@@ -2355,6 +2381,8 @@ main (int argc, char **argv)
+ 
+   atexit (close_stdout);
+ 
++  page_size = getpagesize ();
++
+   have_read_stdin = false;
+ 
+   count_lines = true;
+Index: coreutils-8.32/tests/local.mk
+===================================================================
+--- coreutils-8.32.orig/tests/local.mk
++++ coreutils-8.32/tests/local.mk
+@@ -252,6 +252,7 @@ all_tests =					\
+   tests/misc/seq-precision.sh			\
+   tests/misc/head.pl				\
+   tests/misc/head-elide-tail.pl			\
++  tests/tail-2/tail-sysfs.sh			\
+   tests/tail-2/tail-n0f.sh			\
+   tests/misc/ls-misc.pl				\
+   tests/misc/date.pl				\
+Index: coreutils-8.32/tests/tail-2/tail-sysfs.sh
+===================================================================
+--- /dev/null
++++ coreutils-8.32/tests/tail-2/tail-sysfs.sh
+@@ -0,0 +1,34 @@
++#!/bin/sh
++# sysfs files have weird properties that can be influenced by page size
++
++# Copyright 2023 Free Software Foundation, Inc.
++
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 3 of the License, or
++# (at your option) any later version.
++
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <https://www.gnu.org/licenses/>.
++
++. "${srcdir=.}/tests/init.sh"; path_prepend_ ./src
++print_ver_ tail
++
++file='/sys/kernel/profiling'
++
++test -r "$file" || skip_ "No $file file"
++
++cp -f "$file" exp || framework_failure_
++
++tail -n1 "$file" > out || fail=1
++compare exp out || fail=1
++
++tail -c2 "$file" > out || fail=1
++compare exp out || fail=1
++
++Exit $fail

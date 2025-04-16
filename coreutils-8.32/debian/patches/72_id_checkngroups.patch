@@ -1,0 +1,17 @@
+Author: 
+Description: 
+Index: coreutils/src/id.c
+===================================================================
+--- coreutils.orig/src/id.c	2020-07-24 13:38:45.955064585 -0400
++++ coreutils/src/id.c	2020-07-24 13:38:45.951064617 -0400
+@@ -405,6 +405,10 @@
+         ok &= false;
+         return;
+       }
++    else if (sysconf(_SC_NGROUPS_MAX) > 0 && n_groups > sysconf(_SC_NGROUPS_MAX))
++      {
++        fprintf (stderr, _("Warning: user %s is in more groups than system's configured maximum.\n"), (username != NULL)?username:"");
++      }
+ 
+     if (n_groups > 0)
+       fputs (_(" groups="), stdout);

@@ -1,0 +1,22 @@
+Author: Michael Stone <mstone@debian.org>
+Description: No description.
+Index: coreutils/lib/fstatat.c
+===================================================================
+--- coreutils.orig/lib/fstatat.c	2020-07-24 13:38:46.459060589 -0400
++++ coreutils/lib/fstatat.c	2020-07-24 13:38:46.455060621 -0400
+@@ -145,4 +145,15 @@
+ # undef AT_FUNC_POST_FILE_PARAM_DECLS
+ # undef AT_FUNC_POST_FILE_ARGS
+ 
++#ifdef __FreeBSD_kernel__
++
++int __fxstatat(int version, int fd, const char *file, struct stat *st, int flag)
++{
++  typedef int (*tp)(int, const char *, struct stat *, int);
++  volatile tp f = fstatat;
++  return f(fd, file, st, flag);
++}
++
++#endif
++
+ #endif /* !HAVE_FSTATAT */
