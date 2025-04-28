@@ -73,6 +73,8 @@
 # endif
 #endif
 
+
+
 /* NonStop circa 2011 lacks both SA_RESTART and siginterrupt, so don't
    restart syscalls after a signal handler fires.  This may cause
    colors to get messed up on the screen if 'ls' is interrupted, but
@@ -5029,6 +5031,7 @@ length_of_file_name_and_frills (const struct fileinfo *f)
   return len;
 }
 
+/* Saveeeeeee     */
 static void
 print_many_per_line (void)
 {
@@ -5061,7 +5064,12 @@ print_many_per_line (void)
           indent (pos + name_length, pos + max_name_length);
           pos += max_name_length;
         }
+
+          fputs (_("\
+          label placeholder
+      "), stdout);
       putchar ('\n');
+
     }
 }
 
