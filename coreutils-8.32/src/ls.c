@@ -5057,6 +5057,10 @@ print_many_per_line (void)
           size_t max_name_length = line_fmt->col_arr[col++];
           print_file_name_and_frills (f, pos);
 
+          fputs(_("\
+            label placeholder
+          "), stdout);
+
           filesno += rows;
           if (filesno >= cwd_n_used)
             break;
@@ -5065,10 +5069,7 @@ print_many_per_line (void)
           pos += max_name_length;
         }
 
-          fputs (_("\
-          label placeholder
-      "), stdout);
-      putchar ('\n');
+
 
     }
 }
