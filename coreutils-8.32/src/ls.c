@@ -5058,7 +5058,7 @@ print_many_per_line (void)
           print_file_name_and_frills (f, pos);
 
           fputs(_("\
-            label placeholder
+            label placeholder\
           "), stdout);
 
           filesno += rows;
