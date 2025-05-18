@@ -1,0 +1,25 @@
+Description:
+A <termios.h> that works around platform issues.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'termios-h' instead.
+
+Files:
+
+Depends-on:
+termios-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<termios.h>
+
+License:
+LGPLv2+
+
+Maintainer:

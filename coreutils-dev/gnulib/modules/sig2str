@@ -1,0 +1,34 @@
+Description:
+Convert between signal names and signal numbers.
+
+Files:
+lib/sig2str.h
+lib/sig2str.c
+m4/sig2str.m4
+
+Depends-on:
+signal-h
+
+configure.ac:
+gl_FUNC_SIG2STR
+gl_CONDITIONAL([GL_COND_OBJ_SIG2STR],
+               [test $HAVE_SIG2STR = 0 || test $HAVE_STR2SIG = 0])
+AM_COND_IF([GL_COND_OBJ_SIG2STR], [
+  gl_PREREQ_SIG2STR
+])
+gl_SIGNAL_MODULE_INDICATOR([sig2str])
+
+Makefile.am:
+if GL_COND_OBJ_SIG2STR
+lib_SOURCES += sig2str.c
+endif
+
+Include:
+<signal.h>
+"sig2str.h" /* for SIGNUM_BOUND */
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

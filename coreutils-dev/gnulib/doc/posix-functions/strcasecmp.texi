@@ -1,0 +1,29 @@
+@node strcasecmp
+@subsection @code{strcasecmp}
+@findex strcasecmp
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/strcasecmp.html}
+
+Gnulib module: strcasecmp
+@mindex strcasecmp
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+MSVC 14.
+@item
+This function uses the case mappings of a wrong locale on some platforms:
+Solaris 11.4,
+@c https://sourceware.org/pipermail/cygwin/2025-February/257347.html
+Cygwin 3.5.6.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function cannot work correctly on character strings in multibyte locales.
+@mindex mbscasecmp
+Gnulib provides an alternative function @code{mbscasecmp} that does a case
+insensitive comparison of character strings and that works in all locales.
+@end itemize

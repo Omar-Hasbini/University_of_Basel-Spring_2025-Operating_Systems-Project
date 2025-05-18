@@ -1,0 +1,58 @@
+@node String Functions in C Locale
+@subsection Character and String Functions in C Locale
+
+The functions in this section are similar to the generic string functions
+from the standard C library, except that
+@itemize
+@item
+They behave as if the locale was set to the "C" locale, even when the
+locale is different, and/or
+@item
+They are specially optimized for the case where all characters are plain
+ASCII characters.
+@end itemize
+
+The functions are provided by the following modules.
+
+@menu
+* c-ctype::
+* c-strcaseeq::
+* c-strcasecmp::
+* c-strncasecmp::
+* c-strcasestr::
+* c-strstr::
+* c-strtod::
+* c-strtold::
+@end menu
+
+@node c-ctype
+@subsubsection c-ctype
+@include c-ctype.texi
+
+@node c-strcaseeq
+@subsubsection c-strcaseeq
+@include c-strcaseeq.texi
+
+@node c-strcasecmp
+@subsubsection c-strcasecmp
+@include c-strcasecmp.texi
+
+@node c-strncasecmp
+@subsubsection c-strncasecmp
+@include c-strncasecmp.texi
+
+@node c-strcasestr
+@subsubsection c-strcasestr
+@include c-strcasestr.texi
+
+@node c-strstr
+@subsubsection c-strstr
+@include c-strstr.texi
+
+@node c-strtod
+@subsubsection c-strtod
+@include c-strtod.texi
+
+@node c-strtold
+@subsubsection c-strtold
+@include c-strtold.texi

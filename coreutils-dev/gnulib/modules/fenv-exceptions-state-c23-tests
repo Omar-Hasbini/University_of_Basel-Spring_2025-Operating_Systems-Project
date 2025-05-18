@@ -1,0 +1,13 @@
+Files:
+tests/test-fenv-except-state-4.c
+tests/macros.h
+
+Depends-on:
+fenv-exceptions-tracking-c99
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-fenv-except-state-4
+check_PROGRAMS += test-fenv-except-state-4
+test_fenv_except_state_4_LDADD = $(LDADD) @FENV_EXCEPTIONS_STATE_LIBM@ $(FENV_EXCEPTIONS_TRACKING_LIBM)

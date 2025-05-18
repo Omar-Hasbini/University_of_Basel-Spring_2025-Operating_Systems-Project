@@ -1,0 +1,30 @@
+Description:
+Copy access control list from one file to another.  (Unportable.)
+
+Files:
+lib/qcopy-acl.c
+m4/acl.m4
+m4/xattr.m4
+
+Depends-on:
+acl-permissions
+dirent-h        [test "$use_xattr" = yes]
+file-has-acl    [test "$use_xattr" = yes]
+
+configure.ac:
+gl_QCOPY_ACL
+
+Makefile.am:
+lib_SOURCES += qcopy-acl.c
+
+Include:
+"acl.h"
+
+Link:
+$(QCOPY_ACL_LIB)
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

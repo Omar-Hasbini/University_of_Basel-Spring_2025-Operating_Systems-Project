@@ -1,0 +1,25 @@
+Description:
+A GNU-like <sys/random.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_random-h' instead.
+
+Files:
+
+Depends-on:
+sys_random-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/random.h>
+
+License:
+LGPLv2+
+
+Maintainer:

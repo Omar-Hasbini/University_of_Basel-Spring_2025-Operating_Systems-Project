@@ -1,0 +1,20 @@
+@node cbrt
+@subsection @code{cbrt}
+@findex cbrt
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/cbrt.html}
+
+Gnulib module: cbrt or cbrt-ieee
+@mindex cbrt
+@mindex cbrt-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, MSVC 9.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

@@ -1,0 +1,20 @@
+@node dladdr
+@subsection @code{dladdr}
+@findex dladdr
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/dladdr.html}
+
+Documentation:@* @uref{https://www.kernel.org/doc/man-pages/online/pages/man3/dladdr.3.html,,man dladdr}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, AIX 5.1, Cygwin 1.7.x, mingw, MSVC 14.
+@end itemize

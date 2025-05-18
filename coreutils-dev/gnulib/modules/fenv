@@ -1,0 +1,25 @@
+Description:
+A GNU-like <fenv.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'fenv-h' instead.
+
+Files:
+
+Depends-on:
+fenv-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<fenv.h>
+
+License:
+LGPLv2+
+
+Maintainer:

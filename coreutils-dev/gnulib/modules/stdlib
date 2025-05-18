@@ -1,0 +1,25 @@
+Description:
+A GNU-like <stdlib.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stdlib-h' instead.
+
+Files:
+
+Depends-on:
+stdlib-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdlib.h>
+
+License:
+LGPLv2+
+
+Maintainer:

@@ -1,0 +1,41 @@
+Description:
+Multibyte character I/O.
+
+Files:
+lib/mbfile.h
+lib/mbfile.c
+m4/mbfile.m4
+m4/mbrtowc.m4
+
+Depends-on:
+extern-inline
+mbchar
+mbrtowc
+mbsinit
+mbszero
+wchar-h
+bool
+
+configure.ac:
+gl_MBFILE
+dnl Do not use gl_MODULE_INDICATOR([mbfile]) here: we don't want 'struct mbchar'
+dnl to have a different size in lib/ than in tests/.
+AC_DEFINE([GNULIB_MBFILE], [1],
+  [Define to 1 if the gnulib module 'mbfile' is in use.])
+
+Makefile.am:
+lib_SOURCES += mbfile.h mbfile.c
+
+Include:
+"mbfile.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPL
+
+Maintainer:
+all

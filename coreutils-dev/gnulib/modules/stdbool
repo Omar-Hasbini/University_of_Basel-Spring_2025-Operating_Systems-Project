@@ -1,0 +1,24 @@
+Description:
+A bool that is like C23.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'bool' instead.
+
+Files:
+
+Depends-on:
+bool
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+
+License:
+LGPLv2+
+
+Maintainer:

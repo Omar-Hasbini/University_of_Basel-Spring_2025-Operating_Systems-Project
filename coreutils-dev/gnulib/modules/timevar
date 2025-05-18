@@ -1,0 +1,33 @@
+Description:
+A simple self-profiling module based on timers.
+
+Usable-in-testdir:
+# This module lacks the required file timevar.def.
+no
+
+Files:
+lib/timevar.h
+lib/timevar.c
+
+Depends-on:
+c99
+gethrxtime
+getrusage
+gettext-h
+gnulib-i18n
+stdlib-h
+sys_time-h
+sys_times-h
+xalloc
+
+Makefile.am:
+lib_SOURCES += timevar.c timevar.def
+
+Include:
+"timevar.h"
+
+License:
+GPLv3+
+
+Maintainer:
+Akim Demaille <akim.demaille@gmail.com>

@@ -1,0 +1,72 @@
+@node ctime
+@subsection @code{ctime}
+@findex ctime
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/ctime.html}
+
+Gnulib module: ctime
+@mindex ctime
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+On native Windows platforms (mingw, MSVC), this function works incorrectly
+when the environment variable @env{TZ} has been set by Cygwin.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is deprecated in C23.
+Likewise, POSIX says this function is obsolescent and it is planned to be
+removed in a future version.
+Portable applications can use @code{localtime_r} and @code{strftime}
+(or even @code{sprintf}) instead.
+However, @code{localtime_r} can fail and @code{strftime} is locale dependent.
+@item
+This function may overflow its internal buffer if its argument
+specifies a time before the year 1000 or after the year 9999.
+@item
+This function may dereference an internal null pointer if its argument
+specifies a time before the year @code{INT_MIN}+1900 or after the
+year @code{INT_MAX}+1900.
+@item
+The @code{ctime} function need not be reentrant, and consequently is
+not required to be thread safe.  Implementations of @code{ctime}
+typically write the timestamp into static buffer.  If two threads
+call @code{ctime} at roughly the same time, you might end up with the
+wrong date in one of the threads, or some undefined string.
+@item
+Native Windows platforms (mingw, MSVC) support only a subset of time
+zones supported by GNU or specified by POSIX@.  @xref{tzset}.
+@end itemize
+
+Although @code{ctime} and related functions @code{asctime}, @code{asctime_r}
+and @code{ctime_r} formerly were plausible to use,
+they are now unsafe in general, and should be avoided.
+
+Decades ago when @code{time_t} was narrow
+and there was no @code{strftime} or internationalization,
+code could call these functions and then select the parts needed.
+For example, in Unix 7th Edition @file{/usr/src/cmd/ls.c} (1979):
+
+@example
+cp = ctime(&p->lmtime);
+if(p->lmtime < year)
+        printf(" %-7.7s %-4.4s ", cp+4, cp+20); else
+        printf(" %-12.12s ", cp+4);
+@end example
+
+@noindent
+This had well-defined behavior when @code{time_t} was only 32 bits
+and so was OK for circa 1979 platforms.
+
+However, today's platforms have a @code{time_t} so wide
+that the year might not be in the range [1000, 9999].
+In this case the behavior of @code{ctime} is undefined
+and some platforms behave badly, overrunning a buffer
+or dereferencing an internal null pointer;
+and even on platforms where no undefined behavior occurs,
+the 7th Edition code generates wrong output for out-of-range years,
+because it incorrectly assumes that every year is represented by
+exactly four digits.

@@ -1,0 +1,25 @@
+Description:
+A correct <float.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'float-h' instead.
+
+Files:
+
+Depends-on:
+float-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<float.h>
+
+License:
+LGPLv2+
+
+Maintainer:

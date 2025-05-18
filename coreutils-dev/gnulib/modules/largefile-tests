@@ -1,0 +1,13 @@
+Files:
+tests/test-largefile.c
+
+Depends-on:
+intprops
+sys_types-h
+sys_stat-h
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-largefile
+check_PROGRAMS += test-largefile

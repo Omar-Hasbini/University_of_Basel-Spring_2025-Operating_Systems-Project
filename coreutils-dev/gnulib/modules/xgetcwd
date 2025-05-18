@@ -1,0 +1,32 @@
+Description:
+Return the current working directory, without size limitations.
+
+Comment:
+This module should not be used as a dependency from a test module,
+otherwise when this module occurs as a tests-related module, it will
+have side effects on the compilation of the 'getcwd-lgpl' module, if
+that module occurs among the main modules in lib/.
+
+Files:
+lib/xgetcwd.h
+lib/xgetcwd.c
+m4/xgetcwd.m4
+
+Depends-on:
+getcwd
+xalloc
+
+configure.ac:
+gl_XGETCWD
+
+Makefile.am:
+lib_SOURCES += xgetcwd.c
+
+Include:
+"xgetcwd.h"
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

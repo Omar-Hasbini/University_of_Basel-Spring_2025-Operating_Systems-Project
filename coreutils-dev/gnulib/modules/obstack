@@ -1,0 +1,60 @@
+Description:
+Memory allocation, optimized for stack-like allocation patterns.
+
+Files:
+lib/obstack.in.h
+lib/obstack.c
+m4/obstack.m4
+
+Depends-on:
+gen-header
+alignasof       [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+libc-config     [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+flexmember      [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+gettext-h       [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+gnulib-i18n     [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+exitfail        [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+stdckdint-h     [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+stddef-h        [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+stdint-h        [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+stdlib-h        [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1]
+
+configure.ac:
+gl_FUNC_OBSTACK
+gl_CONDITIONAL_HEADER([obstack.h])
+gl_CONDITIONAL([GL_COND_OBJ_OBSTACK],
+               [test $HAVE_OBSTACK = 0 || test $REPLACE_OBSTACK = 1])
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += $(OBSTACK_H)
+
+# We need the following in order to create <obstack.h> when the system
+# doesn't have one that works with any size object.
+if GL_GENERATE_OBSTACK_H
+obstack.h: obstack.in.h $(top_builddir)/config.status
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_STDOUT) \
+	      -e 's/defined __GL_GNULIB_HEADER/1/g' \
+	      -e 's|defined __GL_REPLACE_OBSTACK__|$(REPLACE_OBSTACK)|g' \
+	      -e 's|defined __GL_SMALL_PTRDIFF_T__|$(SMALL_PTRDIFF_T)|g' \
+	      $(srcdir)/obstack.in.h > $@-t
+	$(AM_V_at)mv $@-t $@
+else
+obstack.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += obstack.h obstack.h-t
+
+if GL_COND_OBJ_OBSTACK
+lib_SOURCES += obstack.c
+endif
+
+Include:
+"obstack.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all, glibc

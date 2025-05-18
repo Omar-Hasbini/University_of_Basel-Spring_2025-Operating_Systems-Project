@@ -1,0 +1,57 @@
+@node sys/types.h
+@section @file{sys/types.h}
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/sys_types.h.html}
+
+Gnulib module: sys_types-h
+@mindex sys_types-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+The type @code{pid_t} is not defined on some platforms:
+MSVC 14.
+@item
+The type @code{size_t} is not defined in this file on some platforms:
+MSVC 14.
+@item
+The type @code{ssize_t} is not defined on some platforms:
+MSVC 14.
+@item
+The type @code{mode_t} is not defined on some platforms:
+MSVC 14.
+@item
+The type @code{off64_t} is not defined on some platforms:
+macOS 14, FreeBSD 10.4, NetBSD 10.0, OpenBSD 7.5, MSVC 14, Cygwin, Haiku, Minix 3.3.
+@item
+The type @code{blksize_t} is not defined on some platforms:
+FreeBSD 5.5, OpenBSD 5.6, HP-UX 11.23, IRIX 6.5, mingw, MSVC 14.
+@item
+The type @code{blkcnt_t} is not defined on some platforms:
+FreeBSD 5.5, OpenBSD 5.6, mingw, MSVC 14.
+@item
+Some systems leak definitions of @code{major}, @code{minor}, and
+@code{makedev} through this header; however, when
+@file{sys/sysmacros.h} exists, that file should also be included to
+avoid deprecation warnings from the versions in this header:
+glibc 2.25.
+@end itemize
+
+@xref{Avoiding the year 2038 problem}, for portability issues with
+@code{time_t}.
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+On some platforms the types @code{blksize_t} and @code{blkcnt_t} are unsigned:
+Android.
+@item
+On some platforms the types @code{blksize_t} and @code{suseconds_t}
+are signed integer types that are wider than @code{long}:
+glibc x32
+@end itemize
+
+@mindex largefile
+This module, together with the module @code{largefile}, also defines the type
+@code{off_t} to a 64-bit integer type on some platforms:
+mingw, MSVC 14.

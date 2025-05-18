@@ -1,0 +1,23 @@
+@node ntohs
+@subsection @code{ntohs}
+@findex ntohs
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/ntohs.html}
+
+Gnulib module: htonl
+@mindex htonl
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+HP-UX 11, Android API level 20.
+@item
+This function is declared in @code{<winsock2.h>} instead of @code{<arpa/inet.h>}
+on some platforms:
+mingw, MSVC 14.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

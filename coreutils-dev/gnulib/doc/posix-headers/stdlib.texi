@@ -1,0 +1,56 @@
+@node stdlib.h
+@section @file{stdlib.h}
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/stdlib.h.html}
+
+Gnulib module: stdlib-h, system-posix
+@mindex stdlib-h
+@mindex system-posix
+
+Portability problems fixed by the Gnulib module @code{stdlib-h}:
+@itemize
+@item
+The macros @code{EXIT_SUCCESS} and @code{EXIT_FAILURE} are not defined on
+some platforms.
+@item
+Some platforms provide a @code{NULL} macro that cannot be used in arbitrary
+expressions:
+NetBSD 5.0
+@item
+Using the macro @code{MB_CUR_MAX} causes link errors on some platforms:
+Android NDK r16.
+@item
+The value of @code{MB_CUR_MAX} is too small (3 instead of 4) in UTF-8 locales
+on some platforms:
+Solaris 10.
+@end itemize
+
+Portability problems fixed by the Gnulib module @code{system-posix}:
+@itemize
+@item
+The macros @code{WIFSIGNALED}, @code{WIFEXITED}, @code{WIFSTOPPED},
+@code{WTERMSIG}, @code{WEXITSTATUS}, @code{WNOHANG}, @code{WUNTRACED},
+@code{WSTOPSIG} are not defined in this header file (only in
+@code{<sys/wait.h>}) on some platforms:
+MirBSD 10.
+@item
+The macro @code{WCOREDUMP} is not defined in this header file (only in
+@code{<sys/wait.h>}) on some platforms:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=32551
+glibc 2.41.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+The definition of the type @code{once_flag}, of the macro
+@code{ONCE_FLAG_INIT}, and the declaration of the function
+@code{call_once}, that are required by ISO C 23, are not provided.
+@mindex call_once
+To get them, import Gnulib module @code{call_once} and include
+@code{<threads.h>} rather than @code{<stdlib.h>}.
+@item
+System status macros such as @code{WEXITSTATUS} require an lvalue
+argument on some platforms.
+macOS 11.1.
+@end itemize

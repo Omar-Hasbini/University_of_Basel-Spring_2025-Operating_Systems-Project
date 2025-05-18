@@ -1,0 +1,28 @@
+Description:
+Quote arguments for use in error messages.
+
+Files:
+lib/quote.h
+m4/quote.m4
+
+Depends-on:
+quotearg
+
+configure.ac:
+gl_QUOTE
+
+Makefile.am:
+
+Include:
+"quote.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert

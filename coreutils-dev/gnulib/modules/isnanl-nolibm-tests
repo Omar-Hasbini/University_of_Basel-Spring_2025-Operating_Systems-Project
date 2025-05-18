@@ -1,0 +1,20 @@
+Files:
+tests/test-isnanl-nolibm.c
+tests/test-isnanl.h
+tests/minus-zero.h
+tests/infinity.h
+tests/macros.h
+
+Depends-on:
+c99
+float-h
+nan
+snan
+
+configure.ac:
+AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
+
+Makefile.am:
+TESTS += test-isnanl-nolibm
+check_PROGRAMS += test-isnanl-nolibm
+

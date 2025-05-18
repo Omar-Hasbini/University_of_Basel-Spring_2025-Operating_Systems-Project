@@ -1,0 +1,11 @@
+Files:
+tests/test-year2038.c
+
+Depends-on:
+intprops
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-year2038
+check_PROGRAMS += test-year2038

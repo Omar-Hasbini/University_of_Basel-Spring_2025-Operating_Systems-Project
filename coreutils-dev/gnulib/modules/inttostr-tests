@@ -1,0 +1,14 @@
+Files:
+tests/macros.h
+tests/test-inttostr.c
+
+Depends-on:
+intprops
+inttypes-h
+snprintf
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-inttostr
+check_PROGRAMS += test-inttostr

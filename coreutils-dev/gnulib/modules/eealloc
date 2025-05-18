@@ -1,0 +1,34 @@
+Description:
+Memory allocation with expensive empty allocations
+
+Status:
+deprecated
+
+Notice:
+The eealloc module is deprecated.
+New code should use the malloc-gnu and/or realloc-posix modules.
+
+Files:
+lib/eealloc.h
+lib/eealloc.c
+m4/eealloc.m4
+m4/malloc.m4
+
+Depends-on:
+extern-inline
+stdlib-h
+
+configure.ac:
+gl_EEALLOC
+
+Makefile.am:
+lib_SOURCES += eealloc.c
+
+Include:
+<eealloc.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

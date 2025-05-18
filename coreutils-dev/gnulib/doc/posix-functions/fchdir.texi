@@ -1,0 +1,23 @@
+@node fchdir
+@subsection @code{fchdir}
+@findex fchdir
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/fchdir.html}
+
+Gnulib module: fchdir
+@mindex fchdir
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+mingw, MSVC 14.
+But the replacement function is not safe to be used in libraries and is not multithread-safe.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function fails if the file descriptor was opened with @code{O_PATH}:
+Linux kernel 3.4.
+@end itemize

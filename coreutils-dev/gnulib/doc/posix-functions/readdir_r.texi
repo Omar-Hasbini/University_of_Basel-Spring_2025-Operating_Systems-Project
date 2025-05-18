@@ -1,0 +1,36 @@
+@node readdir_r
+@subsection @code{readdir_r}
+@findex readdir_r
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/readdir_r.html}
+
+Gnulib module: extensions
+@mindex extensions
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is planned to be removed from POSIX and to be deprecated
+in glibc.  Portable applications should use @code{readdir}.
+@item
+This function has an incompatible declaration on some platforms:
+Solaris 11.4 (when @code{_POSIX_PTHREAD_SEMANTICS} is not defined).
+@item
+On platforms where @code{off_t} is a 32-bit type, this function may not
+work correctly on huge directories 2 GiB and larger.  Also, on platforms
+where @code{ino_t} is a 32-bit type, this function may report inode numbers
+incorrectly.  This can occur with file systems such as XFS (typically on
+large disks) and NFS@.  @xref{Large File Support}.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, mingw, MSVC 14.
+@item
+When reading a directory that has been removed,
+this function sets @code{errno} to @code{ENOENT}
+instead of leaving @code{errno} alone to indicate EOF:
+glibc 2.2.5.
+@end itemize

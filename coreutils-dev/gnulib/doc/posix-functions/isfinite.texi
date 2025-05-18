@@ -1,0 +1,30 @@
+@node isfinite
+@subsection @code{isfinite}
+@findex isfinite
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/isfinite.html}
+
+Gnulib module: isfinite
+@mindex isfinite
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This macro is missing on some platforms:
+macOS 14, OpenBSD 7.5, AIX 5.1, Solaris 11.4.
+@item
+This macro incorrectly yields true for some @samp{double} and for some
+@samp{long double} arguments, on some platforms:
+Linux/ia64 (NaNs).
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+It is implementation-dependent whether @code{isfinite} raises an
+exception given a signaling NaN operand.
+@item
+This macro returns an unspecified result when given noncanonical values
+such as unnormalized numbers, pseudo-denormals, pseudo-NaNs,
+pseudo-Infinities, and pseudo-zeroes.
+@end itemize

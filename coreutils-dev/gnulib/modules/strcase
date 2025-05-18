@@ -1,0 +1,21 @@
+Description:
+Case-insensitive string comparison functions for unibyte locales.
+
+Files:
+
+Depends-on:
+strcasecmp
+strncasecmp
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<strings.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

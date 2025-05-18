@@ -1,0 +1,19 @@
+Files:
+tests/test-nan-1.c
+tests/test-nan-2.c
+tests/macros.h
+
+Status:
+unportable-test
+
+Depends-on:
+fenv-exceptions-tracking-c99
+fpe-trapping
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-nan-1 test-nan-2
+check_PROGRAMS += test-nan-1 test-nan-2
+test_nan_1_LDADD = $(LDADD) $(FENV_EXCEPTIONS_TRACKING_LIBM)
+test_nan_2_LDADD = $(LDADD) @FPE_TRAPPING_LIBM@

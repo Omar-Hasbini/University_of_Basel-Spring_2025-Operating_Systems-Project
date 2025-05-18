@@ -1,0 +1,133 @@
+@node fcntl.h
+@section @file{fcntl.h}
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/fcntl.h.html}
+
+Gnulib module: fcntl-h
+@mindex fcntl-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+The type @code{pid_t} is not defined on some platforms:
+MSVC 14.
+
+@item
+The type @code{mode_t} is not defined on some platforms:
+MSVC 14.
+
+@item
+The type @code{off64_t} is not defined on some platforms:
+macOS 14, FreeBSD 10.4, NetBSD 10.0, OpenBSD 7.5, MSVC 14, Cygwin, Haiku, Minix 3.3.
+
+@item
+@samp{O_CLOEXEC} is not defined on some platforms:
+Mac OS X 10.6, FreeBSD 8.4, NetBSD 5.1, OpenBSD 4.9, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 10, Cygwin 1.7.1, mingw, MSVC 14.
+
+@item
+@samp{O_DIRECTORY}, @samp{O_DSYNC}, @samp{O_NOCTTY},
+@samp{O_NOFOLLOW}, @samp{O_RSYNC}, @samp{O_SYNC},
+and @samp{O_TTY_INIT} are not defined on some platforms.
+When not otherwise defined, Gnulib defines these macros to 0,
+which is generally safe.
+
+@item
+@samp{O_NONBLOCK} is not defined on some platforms.
+@mindex nonblocking
+If the @samp{nonblocking} module is in use, gnulib guarantees a working
+non-zero value; otherwise, the gnulib replacement is 0.
+
+@item
+@samp{O_EXEC} is not defined on some platforms:
+glibc 2.41, macOS 12, FreeBSD 7.4, NetBSD 9.4, OpenBSD 7.5, HP-UX 11, Solaris 10, Cygwin 1.5.x, mingw, MSVC 14, Android.
+However, glibc does define @samp{O_EXEC} on GNU/Hurd.
+When not otherwise defined,
+Gnulib defines this macro to @samp{O_RDONLY}, which is typically 0.
+
+Note: @samp{O_EXEC} is not suitable for opening a file descriptor
+that you want to use with @code{fchmod} later, because
+musl libc defines @samp{O_EXEC} to @code{O_PATH} and
+@c https://lists.gnu.org/archive/html/bug-gnulib/2012-11/msg00029.html
+Linux @code{fchmod} fails with error @code{EBADF} when given such a file
+descriptor.
+
+@item
+@samp{O_SEARCH} is not defined on some platforms:
+glibc 2.41, macOS 12, FreeBSD 12.4, NetBSD 6.1, OpenBSD 7.5, AIX 6.1, HP-UX 11, Solaris 10, Cygwin 1.5.x, mingw, MSVC 14, Android.
+When not otherwise defined,
+Gnulib defines this macro to @samp{O_RDONLY}, which is typically 0.
+
+@item
+@samp{O_SEARCH} is defined to @code{O_PATH} on some platforms:
+@c https://bugs.gnu.org/75405
+musl libc.
+
+@item
+@samp{O_ACCMODE} is not defined on some platforms:
+MSVC 14.
+
+@item
+The @samp{O_ACCMODE} mask mistakenly omits @samp{O_SEARCH} and
+@samp{O_EXEC} on some platforms:
+Cygwin.
+
+@item
+@samp{O_BINARY}, @samp{O_TEXT} (not specified by POSIX, but essential for
+portability to native Windows platforms) are defined on some platforms but
+not on others.
+Gnulib defines these macros to 0 on GNU and other platforms that do not
+distinguish between text and binary I/O@.
+
+@item
+@samp{O_CLOEXEC}, @samp{O_NOFOLLOW}, and @samp{O_TTY_INIT}
+are defined to values that are too large for an @code{int} on some platforms:
+AIX 7.1 with XL C 12.1.
+
+@item
+@samp{O_DIRECT}, @samp{O_IGNORE_CTTY}, @samp{O_NDELAY},
+@samp{O_NOATIME}, @samp{O_NOLINK}, @samp{O_NOLINKS}, and
+@samp{O_NOTRANS} (not specified by POSIX) are defined
+on some platforms but not on others.
+When not otherwise defined, Gnulib defines these macros to 0,
+which is generally safe.
+
+@item
+@samp{FD_CLOEXEC}, @samp{F_DUPFD}, and @samp{F_GETFD} are not defined
+on some platforms:
+mingw, MSVC 14.
+
+@item
+@samp{F_DUPFD_CLOEXEC} is not defined on some platforms:
+Mac OS X 10.5, FreeBSD 6.0, NetBSD 5.0, OpenBSD 7.5, AIX 5.1, HP-UX 11, Solaris 11 2010-11, Cygwin 1.7.1, mingw, MSVC 14.
+
+@item
+@samp{AT_FDCWD}, @samp{AT_EACCESS}, @samp{AT_SYMLINK_NOFOLLOW},
+@samp{AT_SYMLINK_FOLLOW}, and @samp{AT_REMOVEDIR}
+are not defined on many platforms:
+glibc 2.3.6, Mac OS X 10.5, FreeBSD 6.0, NetBSD 5.0, OpenBSD 7.5, AIX 5.1, HP-UX 11, Cygwin 1.5.x, mingw, MSVC 14.
+
+@item
+@samp{AT_FDCWD} is defined with a value too large for an @code{int} on some
+platforms:
+Solaris 11.3.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+
+@item
+@samp{O_PATH} is not defined on some platforms:
+glibc 2.13, macOS 13, FreeBSD 13.0, NetBSD 9.2, OpenBSD 7.1, Minix 3.3.0, AIX 7.3, HP-UX 11.31, Solaris 11.4, Cygwin 2.9, mingw, MSVC 14.
+
+@item
+@samp{F_SETFD}, @samp{F_GETFL}, @samp{F_SETFL}, @samp{F_GETLK},
+@samp{F_SETLK}, @samp{F_SETLKW}, @samp{F_GETOWN}, and @samp{F_SETOWN}
+are not defined on some platforms:
+mingw, MSVC 14.
+
+@item
+@samp{POSIX_FADV_DONTNEED}, @samp{POSIX_FADV_NOREUSE},
+@samp{POSIX_FADV_NORMAL}, @samp{POSIX_FADV_RANDOM},
+@samp{POSIX_FADV_SEQUENTIAL}, and @samp{POSIX_FADV_WILLNEED} are not
+defined on some platforms.
+@end itemize

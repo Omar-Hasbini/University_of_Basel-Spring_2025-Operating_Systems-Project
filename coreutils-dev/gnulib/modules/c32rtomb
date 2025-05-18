@@ -1,0 +1,43 @@
+Description:
+c32rtomb() function: convert 32-bit wide character to multibyte character.
+
+Files:
+lib/c32rtomb.c
+m4/c32rtomb.m4
+m4/mbrtoc32.m4
+m4/locale-en.m4
+m4/locale-fr.m4
+m4/locale-zh.m4
+m4/codeset.m4
+
+Depends-on:
+uchar-h
+attribute       [test $HAVE_C32RTOMB = 0 || test $REPLACE_C32RTOMB = 1]
+wchar-h         [test $HAVE_C32RTOMB = 0 || test $REPLACE_C32RTOMB = 1]
+wcrtomb         [test $HAVE_C32RTOMB = 0 || test $REPLACE_C32RTOMB = 1]
+localcharset    [{ test $HAVE_C32RTOMB = 0 || test $REPLACE_C32RTOMB = 1; } && test $SMALL_WCHAR_T = 1]
+streq           [{ test $HAVE_C32RTOMB = 0 || test $REPLACE_C32RTOMB = 1; } && test $SMALL_WCHAR_T = 1]
+
+configure.ac:
+gl_FUNC_C32RTOMB
+gl_CONDITIONAL([GL_COND_OBJ_C32RTOMB],
+               [test $HAVE_C32RTOMB = 0 || test $REPLACE_C32RTOMB = 1])
+gl_UCHAR_MODULE_INDICATOR([c32rtomb])
+
+Makefile.am:
+if GL_COND_OBJ_C32RTOMB
+lib_SOURCES += c32rtomb.c
+endif
+
+Include:
+<uchar.h>
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPLv2+
+
+Maintainer:
+Bruno Haible

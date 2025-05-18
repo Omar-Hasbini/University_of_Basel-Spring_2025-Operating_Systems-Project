@@ -1,0 +1,25 @@
+Description:
+A GNU-like <string.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'string-h' instead.
+
+Files:
+
+Depends-on:
+string-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:

@@ -1,0 +1,39 @@
+Description:
+Read entire utmp file into memory.
+
+Files:
+lib/readutmp.h
+lib/readutmp.c
+lib/boot-time-aux.h
+m4/readutmp.m4
+m4/systemd.m4
+
+Depends-on:
+extensions
+idx
+stat-time
+gettimeofday
+bool
+stdint-h
+strnlen
+time-h
+unlocked-io-internal
+xalloc
+
+configure.ac:
+gl_READUTMP
+
+Makefile.am:
+lib_SOURCES += readutmp.c
+
+Include:
+"readutmp.h"
+
+Link:
+$(READUTMP_LIB)
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering & Paul Eggert

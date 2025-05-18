@@ -1,0 +1,15 @@
+Files:
+tests/macros.h
+tests/test-readtokens.c
+tests/test-readtokens.sh
+
+Depends-on:
+closeout
+test-framework-sh
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-readtokens.sh
+check_PROGRAMS += test-readtokens
+test_readtokens_LDADD = $(LDADD) $(LIBUNISTRING) @LIBINTL@ $(MBRTOWC_LIB) $(LIBC32CONV)

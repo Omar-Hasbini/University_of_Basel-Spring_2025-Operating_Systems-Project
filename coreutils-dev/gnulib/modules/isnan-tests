@@ -1,0 +1,20 @@
+Files:
+tests/test-isnan.c
+tests/minus-zero.h
+tests/infinity.h
+tests/macros.h
+
+Depends-on:
+c99
+float-h
+nan
+snan
+
+configure.ac:
+AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
+
+Makefile.am:
+TESTS += test-isnan
+check_PROGRAMS += test-isnan
+test_isnan_LDADD = $(LDADD) @ISNAN_LIBM@
+

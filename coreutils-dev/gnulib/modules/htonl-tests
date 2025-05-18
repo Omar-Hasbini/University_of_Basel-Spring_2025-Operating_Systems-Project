@@ -1,0 +1,14 @@
+Files:
+tests/test-htonl.c
+tests/macros.h
+
+Depends-on:
+endian
+stdint-h
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-htonl
+check_PROGRAMS += test-htonl
+test_htonl_LDADD = $(LDADD) @HTONL_LIB@

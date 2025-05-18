@@ -1,0 +1,30 @@
+Description:
+c32stombs() function: convert 32-bit wide string to string.
+
+Files:
+lib/c32stombs.c
+
+Depends-on:
+uchar-h
+wchar-h
+mbszero
+c32srtombs
+
+configure.ac:
+gl_UCHAR_MODULE_INDICATOR([c32stombs])
+
+Makefile.am:
+lib_SOURCES += c32stombs.c
+
+Include:
+<uchar.h>
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPL
+
+Maintainer:
+Bruno Haible

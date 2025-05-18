@@ -1,0 +1,19 @@
+@node fegetexceptflag
+@subsection @code{fegetexceptflag}
+@findex fegetexceptflag
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/fegetexceptflag.html}
+
+Gnulib module: fenv-exceptions-state-c99
+@mindex fenv-exceptions-state-c99
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, Solaris 9, Cygwin 1.7.7, MSVC 9, Android 4.4.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

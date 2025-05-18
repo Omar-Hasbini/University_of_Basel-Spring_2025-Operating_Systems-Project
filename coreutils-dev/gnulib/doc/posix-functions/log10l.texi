@@ -1,0 +1,30 @@
+@node log10l
+@subsection @code{log10l}
+@findex log10l
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/log10l.html}
+
+Gnulib module: log10l or log10l-ieee
+@mindex log10l
+@mindex log10l-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, HP-UX 11, Solaris 9, Cygwin 1.7.x, Android 4.4.
+@item
+This function is only defined as a macro with arguments on some platforms:
+MSVC 14.
+@item
+This function is not declared and does not work on some platforms:
+AIX 5.1.
+@item
+This function produces results which are accurate to only 16 digits on some
+platforms:
+musl libc 1.2.2/arm64, musl libc 1.2.2/s390x, NetBSD 10.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

@@ -1,0 +1,37 @@
+@node asctime_r
+@subsection @code{asctime_r}
+@findex asctime_r
+
+Removed in POSIX.1-2024.
+POSIX.1-2017 specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/asctime_r.html}
+
+Gnulib module: extensions
+@mindex extensions
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function has an incompatible declaration on some platforms:
+Solaris 11.4 (when @code{_POSIX_PTHREAD_SEMANTICS} is not defined).
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+mingw, MSVC 14.
+@item
+This function is removed in POSIX.1-2024.
+Use the function @code{strftime} (or even @code{sprintf}) instead.
+However, @code{strftime} is locale dependent.
+@item
+This function may overflow its output buffer if its argument
+specifies a year before 1000 or after 9999.
+@xref{ctime}.
+@item
+Although it is tempting to call this function on the value that
+functions like @code{localtime} return, this is typically a mistake.
+On most current platforms, these functions return a null pointer for
+timestamps out of range, and this function has undefined behavior in
+that case.
+@end itemize

@@ -1,0 +1,372 @@
+/* Test clear_cache.
+
+   Copyright 2020-2025 Free Software Foundation, Inc.
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+
+#include <config.h>
+
+/* Specification.  */
+#include <jit/cache.h>
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#if HAVE_SYS_MMAN_H
+# include <sys/mman.h>
+#endif
+
+#if defined __APPLE__ && defined __MACH__ /* only needed on macOS */
+# define KEEP_TEMP_FILE_VISIBLE
+/* Support for temporary files that are cleaned up automatically. */
+# include "clean-temp-simple.h"
+#endif
+
+#include "xalloc.h"
+#include "macros.h"
+
+/* With clang ≥ 17, when the undefined-behaviour sanitizer is in use, 8 bytes of
+   meta-information precede each function: a magic number 0xC105CAFE and a word
+   that encodes the function's signature.  See
+   <https://reviews.llvm.org/D148665>
+   <https://github.com/llvm/llvm-project/issues/65253>
+   <https://www.reddit.com/r/C_Programming/comments/1dj9gg8/>  */
+#if defined __clang__ && __clang_major__ >= 17 && defined __ELF__
+# include <dlfcn.h>
+#endif
+static int clang_ubsan_workaround = 0;
+
+/* On most platforms, function pointers are just a pointer to the
+   code, i.e. to the first instruction to be executed.  This,
+   however, is not universally true, see:
+   https://git.savannah.gnu.org/gitweb/?p=libffcall.git;a=blob;f=porting-tools/abis/function-pointer.txt.  */
+
+#if ((defined __powerpc__ || defined __powerpc64__) && defined _AIX) || (defined __powerpc64__ && !defined __powerpc64_elfv2__ && defined __linux__)
+struct func
+{
+  void *code_address;
+  void *toc_pointer;
+  void *static_chain;
+};
+#elif defined __ia64__
+# if defined __ia64_ilp32__
+struct func
+{
+  void *code_address;
+  void *unused1;
+  void *global_pointer;
+  void *unused2;
+};
+# else
+struct func
+{
+  void *code_address;
+  void *global_pointer;
+};
+# endif
+#elif defined __hppa__
+# if defined __hppa64__
+struct func
+{
+  void *some_other_code_address;
+  void *some_other_pic_base;
+  void *code_address;
+  void *pic_base;
+};
+# else
+struct func
+{
+  void *code_address;
+  void *pic_base;
+};
+#  define FUNCPTR_BIAS 2
+# endif
+#else
+# define FUNCPTR_POINTS_TO_CODE
+#endif
+#ifdef FUNCPTR_POINTS_TO_CODE
+/* A function pointer points directly to the code.  */
+# define COPY_FUNCPTR(funcptr) funcptr
+/* On arm, bit 0 of a function pointer tells which instruction set the function
+   uses.  */
+# if defined __arm__ || defined __armhf__
+#  define CODE(funcptr) ((void *) ((uintptr_t) (funcptr) & ~(intptr_t)1))
+#  define SET_CODE(funcptr,code_addr) \
+     ((void) ((funcptr) =                                     \
+              (void *) (((uintptr_t) (funcptr) & (intptr_t)1) \
+                        | (uintptr_t) (code_addr))))
+#  define IS(funcptr)  ((uintptr_t) (funcptr) & 1)
+#  define SET_IS(funcptr,is)  \
+     ((void) ((funcptr) = \
+              (void *) (((uintptr_t) (funcptr) & ~(intptr_t)1) | (is))))
+# else
+#  define CODE(funcptr) ((char *) (funcptr) - clang_ubsan_workaround)
+#  define SET_CODE(funcptr,code_addr) \
+     ((void) ((funcptr) = (void *) ((char *) (code_addr) + clang_ubsan_workaround)))
+#  define IS(funcptr) ((void) (funcptr), 0)
+#  define SET_IS(funcptr,is) ((void) (funcptr), (void) (is))
+# endif
+#else
+/* A function pointer points to a 'struct func'.  */
+# if FUNCPTR_BIAS
+static inline void *
+structptr_to_funcptr (struct func *p)
+{
+  return (char *) p + FUNCPTR_BIAS;
+}
+static inline struct func *
+funcptr_to_structptr (void * volatile funcptr)
+{
+  return (struct func *) ((char *) funcptr - FUNCPTR_BIAS);
+}
+# else
+#  define structptr_to_funcptr(p) ((void *) (p))
+static inline struct func *
+funcptr_to_structptr (void * volatile funcptr)
+{
+  return (struct func *) funcptr;
+}
+# endif
+static inline struct func *
+xcopy_structptr (struct func *structptr)
+{
+  struct func *copy = (struct func *) xmalloc (sizeof (struct func));
+  *copy = *structptr;
+  return copy;
+}
+# define COPY_FUNCPTR(funcptr) \
+    structptr_to_funcptr (xcopy_structptr (funcptr_to_structptr (funcptr)))
+# define CODE(funcptr) \
+    ((funcptr_to_structptr (funcptr))->code_address)
+# define SET_CODE(funcptr,code_addr) \
+    ((void) (CODE (funcptr) = (code_addr)))
+# define IS(funcptr) ((void) (funcptr), 0)
+# define SET_IS(funcptr,is) ((void) (funcptr), (void) (is))
+#endif
+
+/* This test assumes that the code generated by the compiler for the
+   procedures `return1' and `return2' is position independent.  It
+   also assumes that data pointers are bit-compatible to integers.  */
+
+static int
+return1 (void)
+{
+  return 1;
+}
+
+static int
+return2 (void)
+{
+  return 2;
+}
+
+/* For those platforms which map code with PROT_EXEC (as opposed to
+   PROT_READ | PROT_EXEC), not allowing us to read from the code area at
+   run time, here is a copy of the code of the functions 'return1' and
+   'return2'.  Produced with a cross-compiler like this:
+     $ <cpu>-linux-gnu-gcc -O2 -fomit-frame-pointer -c foo.c
+     $ <cpu>-linux-gnu-objdump -d -r foo.o
+ */
+
+#if defined __x86_64__ || defined __x86_64_x32__ || defined __i386__
+unsigned char const return1_code[] = { 0xb8,0x01,0x00,0x00,0x00, 0xc3 };
+unsigned char const return2_code[] = { 0xb8,0x02,0x00,0x00,0x00, 0xc3 };
+#endif
+#if defined __alpha__
+unsigned int const return1_code[] = { 0x201f0001, 0x6bfa8001 };
+unsigned int const return2_code[] = { 0x201f0002, 0x6bfa8001 };
+#endif
+#if defined __arm64__ || defined __arm64_ilp32__
+unsigned int const return1_code[] = { 0x52800020, 0xd65f03c0 };
+unsigned int const return2_code[] = { 0x52800040, 0xd65f03c0 };
+#elif defined __arm__ || defined __armhf__
+unsigned int const return1_code[] = { 0xe3a00001, 0xe1a0f00e };
+unsigned int const return2_code[] = { 0xe3a00002, 0xe1a0f00e };
+#endif
+#if defined __hppa64__
+unsigned int const return1_code[] = { 0xe840d000, 0x341c0002 };
+unsigned int const return2_code[] = { 0xe840d000, 0x341c0004 };
+#elif defined __hppa__
+unsigned int const return1_code[] = { 0xe840c000, 0x341c0002 };
+unsigned int const return2_code[] = { 0xe840c000, 0x341c0004 };
+#endif
+#if defined __ia64__ || defined __ia64_ilp32__
+unsigned char const return1_code[] =
+  { 0x11,0x00,0x00,0x00,0x01,0x00,0x80,0x08,0x00,0x00,0x48,0x80,0x08,0x00,0x84,0x00 };
+unsigned char const return2_code[] =
+  { 0x11,0x00,0x00,0x00,0x01,0x00,0x80,0x10,0x00,0x00,0x48,0x80,0x08,0x00,0x84,0x00 };
+#endif
+#if defined __loongarch64__
+unsigned int const return1_code[] = { 0x02800404, 0x4c000020 };
+unsigned int const return2_code[] = { 0x02800804, 0x4c000020 };
+#endif
+#if defined __m68k__
+unsigned short const return1_code[] = { 0x7001, 0x4e75 };
+unsigned short const return2_code[] = { 0x7002, 0x4e75 };
+#endif
+#if defined __mips64__ || defined __mipsn32__ || defined __mips__
+unsigned int const return1_code[] = { 0x03e00008, 0x24020001 };
+unsigned int const return2_code[] = { 0x03e00008, 0x24020002};
+#endif
+#if defined __powerpc64__ || defined __powerpc64_elfv2__ || defined __powerpc__
+unsigned int const return1_code[] = { 0x38600001, 0x4e800020 };
+unsigned int const return2_code[] = { 0x38600002, 0x4e800020 };
+#endif
+#if defined __riscv64__ || defined __riscv32__
+unsigned short const return1_code[] = { 0x4505, 0x8082 };
+unsigned short const return2_code[] = { 0x4509, 0x8082 };
+#endif
+#if defined __s390x__
+unsigned short const return1_code[] = { 0xa729,0x0001, 0x07fe, 0x0707 };
+unsigned short const return2_code[] = { 0xa729,0x0002, 0x07fe, 0x0707 };
+#elif defined __s390__
+unsigned short const return1_code[] = { 0xa728,0x0001, 0x07fe, 0x0707 };
+unsigned short const return2_code[] = { 0xa728,0x0002, 0x07fe, 0x0707 };
+#endif
+#if defined __sparc64__ || defined __sparc__
+unsigned int const return1_code[] = { 0x81c3e008, 0x90102001 };
+unsigned int const return2_code[] = { 0x81c3e008, 0x90102002 };
+#endif
+
+int
+main ()
+{
+#if defined __clang__ && __clang_major__ >= 17 && defined __ELF__
+  if (dlsym (RTLD_DEFAULT, "__ubsan_handle_function_type_mismatch") != NULL)
+    /* This program is built with clang ≥ 17 and its UBSAN.  */
+    clang_ubsan_workaround = 8;
+#endif
+
+  void const *code_of_return1;
+  void const *code_of_return2;
+  size_t size_of_return1;
+  size_t size_of_return2;
+  int is_of_return1;
+  int is_of_return2;
+#if defined __OpenBSD__ || defined _RET_PROTECTOR
+  /* OpenBSD maps code with PROT_EXEC (as opposed to PROT_READ | PROT_EXEC).
+     We need to use predetermined code for 'return1' and 'return2'.  */
+  /* The OpenBSD "retguard" stack protector produces code for 'return1' and
+     'return2' that is not position independent, and there is no clang
+     attribute for turning this instrumentation off for specific functions.
+     If this stack protector has not been disabled through a configure test,
+     we need to use predetermined code for 'return1' and 'return2'.  */
+  code_of_return1 = return1_code;
+  code_of_return2 = return2_code;
+  size_of_return1 = sizeof (return1_code);
+  size_of_return2 = sizeof (return2_code);
+  /* On arm, return1_code and return2_code use the "ARM" instruction set.  */
+  is_of_return1 = 0;
+  is_of_return2 = 0;
+#else
+  code_of_return1 = CODE (return1);
+  code_of_return2 = CODE (return2);
+  /* We assume that the code is not longer than 64 bytes.  */
+  size_of_return1 = 64;
+  size_of_return2 = 64;
+  is_of_return1 = IS (return1);
+  is_of_return2 = IS (return2);
+#endif
+
+  int const pagesize = getpagesize ();
+  int const mapping_size = 1 * pagesize;
+  /* Bounds of an executable memory region.  */
+  char *start;
+  char *end;
+  /* Start of a writable memory region.  */
+  char *start_rw;
+
+  /* Initialization.  */
+  {
+#if defined _WIN32 && !defined __CYGWIN__
+    /* VirtualAlloc
+       <https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc>
+       <https://learn.microsoft.com/en-us/windows/win32/memory/memory-protection-constants> */
+    start = VirtualAlloc (NULL, mapping_size, MEM_COMMIT,
+                          PAGE_EXECUTE_READWRITE);
+    if (start == NULL)
+      return 1;
+    start_rw = start;
+#else
+# ifdef HAVE_MAP_ANONYMOUS
+    int flags = MAP_ANONYMOUS | MAP_PRIVATE;
+    int fd = -1;
+# else
+    int flags = MAP_FILE | MAP_PRIVATE;
+    int fd = open ("/dev/zero", O_RDONLY | O_CLOEXEC, 0666);
+    if (fd < 0)
+      return 1;
+# endif
+    start = mmap (NULL, mapping_size, PROT_READ | PROT_WRITE | PROT_EXEC,
+                  flags, fd, 0);
+    if (start != (char *) (-1))
+      {
+        /* A platform that allows a mmap'ed memory region to be simultaneously
+           writable and executable.  */
+        start_rw = start;
+      }
+    else
+      {
+        /* A platform which requires the writable mapping and the executable
+           mapping to be separate: macOS, FreeBSD, NetBSD, OpenBSD.  */
+        fprintf (stderr, "simple mmap failed, using separate mappings\n");
+        char filename[100];
+        sprintf (filename,
+                 "%s/gnulib-test-cache-%u-%d-%ld",
+                 "/tmp", (unsigned int) getuid (), (int) getpid (), random ());
+# ifdef KEEP_TEMP_FILE_VISIBLE
+        if (register_temporary_file (filename) < 0)
+          return 2;
+# endif
+        fd = open (filename, O_CREAT | O_RDWR | O_TRUNC, 0700);
+        if (fd < 0)
+          return 3;
+# ifndef KEEP_TEMP_FILE_VISIBLE
+        /* Remove the file from the file system as soon as possible, to make
+           sure there is no leftover after this process terminates or crashes.
+           On macOS 11.2, this does not work: It would make the mmap call below,
+           with arguments PROT_READ|PROT_EXEC and MAP_SHARED, fail. */
+        unlink (filename);
+# endif
+        if (ftruncate (fd, mapping_size) < 0)
+          return 4;
+        start = mmap (NULL, mapping_size, PROT_READ | PROT_EXEC, MAP_SHARED,
+                      fd, 0);
+        start_rw = mmap (NULL, mapping_size, PROT_READ | PROT_WRITE, MAP_SHARED,
+                         fd, 0);
+        if (start == (char *) (-1) || start_rw == (char *) (-1))
+          return 5;
+      }
+#endif
+    end = start + mapping_size;
+  }
+
+  int (*f) (void) = COPY_FUNCPTR (return1);
+  SET_CODE (f, start);
+
+  memcpy (start_rw, code_of_return1, size_of_return1);
+  SET_IS (f, is_of_return1);
+  clear_cache (start, end);
+  ASSERT (f () == 1);
+
+  memcpy (start_rw, code_of_return2, size_of_return2);
+  SET_IS (f, is_of_return2);
+  clear_cache (start, end);
+  ASSERT (f () == 2);
+
+  return test_exit_status;
+}

@@ -1,0 +1,28 @@
+Description:
+A <pty.h> for systems that lacks it.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'pty-h' instead.
+
+Files:
+
+Depends-on:
+pty-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<pty.h>
+
+Link:
+$(PTY_LIB)
+
+License:
+LGPLv2+
+
+Maintainer:

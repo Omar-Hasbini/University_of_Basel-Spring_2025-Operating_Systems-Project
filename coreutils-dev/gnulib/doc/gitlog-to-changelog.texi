@@ -1,0 +1,106 @@
+@node gitlog-to-changelog
+@section gitlog-to-changelog
+
+@c Copyright (C) 2024--2025 Free Software Foundation, Inc.
+
+@c Permission is granted to copy, distribute and/or modify this document
+@c under the terms of the GNU Free Documentation License, Version 1.3 or
+@c any later version published by the Free Software Foundation; with no
+@c Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+@c copy of the license is at <https://www.gnu.org/licenses/fdl-1.3.en.html>.
+
+@cindex gitlog
+@cindex changelog
+@mindex gitlog-to-changelog
+
+Gnulib has a module @code{gitlog-to-changelog} to parse @code{git log}
+output and generate @file{ChangeLog} files; see
+@ifinfo
+@ref{Change Logs,,,standards}.
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/prep/standards/html_node/Change-Logs.html}.
+@end ifnotinfo
+
+You can use it by extending the @code{dist-hook} rule in the
+top-level @file{Makefile.am} like this:
+
+@example
+dist-hook: gen-ChangeLog
+.PHONY: gen-ChangeLog
+gen-ChangeLog:
+        $(AM_V_GEN)if test -e $(srcdir)/.git; then             \
+          LC_ALL=en_US.UTF-8 TZ=UTC0                           \
+            $(top_srcdir)/build-aux/gitlog-to-changelog        \
+              --srcdir=$(srcdir) > $(distdir)/ChangeLog        \
+          || exit 1;                                           \
+        fi
+@end example
+
+See @code{gitlog-to-changelog --help} for complete documentation.
+
+The @code{LC_ALL=en_US.UTF-8 TZ=UTC0} line in this recipe assumes that
+you want to generate reproducible @file{ChangeLog} files that do not
+depend on the developer's locale and time zone.  Omit this line if you
+prefer @file{ChangeLog} files that depend on these developer settings.
+
+If you wish to output the @file{ChangeLog} with dates respecting the
+time zone each individual commit was made in you can use the
+@option{--commit-timezone} option.  For example:
+
+@example
+dist-hook: gen-ChangeLog
+.PHONY: gen-ChangeLog
+gen-ChangeLog:
+        $(AM_V_GEN)if test -e $(srcdir)/.git; then             \
+          $(top_srcdir)/build-aux/gitlog-to-changelog          \
+              --srcdir=$(srcdir) --commit-timezone             \
+              > $(distdir)/ChangeLog                           \
+          || exit 1;                                           \
+        fi
+@end example
+
+The use of @option{--commit-timezone} means that @file{ChangeLog} dates
+correctly represent when a committer pushed a change according to their
+time zone.  However, as a consequence @file{ChangeLog} dates will no
+longer be monotonically increasing, if the developers are spread across
+different time zones.
+For example, the following three commits were made in a short period of
+time across two different time zones.
+This behavior may be undesired.
+
+@example
+2024-06-19  Bruno Haible  <bruno@@clisp.org>
+
+	...
+
+2024-06-18  Collin Funk  <collin.funk1@@gmail.com>
+
+	...
+
+2024-06-19  Bruno Haible  <bruno@@clisp.org>
+
+	...
+@end example
+
+If you wish to limit the @file{ChangeLog} entries (perhaps for size
+issues) to contain only entries since a particular git tag, you can
+use a @code{gen-ChangeLog} rule like the following:
+
+@example
+gen_start_ver = 8.31
+gen-ChangeLog:
+        $(AM_V_GEN)if test -e $(srcdir)/.git; then                 \
+          log_fix='$(srcdir)/build-aux/git-log-fix';               \
+          test -e "$$log_fix"                                      \
+            && amend_git_log=--amend=$$log_fix                     \
+            || amend_git_log=;                                     \
+          @{ LC_ALL=en_US.UTF-8 TZ=UTC0                             \
+              $(top_srcdir)/build-aux/gitlog-to-changelog          \
+                --srcdir=$(srcdir)                                 \
+                "$$amend_git_log" -- 'v$(gen_start_ver)~..' &&     \
+            printf '\n\nSee the source repo for older entries.\n'; \
+          @} > $(distdir)/ChangeLog                                 \
+          || exit 1;                                               \
+        fi
+@end example

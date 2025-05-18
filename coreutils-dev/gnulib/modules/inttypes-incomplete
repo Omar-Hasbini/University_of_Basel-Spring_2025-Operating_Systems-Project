@@ -1,0 +1,25 @@
+Description:
+An <inttypes.h> that conforms to C99 except for PRI* and SCN* macros.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'inttypes-h-incomplete' instead.
+
+Files:
+
+Depends-on:
+inttypes-h-incomplete
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<inttypes.h>
+
+License:
+LGPLv2+
+
+Maintainer:

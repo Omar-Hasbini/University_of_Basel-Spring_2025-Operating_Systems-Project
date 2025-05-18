@@ -1,0 +1,6 @@
+^COPYING$
+^bootstrap$
+^doc/fdl\.texi$
+^man/help2man$
+^src/longlong\.h$
+^tests/init\.sh$

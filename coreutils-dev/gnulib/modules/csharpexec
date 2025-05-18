@@ -1,0 +1,53 @@
+Description:
+Execute a C# program.
+
+Files:
+lib/csharpexec.h
+lib/csharpexec.c
+lib/classpath.h
+lib/classpath.c
+
+Depends-on:
+bool
+stat
+error
+dirname
+xconcat-filename
+canonicalize
+cygpath
+execute
+spawn-pipe
+wait-process
+xsetenv
+scandir
+alphasort
+sh-quote
+xalloc
+xmalloca
+copy-file
+clean-temp-simple
+clean-temp
+gettext-h
+gnulib-i18n
+csharpexec-script
+
+configure.ac:
+
+Makefile.am:
+DEFS += -DEXEEXT=\"@EXEEXT@\"
+lib_SOURCES += csharpexec.h csharpexec.c
+
+Include:
+"csharpexec.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+$(LIBTHREAD)
+
+License:
+GPL
+
+Maintainer:
+all

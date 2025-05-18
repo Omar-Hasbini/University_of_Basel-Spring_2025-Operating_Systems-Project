@@ -1,0 +1,29 @@
+Description:
+Test whether a Unicode character is "emoji component".
+
+Files:
+lib/unictype/pr_emoji_component.c
+lib/unictype/pr_emoji_component.h
+lib/unictype/bitmap.h
+
+Depends-on:
+unictype/base
+
+configure.ac:
+AC_REQUIRE([AC_C_INLINE])
+gl_UNICTYPE_H_REQUIRE_DEFAULTS
+gl_LIBUNISTRING_MODULE_WITH_VARIABLE([0.9.11], [unictype/property-emoji-component])
+
+Makefile.am:
+if LIBUNISTRING_COMPILE_UNICTYPE_PROPERTY_EMOJI_COMPONENT
+lib_SOURCES += unictype/pr_emoji_component.c
+endif
+
+Include:
+"unictype.h"
+
+License:
+LGPLv3+ or GPLv2+
+
+Maintainer:
+all

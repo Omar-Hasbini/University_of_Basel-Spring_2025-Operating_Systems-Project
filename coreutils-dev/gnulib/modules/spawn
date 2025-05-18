@@ -1,0 +1,25 @@
+Description:
+A POSIX compliant <spawn.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'spawn-h' instead.
+
+Files:
+
+Depends-on:
+spawn-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<spawn.h>
+
+License:
+LGPLv2+
+
+Maintainer:

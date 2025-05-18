@@ -1,0 +1,30 @@
+@node strtoimax
+@subsection @code{strtoimax}
+@findex strtoimax
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/strtoimax.html}
+
+Gnulib module: strtoimax
+@mindex strtoimax
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+OpenBSD 3.8, Minix 3.1.8, Solaris 9, MSVC 9.
+@item
+This function fails on valid input strings on some platforms:
+AIX 5.1.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is only defined as a macro on some platforms:
+HP-UX 11.11.
+@item
+If no conversion could be performed, this function sets @code{errno}
+to @code{EINVAL} on some platforms.  Portable programs should check
+for no conversion by comparing @code{str} to @code{*endptr}, not by
+inspecting @code{errno}.
+@end itemize

@@ -1,0 +1,25 @@
+Description:
+compare inodes
+
+Files:
+lib/same-inode.c
+lib/same-inode.h
+
+Depends-on:
+extern-inline
+bool
+sys_stat-h
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += same-inode.h same-inode.c
+
+Include:
+"same-inode.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

@@ -1,0 +1,31 @@
+@node remainderl
+@subsection @code{remainderl}
+@findex remainderl
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/remainderl.html}
+
+Gnulib module: remainderl or remainderl-ieee
+@mindex remainderl
+@mindex remainderl-ieee
+
+Portability problems fixed by either Gnulib module @code{remainderl} or @code{remainderl-ieee}:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 6.0, NetBSD 9.3, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 9, Cygwin 1.7.x, MSVC 9, Android 4.4.
+@item
+This function returns completely wrong values on some platforms:
+OpenBSD 5.1/SPARC.
+@item
+This function produces results which are accurate to only 16 digits on some
+platforms:
+musl libc 1.2.2/arm64, musl libc 1.2.2/s390x, NetBSD 10.0.
+@end itemize
+
+Portability problems fixed by Gnulib module @code{remainderl-ieee}:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

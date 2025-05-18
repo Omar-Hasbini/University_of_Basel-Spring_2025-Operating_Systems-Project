@@ -1,0 +1,27 @@
+Description:
+Test whether /proc/uptime might exist.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated because the "uptime" that it helps finding does
+not include VM saved/sleep time. Use the module 'boot-time' instead.
+
+Files:
+m4/uptime.m4
+
+Depends-on:
+
+configure.ac:
+gl_SYS_PROC_UPTIME
+
+Makefile.am:
+
+Include:
+
+License:
+unlimited
+
+Maintainer:
+Jim Meyering

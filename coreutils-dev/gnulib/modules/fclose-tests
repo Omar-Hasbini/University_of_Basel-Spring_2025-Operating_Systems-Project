@@ -1,0 +1,12 @@
+Files:
+tests/test-fclose.c
+tests/macros.h
+
+Depends-on:
+fdopen
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-fclose
+check_PROGRAMS += test-fclose

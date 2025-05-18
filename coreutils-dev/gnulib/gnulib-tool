@@ -1,0 +1,326 @@
+#! /bin/sh
+#
+# Copyright (C) 2002-2025 Free Software Foundation, Inc.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+# This program dispatches among
+#   - the shell implementation and
+#   - the Python implementation
+# of gnulib-tool, according to the environment variable GNULIB_TOOL_IMPL.
+
+# The environment variable GNULIB_TOOL_IMPL can have four possible values:
+#   - GNULIB_TOOL_IMPL=sh      chooses the shell implementation.
+#   - GNULIB_TOOL_IMPL=py      chooses the Python implementation.
+#   - GNULIB_TOOL_IMPL=        chooses the default (the Python implementation
+#                              if a suitable Python version is found, the shell
+#                              implementation otherwise).
+#   - GNULIB_TOOL_IMPL=sh+py   runs both implementations and compares the
+#                              results.
+
+progname=$0
+
+# func_exit STATUS
+# exits with a given status.
+# This function needs to be used, rather than 'exit', when a 'trap' handler is
+# in effect that refers to $?.
+func_exit ()
+{
+  (exit $1); exit $1
+}
+
+# func_fatal_error message
+# outputs to stderr a fatal error message, and terminates the program.
+# Input:
+# - progname                 name of this program
+func_fatal_error ()
+{
+  echo "$progname: *** $1" 1>&2
+  echo "$progname: *** Stop." 1>&2
+  func_exit 1
+}
+
+# func_readlink SYMLINK
+# outputs the target of the given symlink.
+if (type readlink) > /dev/null 2>&1; then
+  func_readlink ()
+  {
+    # Use the readlink program from GNU coreutils.
+    readlink "$1"
+  }
+else
+  func_readlink ()
+  {
+    # Use two sed invocations. A single sed -n -e 's,^.* -> \(.*\)$,\1,p'
+    # would do the wrong thing if the link target contains " -> ".
+    LC_ALL=C ls -l "$1" | sed -e 's, -> ,#%%#,' | sed -n -e 's,^.*#%%#\(.*\)$,\1,p'
+  }
+fi
+
+# func_gnulib_dir
+# locates the directory where the gnulib repository lives
+# Input:
+# - progname                 name of this program
+# Sets variables
+# - self_abspathname         absolute pathname of gnulib-tool
+# - gnulib_dir               absolute pathname of gnulib repository
+func_gnulib_dir ()
+{
+  case "$progname" in
+    /* | ?:*) self_abspathname="$progname" ;;
+    */*) self_abspathname=`pwd`/"$progname" ;;
+    *)
+      # Look in $PATH.
+      # Iterate through the elements of $PATH.
+      # We use IFS=: instead of
+      #   for d in `echo ":$PATH:" | sed -e 's/:::*/:.:/g' | sed -e 's/:/ /g'`
+      # because the latter does not work when some PATH element contains spaces.
+      # We use a canonicalized $pathx instead of $PATH, because empty PATH
+      # elements are by definition equivalent to '.', however field splitting
+      # according to IFS=: loses empty fields in many shells:
+      #   - /bin/sh on OSF/1 and Solaris loses all empty fields (at the
+      #     beginning, at the end, and in the middle),
+      #   - /bin/sh on IRIX and /bin/ksh on IRIX and OSF/1 lose empty fields
+      #     at the beginning and at the end,
+      #   - GNU bash, /bin/sh on AIX and HP-UX, and /bin/ksh on AIX, HP-UX,
+      #     Solaris lose empty fields at the end.
+      # The 'case' statement is an optimization, to avoid evaluating the
+      # explicit canonicalization command when $PATH contains no empty fields.
+      self_abspathname=
+      if test "$PATH_SEPARATOR" = ";"; then
+        # On Windows, programs are searched in "." before $PATH.
+        pathx=".;$PATH"
+      else
+        # On Unix, we have to convert empty PATH elements to ".".
+        pathx="$PATH"
+        case :$PATH: in
+          *::*)
+            pathx=`echo ":$PATH:" | sed -e 's/:::*/:.:/g' -e 's/^://' -e 's/:\$//'`
+            ;;
+        esac
+      fi
+      saved_IFS="$IFS"
+      IFS="$PATH_SEPARATOR"
+      for d in $pathx; do
+        IFS="$saved_IFS"
+        test -z "$d" && d=.
+        if test -x "$d/$progname" && test ! -d "$d/$progname"; then
+          self_abspathname="$d/$progname"
+          break
+        fi
+      done
+      IFS="$saved_IFS"
+      if test -z "$self_abspathname"; then
+        func_fatal_error "could not locate the gnulib-tool program - how did you invoke it?"
+      fi
+      ;;
+  esac
+  while test -h "$self_abspathname"; do
+    # Resolve symbolic link.
+    linkval=`func_readlink "$self_abspathname"`
+    test -n "$linkval" || break
+    case "$linkval" in
+      /* | ?:* ) self_abspathname="$linkval" ;;
+      * ) self_abspathname=`echo "$self_abspathname" | sed -e 's,/[^/]*$,,'`/"$linkval" ;;
+    esac
+  done
+  gnulib_dir=`echo "$self_abspathname" | sed -e 's,/[^/]*$,,'`
+}
+
+# If $progname contains '/' and is not a symlink, it suffices for $prog to be
+# the same as $progname with except with basename 'gnulib-tool’; this
+# speeds startup and might avoid problems in oddball development environments.
+# Otherwise, $prog is the absolute name of the gnulib-tool executable.
+if case $progname in
+     */*) test -h "$0" ;;
+   esac
+then
+  func_gnulib_dir
+  prog=$gnulib_dir/gnulib-tool
+else
+  prog=${progname%/*}/gnulib-tool
+fi
+
+case "$GNULIB_TOOL_IMPL" in
+  '')
+    # Use the Python implementation if a suitable Python version is found
+    # in $PATH. This is the same Python version test as in gnulib-tool.py.
+    if (python3 -c 'import sys; sys.exit(not sys.version_info >= (3,7))') 2>/dev/null; then
+      exec "$prog.py" "$@"
+    else
+      echo "gnulib-tool: warning: python3 not found or too old, using the slow shell-based implementation" 1>&2
+      exec "$prog.sh" "$@"
+    fi
+    ;;
+  sh)
+    exec "$prog.sh" "$@" ;;
+  py)
+    exec "$prog.py" "$@" ;;
+  sh+py)
+    case " $* " in
+      *" --import"* | *" --add-import"* | *" --remove-import"* | *" --update"* | *" --copy-file"*)
+        # A gnulib-tool invocation that produces files in the current directory.
+        # Create a temporary directory in the parent directory.
+        tmpdir=`cd .. && pwd`
+        {
+          # Use the mktemp program if available. If not available, hide the error
+          # message.
+          tmp=`(umask 077 && mktemp -d "$tmpdir/glpyXXXXXX") 2>/dev/null` &&
+          test -n "$tmp" && test -d "$tmp"
+        } ||
+        {
+          # Use a simple mkdir command. It is guaranteed to fail if the directory
+          # already exists.
+          tmp=$tmpdir/glpy$$
+          (umask 077 && mkdir "$tmp")
+        } ||
+        {
+          echo "$progname: cannot create a temporary directory in $tmpdir" >&2
+          func_exit 1
+        }
+        # Copy the current directory into the the temporary directory.
+        { tar cf - . | (cd "$tmp" && tar xf -); } ||
+        {
+          echo "$progname: failed to clone the current directory" >&2
+          func_exit 1
+        }
+        # Execute gnulib-tool.py in the clone directory.
+        case $prog in
+          /*) absprog=$prog ;;
+          *)  absprog=$PWD/prog ;;
+        esac
+        (cd "$tmp" && "$absprog.py" "$@" >"$tmp-py-out" 2>"$tmp-py-err")
+        pyrc=$?
+        # Execute gnulib-tool.sh in the current directory.
+        "$prog.sh" "$@" >"$tmp-sh-out" 2>"$tmp-sh-err"
+        shrc=$?
+        if test $shrc != 0; then
+          if test $pyrc = 0; then
+            func_fatal_error "gnulib-tool.sh failed but gnulib-tool.py succeeded! Inspect $tmp-sh-err and $tmp-py-err."
+          else
+            cat "$tmp-sh-out"
+            cat "$tmp-sh-err" >&2
+            rm -rf "$tmp" "$tmp-sh-out" "$tmp-sh-err" "$tmp-py-out" "$tmp-py-err"
+            exit $shrc
+          fi
+        fi
+        if test $pyrc != 0; then
+          func_fatal_error "gnulib-tool.sh succeeded but gnulib-tool.py failed! Inspect $tmp/ and $tmp-py-err."
+        fi
+        # Compare the two results on the file system.
+        # GNU diffutils 3.3 or newer support option --no-dereference. This
+        # option avoids errors on dangling links.
+        if LC_ALL=C diff --help 2>/dev/null | grep no-dereference >/dev/null; then
+          diff_options='--no-dereference'
+        else
+          diff_options=
+        fi
+        diff -r $diff_options --exclude=__pycache__ --exclude=autom4te.cache -q . "$tmp" >/dev/null ||
+          func_fatal_error "gnulib-tool.py produced different files than gnulib-tool.sh! Compare `pwd` and $tmp."
+        # Compare the two outputs.
+        diff -q "$tmp-sh-out" "$tmp-py-out" >/dev/null ||
+          func_fatal_error "gnulib-tool.py produced different output than gnulib-tool.sh! Compare $tmp-sh-out and $tmp-py-out."
+        # Same results.
+        cat "$tmp-sh-out"
+        cat "$tmp-sh-err" >&2
+        rm -rf "$tmp" "$tmp-sh-out" "$tmp-sh-err" "$tmp-py-out" "$tmp-py-err"
+        exit 0
+        ;;
+      *" --create-testdir"* | *" --create-megatestdir"*)
+        # A gnulib-tool invocation that produces a new directory with files.
+        # Extract the --dir value.
+        dir=`echo " $* " | sed -n -e 's/^.* --dir=//p' | sed -e 's/ .*//'`
+        if test -z "$dir"; then
+          dir=`echo " $* " | sed -n -e 's/^.* --dir  *//p' | sed -e 's/ .*//'`
+          if test -z "$dir"; then
+            func_fatal_error "could not extract --dir value"
+          fi
+        fi
+        # Find another directory name.
+        tmp="$dir-glpy$$"
+        # Execute gnulib-tool.py, creating a different directory.
+        "$prog.py" "$@" --dir="$tmp" >"$tmp-py-out" 2>"$tmp-py-err"
+        pyrc=$?
+        # Execute gnulib-tool.sh, creating the intended directory.
+        "$prog.sh" "$@" >"$tmp-sh-out" 2>"$tmp-sh-err"
+        shrc=$?
+        if test $shrc != 0; then
+          if test $pyrc = 0; then
+            func_fatal_error "gnulib-tool.sh failed but gnulib-tool.py succeeded! Inspect $tmp-sh-err and $tmp-py-err."
+          else
+            cat "$tmp-sh-out"
+            cat "$tmp-sh-err" >&2
+            rm -rf "$tmp" "$tmp-sh-out" "$tmp-sh-err" "$tmp-py-out" "$tmp-py-err"
+            exit $shrc
+          fi
+        fi
+        if test $pyrc != 0; then
+          func_fatal_error "gnulib-tool.sh succeeded but gnulib-tool.py failed! Inspect $tmp/ and $tmp-py-err."
+        fi
+        # Compare the two results on the file system.
+        # GNU diffutils 3.3 or newer support option --no-dereference. This
+        # option avoids errors on dangling links.
+        if LC_ALL=C diff --help 2>/dev/null | grep no-dereference >/dev/null; then
+          diff_options='--no-dereference'
+        else
+          diff_options=
+        fi
+        diff -r $diff_options -q "$dir" "$tmp" >/dev/null ||
+          func_fatal_error "gnulib-tool.py produced different files than gnulib-tool.sh! Compare $dir and $tmp."
+        # Compare the two outputs.
+        diff -q "$tmp-sh-out" "$tmp-py-out" >/dev/null ||
+          func_fatal_error "gnulib-tool.py produced different output than gnulib-tool.sh! Compare $tmp-sh-out and $tmp-py-out."
+        # Same results.
+        cat "$tmp-sh-out"
+        cat "$tmp-sh-err" >&2
+        rm -rf "$tmp" "$tmp-sh-out" "$tmp-sh-err" "$tmp-py-out" "$tmp-py-err"
+        exit 0
+        ;;
+      *)
+        # A gnulib-tool invocation that produces only output, no files.
+        tmp="glpy$$"
+        # Execute gnulib-tool.py.
+        "$prog.py" "$@" >"$tmp-py-out" 2>"$tmp-py-err"
+        pyrc=$?
+        # Execute gnulib-tool.sh.
+        "$prog.sh" "$@" >"$tmp-sh-out" 2>"$tmp-sh-err"
+        shrc=$?
+        if test $shrc != 0; then
+          if test $pyrc = 0; then
+            func_fatal_error "gnulib-tool.sh failed but gnulib-tool.py succeeded! Inspect $tmp-sh-err and $tmp-py-err."
+          else
+            cat "$tmp-sh-out"
+            cat "$tmp-sh-err" >&2
+            rm -rf "$tmp-sh-out" "$tmp-sh-err" "$tmp-py-out" "$tmp-py-err"
+            exit $shrc
+          fi
+        fi
+        if test $pyrc != 0; then
+          func_fatal_error "gnulib-tool.sh succeeded but gnulib-tool.py failed! Inspect $tmp-py-err."
+        fi
+        # Compare the two outputs.
+        diff -q "$tmp-sh-out" "$tmp-py-out" >/dev/null ||
+          func_fatal_error "gnulib-tool.py produced different output than gnulib-tool.sh! Compare $tmp-sh-out and $tmp-py-out."
+        # Same results.
+        cat "$tmp-sh-out"
+        cat "$tmp-sh-err" >&2
+        rm -rf "$tmp-sh-out" "$tmp-sh-err" "$tmp-py-out" "$tmp-py-err"
+        exit 0
+        ;;
+    esac
+    ;;
+  *)
+    func_fatal_error "invalid value of GNULIB_TOOL_IMPL: $GNULIB_TOOL_IMPL" ;;
+esac

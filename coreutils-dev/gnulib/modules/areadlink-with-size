@@ -1,0 +1,28 @@
+Description:
+Return the contents of a symbolic link, without size limitations.
+
+Files:
+lib/areadlink.h
+lib/areadlink-with-size.c
+
+Depends-on:
+free-posix
+limits-h
+readlink
+ssize_t
+stdint-h
+unistd-h
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += areadlink-with-size.c
+
+Include:
+"areadlink.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

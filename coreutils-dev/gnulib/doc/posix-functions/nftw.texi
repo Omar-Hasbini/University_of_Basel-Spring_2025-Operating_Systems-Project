@@ -1,0 +1,22 @@
+@node nftw
+@subsection @code{nftw}
+@findex nftw
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/nftw.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+On platforms where @code{off_t} is a 32-bit type, this function may not
+correctly report the size of files or block devices 2 GiB and larger.
+@xref{Large File Support}.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 5.2.1, NetBSD 3.0, Minix 3.1.8, mingw, MSVC 14, Android 4.1.
+@end itemize

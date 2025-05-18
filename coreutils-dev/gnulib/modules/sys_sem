@@ -1,0 +1,27 @@
+Description:
+<sys/sem.h> with extra checks.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_sem-h' instead.
+
+Files:
+
+Depends-on:
+sys_sem-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+#if HAVE_SYS_SEM_H
+<sys/sem.h>
+#endif
+
+License:
+LGPLv2+
+
+Maintainer:

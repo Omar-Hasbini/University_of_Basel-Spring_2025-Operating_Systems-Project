@@ -1,0 +1,33 @@
+Description:
+Return current locale's name, according to glibc naming conventions.
+
+Files:
+lib/localename.h
+lib/localename.c
+lib/struniq.h
+
+Depends-on:
+locale-h
+localename-unsafe
+flexmember
+lock
+bool
+thread-optim
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += localename.c
+
+Include:
+"localename.h"
+
+Link:
+@INTL_MACOSX_LIBS@
+$(LIBTHREAD)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

@@ -1,0 +1,26 @@
+@node pthread_mutex_trylock
+@subsection @code{pthread_mutex_trylock}
+@findex pthread_mutex_trylock
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/pthread_mutex_trylock.html}
+
+Gnulib module: pthread-mutex
+@mindex pthread-mutex
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, mingw, MSVC 14.
+But the provided replacement is just a dummy on some of these platforms:
+Minix 3.1.8.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function does not behave as required by POSIX for mutexes of type
+NORMAL and ERRORCHECK, by allowing RECURSIVE locking,
+in programs linked without @code{-lpthread} on some platforms:
+FreeBSD 14.0, NetBSD 10.0.
+@end itemize

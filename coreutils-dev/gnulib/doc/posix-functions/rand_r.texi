@@ -1,0 +1,23 @@
+@node rand_r
+@subsection @code{rand_r}
+@findex rand_r
+
+Removed in POSIX.1-2024.
+POSIX.1-2017 specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/rand_r.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, mingw, MSVC 14, Android 4.4.
+@item
+This function is removed in POSIX.1-2024.
+@mindex random_r
+Use the function @code{random_r} from Gnulib module @code{random_r} instead.
+@end itemize

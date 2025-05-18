@@ -1,0 +1,25 @@
+Description:
+Exit status codes for some BSD system programs.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sysexits-h' instead.
+
+Files:
+
+Depends-on:
+sysexits-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sysexits.h>
+
+License:
+LGPLv2+
+
+Maintainer:

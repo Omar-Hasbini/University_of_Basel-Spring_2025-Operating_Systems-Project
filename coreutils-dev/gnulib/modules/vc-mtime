@@ -1,0 +1,46 @@
+Description:
+Returns the version-control based modification time of a file.
+
+Files:
+lib/vc-mtime.h
+lib/vc-mtime.c
+
+Depends-on:
+time-h
+bool
+spawn-pipe
+wait-process
+execute
+safe-read
+error
+getline
+xstrtol
+stat-time
+windows-cygpath
+filename
+xalloc
+xgetcwd
+canonicalize-lgpl
+xvasprintf
+str_startswith
+map
+xmap
+hash-map
+hashkey-string
+getdelim
+gettext-h
+gnulib-i18n
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += vc-mtime.c
+
+Include:
+"vc-mtime.h"
+
+License:
+GPL
+
+Maintainer:
+Bruno Haible

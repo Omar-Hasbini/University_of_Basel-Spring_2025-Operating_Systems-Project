@@ -1,0 +1,44 @@
+@node netdb.h
+@section @file{netdb.h}
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/netdb.h.html}
+
+Gnulib module: netdb-h
+@mindex netdb-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This header file is missing on some platforms:
+mingw, MSVC 14.
+
+@item
+This header file is incomplete on some platforms:
+Cygwin 1.5.x, Haiku.
+
+@item
+This header file does not define @code{AI_ALL}, @code{AI_V4MAPPED}
+on some platforms:
+NetBSD 10.0.
+
+@item
+This header file does not define @code{AI_ADDRCONFIG} on some platforms:
+NetBSD 5.0.
+
+@item
+This header file does not define @code{AI_NUMERICHOST} on some platforms:
+HP-UX 11.11.
+
+@item
+This header file does not define @code{AI_NUMERICSERV} on some platforms:
+macOS 10.5, HP-UX 11.11, mingw.
+
+@item
+@c Defined in RFC 2553.
+This header file incorrectly defines @code{NI_MAXHOST} on some platforms:
+musl libc 1.2.4, OpenBSD 7.5.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

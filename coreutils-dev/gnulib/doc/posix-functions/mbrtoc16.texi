@@ -1,0 +1,64 @@
+@node mbrtoc16
+@subsection @code{mbrtoc16}
+@findex mbrtoc16
+
+ISO C23 specification:@* @url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf} section 7.30.1.3.
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/mbrtoc16.html}
+
+Gnulib module: mbrtoc16
+@mindex mbrtoc16
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on most non-glibc platforms:
+glibc 2.15, macOS 14, FreeBSD 6.4, NetBSD 10.0, OpenBSD 7.3, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.3, Cygwin 3.4.x, mingw, MSVC 9, Android 4.4.
+@item
+This function may crash when the first argument is NULL on some platforms:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=28898
+glibc 2.36.
+@item
+In the C or POSIX locales, this function can return @code{(size_t) -1}
+and set @code{errno} to @code{EILSEQ}:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=19932
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=29511
+glibc 2.36.
+@item
+This function returns 0 instead of @code{(size_t) -2} when the input
+is empty:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=16950
+glibc 2.19,
+@c https://issuetracker.google.com/issues/289419880
+Android 11.
+@item
+This function returns the total number of bytes that make up the multibyte
+character, not the number of bytes that were needed to complete the multibyte
+character, on some platforms:
+mingw.
+@item
+This function returns @code{(size_t) -3} instead of a byte count when it
+has stored a high surrogate, and returns a byte count instead of
+@code{(size_t) -3} when it has stored a low surrogate, on some platforms:
+@c https://issuetracker.google.com/issues/289419882
+Android.
+@item
+This function does not recognize multibyte sequences that @code{mbrtowc}
+recognizes on some platforms:
+@c https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=272293
+FreeBSD 13.2,
+Solaris 11.4, MSVC 14.
+@c For MSVC this is because it assumes that the input is always UTF-8 encoded.
+@c See https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/mbrtoc16-mbrtoc323
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+@c https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=272218
+After @code{mbrtoc16} returns a @code{char16_t} value, @code{mbsinit}
+cannot be used to determine whether the function is ready to return
+another @code{char16_t} value.  To do so, instead call @code{mbrtoc16}
+again, with an appropriately incremented @code{const char *} argument
+and an appropriately decremented @code{size_t} argument.
+@end itemize

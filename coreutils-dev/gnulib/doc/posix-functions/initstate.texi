@@ -1,0 +1,37 @@
+@node initstate
+@subsection @code{initstate}
+@findex initstate
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/initstate.html}
+
+Gnulib module: random
+@mindex random
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+mingw, MSVC 14, Android 4.4.
+@item
+This function is not declared on some platforms:
+Cygwin 1.5.25.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function crashes if the state buffer is unaligned on some platforms:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=30584
+glibc 2.36/sparc.
+@item
+The first parameter is @code{unsigned long} instead of @code{unsigned int} on
+some platforms:
+MidnightBSD 2.0.
+@item
+The third parameter is @code{long} instead of @code{size_t} on some platforms:
+MidnightBSD 2.0.
+@item
+This function makes out-of-bounds writes on some platforms:
+@c https://dev.haiku-os.org/ticket/18346
+Haiku.
+@end itemize

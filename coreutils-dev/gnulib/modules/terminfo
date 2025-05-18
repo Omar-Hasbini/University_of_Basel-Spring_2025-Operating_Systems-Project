@@ -1,0 +1,27 @@
+Description:
+Information about terminal capabilities.
+
+Files:
+m4/terminfo.m4
+m4/curses.m4
+lib/tparm.c
+lib/tputs.c
+
+Depends-on:
+havelib
+attribute
+c-ctype
+
+configure.ac:
+gl_TERMINFO
+
+Makefile.am:
+lib_LDFLAGS += $(LTLIBTERMINFO)
+
+Include:
+
+License:
+LGPL
+
+Maintainer:
+Bruno Haible

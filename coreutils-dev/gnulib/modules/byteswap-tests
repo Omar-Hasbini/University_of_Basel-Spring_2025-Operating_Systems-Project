@@ -1,0 +1,13 @@
+Files:
+tests/test-byteswap.c
+tests/macros.h
+
+Depends-on:
+stdint-h
+byteswap-c++-tests
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-byteswap
+check_PROGRAMS += test-byteswap

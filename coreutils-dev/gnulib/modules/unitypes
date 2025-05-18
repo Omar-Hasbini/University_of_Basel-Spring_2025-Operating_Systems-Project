@@ -1,0 +1,25 @@
+Description:
+Base types for Unicode string functions.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'unitypes-h' instead.
+
+Files:
+
+Depends-on:
+unitypes-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+"unitypes.h"
+
+License:
+LGPLv2+
+
+Maintainer:

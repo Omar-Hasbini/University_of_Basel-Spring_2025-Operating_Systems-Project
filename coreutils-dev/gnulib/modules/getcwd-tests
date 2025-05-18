@@ -1,0 +1,21 @@
+Files:
+tests/test-getcwd.sh
+tests/test-getcwd.c
+tests/qemu.h
+tests/macros.h
+
+Depends-on:
+errno-h
+fcntl-h
+getcwd-lgpl
+pathmax
+bool
+sys_stat-h
+test-framework-sh
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-getcwd.sh
+check_PROGRAMS += test-getcwd
+test_getcwd_LDADD = $(LDADD) @LIBINTL@

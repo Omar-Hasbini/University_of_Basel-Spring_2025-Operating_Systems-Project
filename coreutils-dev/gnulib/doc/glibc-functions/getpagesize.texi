@@ -1,0 +1,51 @@
+@node getpagesize
+@subsection @code{getpagesize}
+@findex getpagesize
+
+LSB specification:@* @url{https://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic/baselib-getpagesize.html}
+
+Documentation:
+@itemize
+@item
+@ifinfo
+@ref{Query Memory Parameters,,How to get information about the memory subsystem?,libc},
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Query-Memory-Parameters.html},
+@end ifnotinfo
+@item
+@uref{https://www.kernel.org/doc/man-pages/online/pages/man2/getpagesize.2.html,,man getpagesize}.
+@end itemize
+
+Gnulib module: getpagesize
+@mindex getpagesize
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+MSVC 14, Android 4.4.
+@item
+This function is not declared on some platforms:
+HP-UX 11 with compiler option @code{-D_XOPEN_SOURCE=600}.
+@item
+This function is broken on some platforms:
+mingw.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+
+@itemize
+@item
+The function has never been in POSIX and was removed from the Single
+UNIX Specification in SUSv3 (2001).
+Although portable programs are supposed to use @code{sysconf (_SC_PAGESIZE)}
+instead, in practice @code{getpagesize} can be a little faster.
+
+@item
+On typical platforms this function's API limits page sizes to at most 1 GiB,
+even though @code{sysconf (_SC_PAGESIZE)} does not have this limitation.
+However, this has not been a practical problem yet,
+and so many programs use @code{getpagesize} that it's unlikely that
+new platforms would introduce larger page sizes any time soon.
+@end itemize

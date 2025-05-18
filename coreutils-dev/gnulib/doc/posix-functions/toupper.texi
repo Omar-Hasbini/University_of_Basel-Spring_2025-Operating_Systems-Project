@@ -1,0 +1,52 @@
+@node toupper
+@subsection @code{toupper}
+@findex toupper
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/toupper.html}
+
+Gnulib module: ctype
+@mindex ctype
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function cannot be called from plain inline or extern inline functions
+on some platforms:
+macOS 10.8.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize
+
+Note: This function's behaviour depends on the locale, but does not support
+the multibyte characters that occur in strings in locales with
+@code{MB_CUR_MAX > 1} (this includes all the common UTF-8 locales).
+There are four alternative APIs:
+
+@table @code
+@item c_toupper
+@mindex c-ctype
+This function operates in a locale independent way and returns a different
+value than the argument only for lowercase ASCII characters.  It is provided
+by the Gnulib module @samp{c-ctype}.
+
+@item towupper
+@mindex wctype
+This function operates in a locale dependent way, on wide characters.  In
+order to use it, you first have to convert from multibyte to wide characters,
+using the @code{mbrtowc} function.  It is provided by the Gnulib module
+@samp{wctype}.
+
+@item c32toupper
+@mindex c32toupper
+This function operates in a locale dependent way, on 32-bit wide characters.
+In order to use it, you first have to convert from multibyte to 32-bit wide
+characters, using the @code{mbrtoc32} function.  It is provided by the
+Gnulib module @samp{c32toupper}.
+
+@item uc_toupper
+@mindex unicase/toupper
+This function operates in a locale independent way, on Unicode characters.
+It is provided by the Gnulib module @samp{unicase/toupper}.
+@end table

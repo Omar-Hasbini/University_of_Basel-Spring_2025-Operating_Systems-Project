@@ -1,0 +1,22 @@
+Files:
+tests/test-pthread-rwlock.c
+tests/atomic-int-posix.h
+tests/macros.h
+m4/semaphore.m4
+
+Depends-on:
+pthread-thread
+pthread-mutex
+sched_yield
+random
+pthread-rwlock-extra-tests
+
+configure.ac:
+AC_CHECK_HEADERS_ONCE([semaphore.h])
+AC_CHECK_DECLS_ONCE([alarm])
+AC_REQUIRE([gl_SEMAPHORE])
+
+Makefile.am:
+TESTS += test-pthread-rwlock
+check_PROGRAMS += test-pthread-rwlock
+test_pthread_rwlock_LDADD = $(LDADD) @LIBPMULTITHREAD@ @SCHED_YIELD_LIB@ @LIB_SEMAPHORE@

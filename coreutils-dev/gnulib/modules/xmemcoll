@@ -1,0 +1,35 @@
+Description:
+Locale dependent memory area comparison, with error checking.
+
+Files:
+lib/xmemcoll.h
+lib/xmemcoll.c
+
+Depends-on:
+memcoll
+gettext-h
+gnulib-i18n
+error
+quotearg
+exitfail
+
+configure.ac:
+AC_REQUIRE([AC_C_RESTRICT])
+
+Makefile.am:
+lib_SOURCES += xmemcoll.h xmemcoll.c
+
+Include:
+"xmemcoll.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering
+

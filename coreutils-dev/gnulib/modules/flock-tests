@@ -1,0 +1,20 @@
+Files:
+tests/test-flock.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+unistd-h
+test-xfail
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-flock
+check_PROGRAMS += test-flock
+
+if GL_COND_OBJ_FLOCK
+if !OS_IS_NATIVE_WINDOWS
+XFAIL_TESTS += test-flock
+endif
+endif

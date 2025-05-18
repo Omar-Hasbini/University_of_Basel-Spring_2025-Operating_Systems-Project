@@ -1,0 +1,25 @@
+Description:
+An <stdarg.h> that conforms to C99.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stdarg-h' instead.
+
+Files:
+
+Depends-on:
+stdarg-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdarg.h>
+
+License:
+LGPLv2+
+
+Maintainer:

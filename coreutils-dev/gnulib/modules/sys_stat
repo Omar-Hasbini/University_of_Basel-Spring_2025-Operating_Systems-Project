@@ -1,0 +1,25 @@
+Description:
+A <sys/stat.h> for systems with missing declarations.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_stat-h' instead.
+
+Files:
+
+Depends-on:
+sys_stat-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/stat.h>
+
+License:
+LGPLv2+
+
+Maintainer:

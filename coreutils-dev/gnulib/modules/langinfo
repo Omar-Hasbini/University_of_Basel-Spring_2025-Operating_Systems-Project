@@ -1,0 +1,25 @@
+Description:
+A GNU-like <langinfo.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'langinfo-h' instead.
+
+Files:
+
+Depends-on:
+langinfo-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<langinfo.h>
+
+License:
+LGPLv2+
+
+Maintainer:

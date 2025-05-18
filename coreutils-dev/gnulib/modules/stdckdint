@@ -1,0 +1,25 @@
+Description:
+An <stdckdint.h> that is like C23.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stdckdint-h' instead.
+
+Files:
+
+Depends-on:
+stdckdint-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdckdint.h>
+
+License:
+LGPLv2+
+
+Maintainer:

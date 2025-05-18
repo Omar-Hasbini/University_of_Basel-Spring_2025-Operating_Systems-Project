@@ -1,0 +1,27 @@
+Description:
+A substitute <monetary.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'monetary-h' instead.
+
+Files:
+
+Depends-on:
+monetary-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+#if HAVE_MONETARY_H
+<monetary.h>
+#endif
+
+License:
+LGPLv2+
+
+Maintainer:

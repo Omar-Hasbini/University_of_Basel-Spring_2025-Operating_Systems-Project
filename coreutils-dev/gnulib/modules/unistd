@@ -1,0 +1,25 @@
+Description:
+A GNU-like <unistd.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'unistd-h' instead.
+
+Files:
+
+Depends-on:
+unistd-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<unistd.h>
+
+License:
+LGPLv2+
+
+Maintainer:

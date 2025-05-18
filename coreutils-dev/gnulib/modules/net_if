@@ -1,0 +1,25 @@
+Description:
+A <net/if.h> for systems lacking it.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'net_if-h' instead.
+
+Files:
+
+Depends-on:
+net_if-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<net/if.h>
+
+License:
+LGPLv2+
+
+Maintainer:

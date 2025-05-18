@@ -1,0 +1,25 @@
+Description:
+GNU Multiple Precision Arithmetic library,
+or its mini-gmp + mini-mpq substitute
+
+Files:
+
+Depends-on:
+libgmp-mpz
+libgmp-mpq
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<gmp.h>
+
+Link:
+$(LTLIBGMP) when linking with libtool, $(LIBGMP) otherwise
+
+License:
+LGPLv3+ or GPLv2+
+
+Maintainer:
+all

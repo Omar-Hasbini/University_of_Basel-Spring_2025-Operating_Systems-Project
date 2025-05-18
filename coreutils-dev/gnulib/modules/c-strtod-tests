@@ -1,0 +1,36 @@
+Files:
+tests/test-c-strtod.c
+tests/test-strtod.h
+tests/test-c-strtod1.sh
+tests/test-c-strtod1.c
+tests/test-c-strtod-mt.sh
+tests/test-c-strtod-mt.c
+tests/minus-zero.h
+tests/macros.h
+m4/locale-fr.m4
+m4/codeset.m4
+
+Depends-on:
+float-h
+isnand-nolibm
+signbit
+setlocale
+thread
+nanosleep
+
+configure.ac:
+gt_LOCALE_FR
+gt_LOCALE_FR_UTF8
+
+Makefile.am:
+TESTS += test-c-strtod
+check_PROGRAMS += test-c-strtod
+
+TESTS += test-c-strtod1.sh test-c-strtod-mt.sh
+TESTS_ENVIRONMENT += \
+  LOCALE_FR='@LOCALE_FR@' \
+  LOCALE_FR_UTF8='@LOCALE_FR_UTF8@' \
+  LC_NUMERIC_IMPLEMENTED='@LC_NUMERIC_IMPLEMENTED@'
+check_PROGRAMS += test-c-strtod1 test-c-strtod-mt
+test_c_strtod1_LDADD = $(LDADD) $(SETLOCALE_LIB)
+test_c_strtod_mt_LDADD = $(LDADD) $(SETLOCALE_LIB) $(LIBMULTITHREAD) $(NANOSLEEP_LIB)

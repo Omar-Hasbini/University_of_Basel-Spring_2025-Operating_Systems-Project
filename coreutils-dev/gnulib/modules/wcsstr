@@ -1,0 +1,32 @@
+Description:
+wcsstr() function: efficiently locate a substring in a wide string.
+
+Files:
+lib/wcsstr.c
+lib/wcsstr-impl.h
+lib/wcs-two-way.h
+m4/wcsstr.m4
+
+Depends-on:
+wcsstr-simple
+builtin-expect  [test $HAVE_WCSSTR = 0 || test $REPLACE_WCSSTR = 1]
+wcschr          [test $HAVE_WCSSTR = 0 || test $REPLACE_WCSSTR = 1]
+wmemchr         [test $HAVE_WCSSTR = 0 || test $REPLACE_WCSSTR = 1]
+wmemcmp         [test $HAVE_WCSSTR = 0 || test $REPLACE_WCSSTR = 1]
+
+configure.ac:
+gl_FUNC_WCSSTR
+if test $HAVE_WCSSTR = 0 || test $REPLACE_WCSSTR = 1; then
+  AC_LIBOBJ([wcsstr])
+fi
+
+Makefile.am:
+
+Include:
+<wchar.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

@@ -1,0 +1,31 @@
+@node chmod
+@subsection @code{chmod}
+@findex chmod
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/chmod.html}
+
+Gnulib module: chmod
+@mindex chmod
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function does not fail when the file name argument ends in a slash
+and (without the slash) names a non-directory, on some platforms:
+AIX 7.2.
+@item
+This function fails with a wrong error code (EINVAL instead of ENOTDIR)
+when the file name argument ends in a slash and (without the slash) names
+a non-directory, on some platforms:
+mingw, MSVC.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function sometimes fails with @code{EACCES} when the failure is
+due to lack of appropriate privileges (@code{EPERM}), not to
+search permission denied on the file name prefix (@code{EACCES}):
+Linux kernel 5.15 with glibc 2.35 and a CIFS v1 file system
+(see @url{https://bugs.gnu.org/65599}).
+@end itemize

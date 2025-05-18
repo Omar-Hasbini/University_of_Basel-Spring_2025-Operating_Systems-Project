@@ -1,0 +1,25 @@
+Description:
+String descriptors, with out-of-memory checking.
+
+Files:
+lib/xstring-desc.h
+lib/xstring-desc.c
+
+Depends-on:
+string-desc
+xalloc-die
+extern-inline
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += xstring-desc.c
+
+Include:
+"xstring-desc.h"
+
+License:
+GPL
+
+Maintainer:
+all

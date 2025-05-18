@@ -1,0 +1,13 @@
+Files:
+tests/test-servent.c
+tests/signature.h
+
+Depends-on:
+htonl
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-servent
+check_PROGRAMS += test-servent
+test_servent_LDADD = $(LDADD) $(SERVENT_LIB) $(HTONL_LIB)

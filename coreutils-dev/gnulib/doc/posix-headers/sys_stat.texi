@@ -1,0 +1,105 @@
+@node sys/stat.h
+@section @file{sys/stat.h}
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/sys_stat.h.html}
+
+Gnulib module: sys_stat-h
+@mindex sys_stat-h
+
+Portability problems fixed by Gnulib module @code{sys_stat-h}:
+@itemize
+@item
+The type @code{mode_t} is not defined on some platforms:
+MSVC 14.
+@item
+The type @code{blksize_t} is not defined on some platforms:
+FreeBSD 5.5, OpenBSD 5.6, HP-UX 11.23, IRIX 6.5, mingw, MSVC 14.
+@item
+The type @code{blkcnt_t} is not defined on some platforms:
+FreeBSD 5.5, OpenBSD 5.6, mingw, MSVC 14.
+@item
+Some macros, such as @code{S_IFMT} or @code{S_IFIFO}, are missing on some
+platforms.
+@item
+The macros @code{S_ISBLK}, @code{S_ISCHR}, @code{S_ISDIR}, @code{S_ISFIFO},
+@code{S_ISLNK}, @code{S_ISREG}, @code{S_ISSOCK} are broken on some platforms.
+@item
+Some platforms define macros, such as @code{S_ISDOOR}, that are not defined
+on other platforms.
+@item
+The functions @code{lstat} and @code{mkdir} are not declared on some platforms:
+mingw, MSVC 14.
+@item
+The macros @code{UTIME_NOW} and @code{UTIME_OMIT} are missing on some
+platforms.
+@item
+On some platforms, @code{struct stat} does not include @code{st_atim},
+@code{st_mtim}, or @code{st_ctim} members.
+@mindex stat-time
+Use the gnulib module
+@samp{stat-time} for accessors to portably get at subsecond resolution.
+@end itemize
+
+@mindex windows-stat-inodes
+Portability problems fixed by Gnulib module @code{sys_stat-h}, together with module @code{windows-stat-inodes}:
+@itemize
+@item
+On Windows platforms (excluding Cygwin), @code{st_ino} is always 0.
+@end itemize
+
+On platforms where @code{off_t} is a 32-bit type, @code{struct stat}
+cannot represent the size of files or block devices 2 GiB or lager
+and may not work correctly on directories 2 GiB or larger.
+Also, on platforms where @code{ino_t} is a 32-bit type,
+@code{struct stat} cannot represent larger inode numbers.
+@xref{Large File Support}, for how to address these problems.
+
+@xref{Avoiding the year 2038 problem}, for portability issues with the
+@code{time_t} components of @code{struct stat}.
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+On some platforms the types @code{blksize_t} and @code{blkcnt_t} are unsigned:
+Android.
+@item
+The macro @code{S_IFBLK} is missing on some platforms:
+MSVC 14.
+@item
+On OpenVMS, @code{st_ino} is an array of three @code{ino_t} values,
+not a single value.
+@code{b} are known to represent the same file.
+@item
+On some platforms, two different files may have the same @code{st_dev}
+and @code{st_ino} values, even when @code{st_ino} is nonzero:
+@itemize
+@item
+GNU/Linux NFS servers that export all local file systems as a single
+NFS file system, if a local @code{st_dev} exceeds 255, or if a local
+@code{st_ino} exceeds 16777215.
+@item
+Network Appliance NFS servers in snapshot directories; see Network
+Appliance bug #195.
+@item
+ClearCase MVFS; see bug id ATRia04618.
+@end itemize
+@item
+On some file systems, @code{st_size} contains bogus information for
+symlinks;
+@mindex areadlink-with-size
+use the Gnulib module @code{areadlink-with-size} for a
+better way to get symlink contents.
+@end itemize
+
+@mindex same-inode
+To partially work around porting problems with Microsoft Windows and OpenVMS,
+you can use the Gnulib @code{same-inode} module to test whether two
+@code{struct stat} objects are known to represent the same file.
+For example, @code{psame_inode (&a, &b)} is true if the @code{struct stat}
+objects @code{a} and @code{b} are known to represent the same file.
+
+Another partial workaround is to compare other file metadata such as
+@code{st_mode} and @code{st_mtime} on platforms where @code{st_dev}
+and @code{st_ino} not uniquely identify a file.  However, this does
+not work reliably on files whose metadata are being changed by other
+programs, or where the metadata happen to be equal.

@@ -1,0 +1,29 @@
+@node mtx_init
+@subsection @code{mtx_init}
+@findex mtx_init
+
+ISO C23 specification:@* @url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf} section 7.28.4.2.
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/mtx_init.html}
+
+Documentation:@*
+@ifinfo
+@ref{ISO C Mutexes,,Mutexes,libc}.
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/ISO-C-Mutexes.html}.
+@end ifnotinfo
+
+Gnulib module: mtx
+@mindex mtx
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+glibc 2.27, macOS 14, FreeBSD 9.3, NetBSD 8.0, OpenBSD 7.5, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.3, Cygwin 3.1.x, mingw, MSVC 14, Android API level 29.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

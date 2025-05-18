@@ -1,0 +1,22 @@
+Files:
+tests/bench-mbswidth.c
+tests/bench-multibyte.h
+tests/bench.h
+
+Depends-on:
+mbrtoc32-regular
+mbswidth
+setlocale
+striconv
+getrusage
+gettimeofday
+
+configure.ac:
+
+Makefile.am:
+noinst_PROGRAMS += bench-mbswidth
+# Note: Despite NDEBUG being set here, mbswidth.o is compiled with the
+# global CPPFLAGS. For complete removal of assert() invocations, pass
+# CPPFLAGS="-DNDEBUG" when configuring the package.
+bench_mbswidth_CPPFLAGS = $(AM_CPPFLAGS) -DNDEBUG
+bench_mbswidth_LDADD = $(LDADD) $(LIBUNISTRING) $(SETLOCALE_LIB) $(MBRTOWC_LIB) $(LIBC32CONV)

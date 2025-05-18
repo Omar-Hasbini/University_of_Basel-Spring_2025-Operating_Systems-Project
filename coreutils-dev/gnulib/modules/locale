@@ -1,0 +1,25 @@
+Description:
+A <locale.h> that conforms to POSIX.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'locale-h' instead.
+
+Files:
+
+Depends-on:
+locale-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<locale.h>
+
+License:
+LGPLv2+
+
+Maintainer:

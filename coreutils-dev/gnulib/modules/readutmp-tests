@@ -1,0 +1,15 @@
+Files:
+tests/test-readutmp.c
+tests/macros.h
+
+Depends-on:
+array-mergesort
+xalloc
+year2038
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-readutmp
+check_PROGRAMS += test-readutmp
+test_readutmp_LDADD = $(LDADD) @READUTMP_LIB@ $(LIBINTL)

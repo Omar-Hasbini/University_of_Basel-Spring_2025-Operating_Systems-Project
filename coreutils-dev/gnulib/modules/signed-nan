@@ -1,0 +1,25 @@
+Description:
+Macros for quiet not-a-number.
+
+Files:
+lib/signed-nan.h
+
+Depends-on:
+nan
+signbit
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += signed-nan.h
+
+Include:
+"signed-nan.h"
+
+Link:
+
+License:
+LGPLv2+
+
+Maintainer:
+all

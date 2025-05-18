@@ -1,0 +1,59 @@
+Description:
+Return the current working directory.
+
+Comment:
+This module should not be used as a dependency from a test module,
+otherwise when this module occurs as a tests-related module, it will
+have side effects on the compilation of the 'getcwd-lgpl' module, if
+that module occurs among the main modules in lib/.
+
+Files:
+lib/getcwd.c
+m4/getcwd-abort-bug.m4
+m4/getcwd-path-max.m4
+m4/getcwd.m4
+m4/pathmax.m4
+
+Depends-on:
+unistd-h
+extensions
+pathmax         [test $REPLACE_GETCWD = 1]
+msvc-inval      [test $REPLACE_GETCWD = 1]
+mempcpy         [test $REPLACE_GETCWD = 1]
+d-ino           [test $REPLACE_GETCWD = 1]
+memmove         [test $REPLACE_GETCWD = 1]
+openat          [test $REPLACE_GETCWD = 1]
+fcntl-h         [test $REPLACE_GETCWD = 1]
+fdopendir       [test $REPLACE_GETCWD = 1]
+fstat           [test $REPLACE_GETCWD = 1]
+fstatat         [test $REPLACE_GETCWD = 1]
+opendir         [test $REPLACE_GETCWD = 1]
+readdir         [test $REPLACE_GETCWD = 1]
+rewinddir       [test $REPLACE_GETCWD = 1]
+closedir        [test $REPLACE_GETCWD = 1]
+bool            [test $REPLACE_GETCWD = 1]
+malloc-posix    [test $REPLACE_GETCWD = 1]
+strdup-posix    [test $REPLACE_GETCWD = 1]
+
+configure.ac:
+gl_FUNC_GETCWD
+gl_CONDITIONAL([GL_COND_OBJ_GETCWD], [test $REPLACE_GETCWD = 1])
+AM_COND_IF([GL_COND_OBJ_GETCWD], [
+  gl_PREREQ_GETCWD
+])
+gl_MODULE_INDICATOR([getcwd])
+gl_UNISTD_MODULE_INDICATOR([getcwd])
+
+Makefile.am:
+if GL_COND_OBJ_GETCWD
+lib_SOURCES += getcwd.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+GPL
+
+Maintainer:
+all, glibc

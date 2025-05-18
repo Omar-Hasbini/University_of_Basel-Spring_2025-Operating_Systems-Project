@@ -1,0 +1,25 @@
+@node mbsinit
+@subsection @code{mbsinit}
+@findex mbsinit
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/mbsinit.html}
+
+Gnulib module: mbsinit
+@mindex mbsinit
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, HP-UX 11.00, mingw with UCRT, MSVC 14.
+@item
+This function always returns 1, even in multibyte locales, on some platforms:
+mingw.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+@c https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=272218
+This function is not useful after calls to @code{mbrtoc16} or @code{mbrtoc8}.
+@end itemize

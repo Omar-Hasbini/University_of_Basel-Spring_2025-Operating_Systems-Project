@@ -1,0 +1,24 @@
+@node setrlimit
+@subsection @code{setrlimit}
+@findex setrlimit
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/setrlimit.html}
+
+LSB specification:@* @url{https://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic/baselib-getrlimit-1.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+On platforms where @code{rlim_t} is a 32-bit type, this function does not
+allow to set limits 4 GiB and larger, such as for RLIMIT_FSIZE@.
+@xref{Large File Support}.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, mingw, MSVC 14.
+@end itemize

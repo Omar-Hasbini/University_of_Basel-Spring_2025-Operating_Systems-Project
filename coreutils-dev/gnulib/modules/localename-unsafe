@@ -1,0 +1,45 @@
+Description:
+Return current locale's name, according to glibc naming conventions,
+in thread-local (unsafe) storage.
+
+Files:
+lib/localename.h
+lib/localename-unsafe.c
+m4/localename.m4
+m4/intl-thread-locale.m4
+m4/intlmacosx.m4
+m4/lcmessage.m4
+m4/musl.m4
+
+Depends-on:
+localename-unsafe-limited
+localename-environ
+extensions
+locale-h
+strdup
+lock
+getlocalename_l-unsafe
+setlocale-null-unlocked
+
+configure.ac:
+gl_LOCALENAME_UNSAFE
+gl_LOCALE_MODULE_INDICATOR([localename-unsafe])
+gl_MUSL_LIBC
+
+Makefile.am:
+if !GL_COND_OBJ_LOCALENAME_UNSAFE_LIMITED
+lib_SOURCES += localename-unsafe.c
+endif
+
+Include:
+"localename.h"
+
+Link:
+@INTL_MACOSX_LIBS@
+$(LIBTHREAD)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

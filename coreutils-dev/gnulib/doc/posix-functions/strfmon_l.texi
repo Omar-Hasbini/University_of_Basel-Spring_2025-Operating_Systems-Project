@@ -1,0 +1,25 @@
+@node strfmon_l
+@subsection @code{strfmon_l}
+@findex strfmon_l
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/strfmon_l.html}
+
+Gnulib module: strfmon_l
+@mindex strfmon_l
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function ignores the locale argument on some platforms:
+FreeBSD 13.0, Cygwin 2.9.
+@item
+This function uses a wrong locale for the numbers on some platforms:
+glibc 2.23.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+FreeBSD 6.0, NetBSD 7.1, OpenBSD 7.5, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 11.3, Cygwin 1.7.x, mingw, MSVC 14, Android 9.0.
+@end itemize

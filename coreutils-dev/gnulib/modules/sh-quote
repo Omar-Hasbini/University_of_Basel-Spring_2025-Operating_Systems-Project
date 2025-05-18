@@ -1,0 +1,30 @@
+Description:
+Shell quoting.
+
+Files:
+lib/sh-quote.h
+lib/sh-quote.c
+
+Depends-on:
+quotearg
+xalloc
+
+configure.ac:
+AC_REQUIRE([AC_C_RESTRICT])
+
+Makefile.am:
+lib_SOURCES += sh-quote.h sh-quote.c
+
+Include:
+"sh-quote.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+all

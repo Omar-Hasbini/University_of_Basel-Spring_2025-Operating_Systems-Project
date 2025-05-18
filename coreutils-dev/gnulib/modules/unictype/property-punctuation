@@ -1,0 +1,31 @@
+Description:
+Test whether a Unicode character is "punctuation".
+
+Files:
+lib/unictype/pr_punctuation.c
+lib/unictype/pr_punctuation.h
+lib/unictype/bitmap.h
+
+Depends-on:
+unictype/base
+unictype/category-test
+unictype/category-P
+
+configure.ac:
+AC_REQUIRE([AC_C_INLINE])
+gl_UNICTYPE_H_REQUIRE_DEFAULTS
+gl_LIBUNISTRING_MODULE_WITH_VARIABLE([1.3], [unictype/property-punctuation])
+
+Makefile.am:
+if LIBUNISTRING_COMPILE_UNICTYPE_PROPERTY_PUNCTUATION
+lib_SOURCES += unictype/pr_punctuation.c
+endif
+
+Include:
+"unictype.h"
+
+License:
+LGPLv3+ or GPLv2+
+
+Maintainer:
+all

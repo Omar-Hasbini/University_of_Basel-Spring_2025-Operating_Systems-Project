@@ -1,0 +1,107 @@
+@node swprintf
+@subsection @code{swprintf}
+@findex swprintf
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/swprintf.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+NetBSD 3.0, OpenBSD 3.8, Minix 3.1.8, HP-UX 11.00, Cygwin 1.5.x, mingw with UCRT.
+@item
+This function has a different signature on some platforms:
+MSVC 9.
+@item
+This function is only defined as a macro on some platforms:
+MSVC 14.
+@item
+This function does not support the @samp{n} directive on some platforms:
+glibc when used with @code{_FORTIFY_SOURCE >= 2} (set by default on Ubuntu),
+macOS 14, OpenBSD, MSVC 14, Android.
+@item
+This function sometimes returns a wrong value through the @samp{n} directive
+on some platforms:
+@c https://www.openwall.com/lists/musl/2023/03/19/1
+musl libc 1.2.3.
+@item
+On Windows and 32-bit AIX platforms, @code{wchar_t} is a 16-bit type and therefore cannot
+accommodate all Unicode characters.
+@item
+On Windows, this function does not take a buffer size as second argument.
+@item
+This function produces wrong values for the @samp{La} directive
+on some platforms:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=13726
+glibc 2.15,
+@c https://dev.haiku-os.org/ticket/18353
+Haiku,
+NetBSD 10.0.
+@item
+This function does not support size specifiers as in C23 (@code{w8},
+@code{w16}, @code{w32}, @code{w64}, @code{wf8}, @code{wf16}, @code{wf32},
+@code{wf64}) on some platforms:
+glibc 2.37, musl libc, macOS 14, FreeBSD 13.2, NetBSD 10.0, OpenBSD 7.5, AIX 7.3, Solaris 11.4, Cygwin 3.5.3, mingw, MSVC, Android 9.0.
+@item
+This function ignores the minimum field width in the @samp{lc} directive
+on some platforms:
+@c https://www.openwall.com/lists/musl/2023/03/20/1
+musl libc 1.2.3.
+@item
+This function is broken when it produces output that contains null wide
+characters on some platforms:
+@c https://www.openwall.com/lists/musl/2023/03/22/9
+musl libc 1.2.3,
+macOS 14, FreeBSD 13.1, NetBSD 10.0, OpenBSD 7.2, AIX 7.2, mingw.
+@item
+This function doesn't support the @code{'} flag at all on some platforms:
+mingw without @code{__USE_MINGW_ANSI_STDIO}, MSVC 14,
+@c https://dev.haiku-os.org/ticket/19522
+Haiku.
+@item
+This function doesn't support the @code{'} flag correctly for integers
+(it uses the decimal point instead of the thousands separator!)
+on some platforms:
+mingw with @code{__USE_MINGW_ANSI_STDIO}.
+@item
+This function doesn't support the @code{'} flag together with a precision
+on an integer argument correctly on some platforms:
+glibc 2.36, FreeBSD 14.0, NetBSD 10.0, Solaris 11, Cygwin 3.6.0, Haiku.
+@item
+This function doesn't support the @code{'} flag correctly in locales where
+the thousands separator is a multibyte character on some platforms:
+NetBSD 10.0, Solaris 11 OpenIndiana.
+@item
+This function does not support the @samp{b} directive, required by ISO C23,
+on some platforms:
+glibc 2.34, musl libc, macOS 14, FreeBSD 13.2, NetBSD 10.0, OpenBSD 7.5,
+AIX 7.3, HP-UX 11, Solaris 11.4, Cygwin 3.5.3, mingw, MSVC 14, Android 9.0.
+@item
+This function does not support the @samp{B} directive on some platforms:
+glibc 2.34, musl libc, macOS 14, FreeBSD 13.2, NetBSD 10.0, OpenBSD 7.5, AIX 7.3, Solaris 11.4, Cygwin 3.5.3, mingw, MSVC, Android 9.0.
+@item
+printf @code{"%#.0x"} or @code{"%#.0X"} with a zero argument yields an
+incorrect result (non-empty) on some platforms:
+Mac OS X 10.6.
+@item
+The @code{%m} directive is not portable, use @code{%s} mapped to an
+argument of @code{strerror(errno)} (or a version of @code{strerror_r})
+instead.
+@item
+In the C or POSIX locales, the @code{%c} and @code{%s} conversions may fail
+on some platforms:
+glibc 2.35, musl libc 1.2.4, FreeBSD 13.2, NetBSD 10.0, OpenBSD 7.2, Cygwin 2.9.0.
+@item
+The @code{%lc} directive may fail on some platforms:
+musl libc 1.2.4, FreeBSD 13.2, NetBSD 10.0, OpenBSD 7.2.
+@item
+When formatting an integer with grouping flag, this function inserts thousands
+separators even in the "C" locale on some platforms:
+NetBSD 5.1.
+@end itemize

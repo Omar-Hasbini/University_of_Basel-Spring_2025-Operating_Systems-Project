@@ -1,0 +1,25 @@
+Description:
+A GNU-like <dirent.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'dirent-h' instead.
+
+Files:
+
+Depends-on:
+dirent-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<dirent.h>
+
+License:
+LGPLv2+
+
+Maintainer:

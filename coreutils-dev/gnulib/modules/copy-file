@@ -1,0 +1,50 @@
+Description:
+Copying of files.
+
+Files:
+lib/copy-file.h
+lib/copy-file.c
+m4/copy-file.m4
+
+Depends-on:
+acl-permissions
+binary-io
+c99
+close
+copy-file-range
+error
+fstat
+full-write
+gettext-h
+gnulib-i18n
+ignore-value
+open
+qcopy-acl
+quote
+safe-read
+stat-time
+stdlib-h
+unistd-h
+utimens
+
+configure.ac:
+gl_COPY_FILE
+
+Makefile.am:
+lib_SOURCES += copy-file.h copy-file.c
+
+Include:
+"copy-file.h"
+
+Link:
+$(LIB_ACL)
+$(QCOPY_ACL_LIB)
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+all

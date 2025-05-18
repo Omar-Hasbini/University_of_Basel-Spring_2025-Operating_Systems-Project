@@ -1,0 +1,26 @@
+@node frexp
+@subsection @code{frexp}
+@findex frexp
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/frexp.html}
+
+Gnulib module: frexp or frexp-ieee
+@mindex frexp
+@mindex frexp-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function does not work on denormalized numbers on some platforms:
+NetBSD 3.0.
+@item
+This function does not work on negative zero on some platforms:
+NetBSD 4.99, MSVC 14.
+@item
+This function does not work on infinite numbers on some platforms:
+mingw, MSVC 14.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

@@ -1,0 +1,32 @@
+Description:
+mbscasecmp() function: case-insensitive string comparison.
+
+Files:
+lib/mbscasecmp.c
+
+Depends-on:
+c32tolower
+mbuiterf            [test "$GNULIB_MCEL_PREFER" != yes]
+stdlib-h
+string-h
+uchar-h
+
+configure.ac:
+gl_STRING_MODULE_INDICATOR([mbscasecmp])
+
+Makefile.am:
+lib_SOURCES += mbscasecmp.c
+
+Include:
+<string.h>
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPL
+
+Maintainer:
+all

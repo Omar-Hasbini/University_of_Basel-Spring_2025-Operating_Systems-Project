@@ -1,0 +1,26 @@
+Description:
+verror and verror_at_line functions: Error reporting with va_list.
+
+Files:
+
+Depends-on:
+error
+
+configure.ac-early:
+AC_DEFUN([gl_HAVE_MODULE_VERROR])
+
+configure.ac:
+m4_ifdef([AM_XGETTEXT_OPTION],
+  [AM_][XGETTEXT_OPTION([--flag=verror:3:c-format])
+   AM_][XGETTEXT_OPTION([--flag=verror_at_line:5:c-format])])
+
+Makefile.am:
+
+Include:
+<error.h>
+
+License:
+GPL
+
+Maintainer:
+Eric Blake

@@ -1,0 +1,28 @@
+Description:
+Subtract timespec values.
+
+Files:
+lib/timespec-sub.c
+
+Depends-on:
+c99
+intprops
+bool
+stdckdint-h
+timespec
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += timespec-sub.c
+
+Include:
+"timespec.h"
+
+Link:
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

@@ -1,0 +1,39 @@
+@node totalorderf
+@subsection @code{totalorderf}
+@findex totalorderf
+
+ISO C23 specification:@* @url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf} section F.10.12.1
+
+Documentation:@*
+@itemize
+@item
+@ifinfo
+@ref{FP Comparison Functions,,Floating-Point Comparison Functions,libc}.
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/FP-Comparison-Functions.html}.
+@end ifnotinfo
+@item
+@url{https://lists.gnu.org/archive/html/bug-gnulib/2023-10/msg00037.html}
+@end itemize
+
+Gnulib module: totalorderf
+@mindex totalorderf
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+glibc 2.24, macOS 14, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.4, Cygwin 2.9, mingw, MSVC 14, Android 9.0.
+@item
+This function has a different signature on some platforms:
+glibc 2.30.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function treats signalling NaNs incorrectly on some platforms:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=30973
+glibc 2.35/sh4.
+@end itemize

@@ -1,0 +1,36 @@
+@node call_once
+@subsection @code{call_once}
+@findex call_once
+
+ISO C23 specification:@* @url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf} section 7.28.2.1.
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/call_once.html}
+
+Documentation:@*
+@ifinfo
+@ref{Call Once,,Call Once,libc}.
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Call-Once.html}.
+@end ifnotinfo
+
+Gnulib module: call_once
+@mindex call_once
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+glibc 2.27, macOS 14, FreeBSD 9.3, NetBSD 8.0, OpenBSD 7.5, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.3, Cygwin 3.1.x, mingw, MSVC 14, Android API level 29.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function makes applications hang forever on some platforms:
+Cygwin 3.5.3.
+@item
+This function does not work on some platforms:
+@c https://dev.haiku-os.org/ticket/18348
+Haiku.
+@end itemize

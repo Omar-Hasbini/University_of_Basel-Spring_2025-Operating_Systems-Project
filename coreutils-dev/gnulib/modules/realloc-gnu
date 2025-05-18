@@ -1,0 +1,26 @@
+Description:
+realloc() function that is glibc compatible.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'realloc-posix' instead.
+
+Files:
+
+Depends-on:
+realloc-posix
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdlib.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

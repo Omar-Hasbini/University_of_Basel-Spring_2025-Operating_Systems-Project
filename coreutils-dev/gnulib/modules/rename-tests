@@ -1,0 +1,22 @@
+Files:
+tests/test-rename.h
+tests/test-rename.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+ignore-value
+errno-h
+link
+bool
+symlink
+sys_stat-h
+opendir
+readdir
+closedir
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-rename
+check_PROGRAMS += test-rename

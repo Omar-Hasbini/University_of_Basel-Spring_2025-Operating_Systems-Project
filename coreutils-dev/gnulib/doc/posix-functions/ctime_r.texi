@@ -1,0 +1,36 @@
+@node ctime_r
+@subsection @code{ctime_r}
+@findex ctime_r
+
+Removed in POSIX.1-2024.
+POSIX.1-2017 specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/ctime_r.html}
+
+Gnulib module: extensions
+@mindex extensions
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function has an incompatible declaration on some platforms:
+Solaris 11.4 (when @code{_POSIX_PTHREAD_SEMANTICS} is not defined).
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+mingw, MSVC 14.
+@item
+This function is removed in POSIX.1-2024.
+Use the functions @code{localtime_r} and @code{strftime}
+(or even @code{sprintf}) instead.
+However, @code{localtime_r} can fail and @code{strftime} is locale dependent.
+@item
+This function may overflow its output buffer if its argument
+specifies a time before the year 1000 or after the year 9999.
+@xref{ctime}.
+@item
+This function may dereference an internal null pointer if its argument
+specifies a time before the year @code{INT_MIN}+1900 or after the
+year @code{INT_MAX}+1900.
+@end itemize

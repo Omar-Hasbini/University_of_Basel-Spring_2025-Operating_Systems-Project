@@ -1,0 +1,25 @@
+Description:
+A <ctype.h> that works around platform issues.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'ctype-h' instead.
+
+Files:
+
+Depends-on:
+ctype-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<ctype.h>
+
+License:
+LGPLv2+
+
+Maintainer:

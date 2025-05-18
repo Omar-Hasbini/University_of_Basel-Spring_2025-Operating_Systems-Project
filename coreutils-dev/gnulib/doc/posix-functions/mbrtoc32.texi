@@ -1,0 +1,77 @@
+@node mbrtoc32
+@subsection @code{mbrtoc32}
+@findex mbrtoc32
+
+ISO C23 specification:@* @url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf} section 7.30.1.5.
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/mbrtoc32.html}
+
+Gnulib module: mbrtoc32 or mbrtoc32-regular
+@mindex mbrtoc32
+@mindex mbrtoc32-regular
+
+Portability problems fixed by either Gnulib module @code{mbrtoc32} or @code{mbrtoc32-regular}:
+@itemize
+@item
+This function is missing on most non-glibc platforms:
+glibc 2.15, macOS 14, FreeBSD 6.4, NetBSD 10.0, OpenBSD 7.3, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.3, Cygwin 3.4.x, mingw, MSVC 9, Android 4.4.
+@item
+In the C or POSIX locales, this function can return @code{(size_t) -1}
+and set @code{errno} to @code{EILSEQ}:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=19932
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=29511
+glibc 2.35.
+@item
+This function returns 0 instead of @code{(size_t) -2} when the input
+is empty:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=16950
+glibc 2.19,
+mingw,
+@c https://issuetracker.google.com/issues/289419880
+Android 11,
+@c https://dev.haiku-os.org/ticket/18350
+Haiku.
+@item
+This function does not recognize multibyte sequences that @code{mbrtowc}
+recognizes on some platforms:
+@c https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=272293
+FreeBSD 13.2,
+Solaris 11.4, mingw, MSVC 14.
+@c For MSVC this is because it assumes that the input is always UTF-8 encoded.
+@c See https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/mbrtoc16-mbrtoc323
+@item
+This function does not work when it's fed the input bytes one-by-one
+on some platforms:
+@c https://cygwin.com/pipermail/cygwin/2024-May/255989.html
+@c https://cygwin.com/pipermail/cygwin/2024-May/255990.html
+Cygwin 3.5.3.
+@end itemize
+
+Portability problems fixed by Gnulib module @code{mbrtoc32-regular}:
+@itemize
+@item
+This function can map some multibyte characters to a sequence of two or more
+Unicode characters, and may thus return @code{(size_t) -3}.
+No known implementation currently (2023) behaves that way, but it may
+theoretically happen.
+With the @code{mbrtoc32-regular} module, you have the guarantee that the
+Gnulib-provided @code{mbrtoc32} function maps each multibyte character to
+exactly one Unicode character and thus never returns @code{(size_t) -3}.
+@item
+This function behaves incorrectly when converting precomposed characters
+from the BIG5-HKSCS encoding:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=30611
+glibc 2.36.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is only defined as an inline function on some platforms:
+Haiku 2020.
+@end itemize
+
+@mindex uchar-h-c23
+Note: If you want the guarantee that the @code{char32_t} values returned
+by this function are Unicode code points, you also need to request the
+@code{uchar-h-c23} module.

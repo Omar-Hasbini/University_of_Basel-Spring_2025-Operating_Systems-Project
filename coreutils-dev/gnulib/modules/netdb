@@ -1,0 +1,25 @@
+Description:
+A <netdb.h> for systems lacking it.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'netdb-h' instead.
+
+Files:
+
+Depends-on:
+netdb-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<netdb.h>
+
+License:
+LGPLv2+
+
+Maintainer:

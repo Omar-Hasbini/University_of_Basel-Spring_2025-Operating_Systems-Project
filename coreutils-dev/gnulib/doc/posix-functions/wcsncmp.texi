@@ -1,0 +1,30 @@
+@node wcsncmp
+@subsection @code{wcsncmp}
+@findex wcsncmp
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/wcsncmp.html}
+
+Gnulib module: wcsncmp
+@mindex wcsncmp
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function compares the wide characters as if they were unsigned, although
+@code{wchar_t} is signed, on some platforms:
+glibc 2.14.1 on x86 or x86_64, musl libc 1.2.3, macOS 14,
+@c https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=272915
+FreeBSD 13.2,
+NetBSD 10.0, OpenBSD 7.2, Solaris 11.4.
+@item
+This function may return a wrong result if the two arguments are of different
+length, on some platforms:
+AIX 7.2 in 64-bit mode.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+On Windows and 32-bit AIX platforms, @code{wchar_t} is a 16-bit type and therefore cannot
+accommodate all Unicode characters.
+@end itemize

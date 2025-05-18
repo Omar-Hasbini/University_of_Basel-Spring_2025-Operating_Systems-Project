@@ -1,0 +1,25 @@
+Description:
+A GNU-like <stdio.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stdio-h' instead.
+
+Files:
+
+Depends-on:
+stdio-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdio.h>
+
+License:
+LGPLv2+
+
+Maintainer:

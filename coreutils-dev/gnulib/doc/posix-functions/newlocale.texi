@@ -1,0 +1,35 @@
+@node newlocale
+@subsection @code{newlocale}
+@findex newlocale
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/newlocale.html}
+
+Gnulib module: newlocale
+@mindex newlocale
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+FreeBSD 9.0, NetBSD 6.1, OpenBSD 6.1, Minix 3.1.8, AIX 6.1, HP-UX 11, Solaris 11.3, Cygwin 2.5.x, mingw, MSVC 14, Android 4.4.
+@item
+This function is useless because the @code{locale_t} type is not defined
+on some platforms:
+z/OS.
+@item
+When the third argument is NULL, this function uses locale category data
+from the current locale instead of from the "C" locale on some platforms:
+macOS, NetBSD 10.0, Solaris 11 OpenIndiana.
+@item
+When the second argument is an invalid or unsupported locale name,
+this function uses the "C" locale instead of failing on some platforms:
+NetBSD 10.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is useless because the @code{locale_t} type contains basically
+no information on some platforms:
+OpenBSD 6.3.
+@end itemize

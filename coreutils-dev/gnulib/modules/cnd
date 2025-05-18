@@ -1,0 +1,35 @@
+Description:
+ISO C 11 condition variable functions.
+
+Files:
+lib/cnd.c
+m4/cnd.m4
+
+Depends-on:
+threads-h
+windows-cond
+gettimeofday
+
+configure.ac:
+AC_REQUIRE([gl_THREADS_H])
+gl_FUNC_CND_INIT
+gl_CONDITIONAL([GL_COND_OBJ_CND],
+               [test $HAVE_THREADS_H = 0 || test $REPLACE_CND_INIT = 1])
+gl_THREADS_MODULE_INDICATOR([cnd])
+
+Makefile.am:
+if GL_COND_OBJ_CND
+lib_SOURCES += cnd.c
+endif
+
+Include:
+<threads.h>
+
+Link:
+$(LIBSTDTHREAD)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

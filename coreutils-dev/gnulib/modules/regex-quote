@@ -1,0 +1,32 @@
+Description:
+Construct a regular expression from a literal string.
+
+Files:
+lib/regex-quote.h
+lib/regex-quote.c
+
+Depends-on:
+bool
+xalloc
+mbuiter
+mempcpy
+
+configure.ac:
+AC_REQUIRE([AC_C_RESTRICT])
+
+Makefile.am:
+lib_SOURCES += regex-quote.c
+
+Include:
+"regex-quote.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+all

@@ -1,0 +1,25 @@
+Description:
+<sys/file.h> for systems with an incomplete header.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_file-h' instead.
+
+Files:
+
+Depends-on:
+sys_file-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/file.h>
+
+License:
+LGPLv2+
+
+Maintainer:

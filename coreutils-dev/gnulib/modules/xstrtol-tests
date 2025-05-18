@@ -1,0 +1,18 @@
+Files:
+tests/test-xstrtol.c
+tests/test-xstrtoul.c
+tests/test-xstrtol.sh
+tests/macros.h
+
+Depends-on:
+inttypes-h
+test-framework-sh
+xstrtol-error
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-xstrtol.sh
+check_PROGRAMS += test-xstrtol test-xstrtoul
+test_xstrtol_LDADD = $(LDADD) @LIBINTL@
+test_xstrtoul_LDADD = $(LDADD) @LIBINTL@

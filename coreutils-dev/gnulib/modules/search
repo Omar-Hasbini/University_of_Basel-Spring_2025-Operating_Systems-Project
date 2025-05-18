@@ -1,0 +1,25 @@
+Description:
+A GNU-like <search.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'search-h' instead.
+
+Files:
+
+Depends-on:
+search-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<search.h>
+
+License:
+LGPLv2+
+
+Maintainer:

@@ -1,0 +1,26 @@
+@node _Fork
+@subsection @code{_Fork}
+@findex _Fork
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/_Fork.html}
+
+Documentation:@*
+@ifinfo
+@ref{Creating a Process,,Creating a Process,libc}
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Creating-a-Process.html}
+@end ifnotinfo
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+glibc 2.33, macOS 14, FreeBSD 13.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.3.0, AIX 7.1, HP-UX 11.31, Solaris 11.4, Cygwin 2.9, mingw, MSVC 14, Android API level 34.
+@end itemize

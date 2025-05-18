@@ -1,0 +1,35 @@
+Description:
+Multibye Characters, Encoding errors, and Lengths
+
+Files:
+lib/mcel.c
+lib/mcel.h
+
+Depends-on:
+assert-h
+builtin-expect
+extern-inline
+limits-h
+mbrtoc32
+bool
+uchar-h
+verify
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += mcel.c mcel.h
+
+Include:
+"mcel.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPLv2+
+
+Maintainer:
+all

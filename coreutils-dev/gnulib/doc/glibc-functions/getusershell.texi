@@ -1,0 +1,27 @@
+@node getusershell
+@subsection @code{getusershell}
+@findex getusershell
+
+Documentation:@* @uref{https://www.kernel.org/doc/man-pages/online/pages/man3/getusershell.3.html,,man getusershell}
+
+Gnulib module: getusershell
+@mindex getusershell
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, mingw, MSVC 14, Android 9.0.
+@item
+This function is missing a declaration on some platforms:
+Solaris 9.
+
+@item
+This function mistakenly returns comments and empty lines on some platforms:
+@c https://www.openwall.com/lists/musl/2024/05/18/1
+musl libc 1.2.4
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

@@ -1,0 +1,25 @@
+Description:
+A POSIX-like <sys/un.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_un-h' instead.
+
+Files:
+
+Depends-on:
+sys_un-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/un.h>
+
+License:
+LGPLv2+
+
+Maintainer:

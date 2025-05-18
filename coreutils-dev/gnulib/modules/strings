@@ -1,0 +1,25 @@
+Description:
+A substitute <strings.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'strings-h' instead.
+
+Files:
+
+Depends-on:
+strings-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<strings.h>
+
+License:
+LGPLv2+
+
+Maintainer:

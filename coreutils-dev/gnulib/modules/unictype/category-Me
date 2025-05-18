@@ -1,0 +1,27 @@
+Description:
+Test whether a Unicode character is of general category Me.
+
+Files:
+lib/unictype/categ_Me.c
+lib/unictype/categ_Me.h
+
+Depends-on:
+unictype/base
+
+configure.ac:
+gl_UNICTYPE_H_REQUIRE_DEFAULTS
+gl_LIBUNISTRING_MODULE_WITH_VARIABLE([0.9.8], [unictype/category-Me])
+
+Makefile.am:
+if LIBUNISTRING_COMPILE_UNICTYPE_CATEGORY_ME
+lib_SOURCES += unictype/categ_Me.c
+endif
+
+Include:
+"unictype.h"
+
+License:
+LGPLv3+ or GPLv2+
+
+Maintainer:
+all

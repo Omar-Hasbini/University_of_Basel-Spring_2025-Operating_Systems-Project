@@ -1,0 +1,27 @@
+@node expm1l
+@subsection @code{expm1l}
+@findex expm1l
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/expm1l.html}
+
+Gnulib module: expm1l or expm1l-ieee
+@mindex expm1l
+@mindex expm1l-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 6.0, NetBSD 9.3, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 9, Cygwin 1.7.x, mingw, MSVC 9, Android 4.4.
+@item
+This function returns 0 instead of small positive values on some platforms:
+NetBSD 10.0/i386.
+@item
+This function produces results which are accurate to only 16 digits on some
+platforms:
+musl libc 1.2.2/arm64, musl libc 1.2.2/s390x, Mac OS X 10.5, NetBSD 10.0/x86_64.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

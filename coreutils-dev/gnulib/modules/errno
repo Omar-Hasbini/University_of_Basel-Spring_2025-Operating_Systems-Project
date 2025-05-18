@@ -1,0 +1,25 @@
+Description:
+A POSIX-like <errno.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'errno-h' instead.
+
+Files:
+
+Depends-on:
+errno-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<errno.h>
+
+License:
+LGPLv2+
+
+Maintainer:

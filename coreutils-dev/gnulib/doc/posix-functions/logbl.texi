@@ -1,0 +1,29 @@
+@node logbl
+@subsection @code{logbl}
+@findex logbl
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/logbl.html}
+
+Gnulib module: logbl or logbl-ieee
+@mindex logbl
+@mindex logbl-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 9, Cygwin 1.7.x, MSVC 9, Android 4.2.
+@item
+This function goes into an endless loop for arguments such as
+@code{1.6810515715560467531313389086608763012990396724232e-4932L}
+on some platforms:
+OpenBSD 7.3/mips64.
+@item
+This function produces wrong results for subnormal numbers on some platforms:
+glibc 2.11/powerpc, glibc 2.7/sparc, glibc 2.7/hppa, Solaris 11.4,
+glibc 2.23/powerpc64le.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

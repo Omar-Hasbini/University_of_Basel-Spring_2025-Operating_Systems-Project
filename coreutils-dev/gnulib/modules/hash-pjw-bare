@@ -1,0 +1,25 @@
+Description:
+Compute a hash value for a buffer of known size.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'hashcode-mem' instead.
+
+Files:
+
+Depends-on:
+hashcode-mem
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+"hashcode-mem.h"
+
+License:
+LGPLv2+
+
+Maintainer:

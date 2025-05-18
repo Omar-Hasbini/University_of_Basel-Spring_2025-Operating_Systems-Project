@@ -1,0 +1,14 @@
+Files:
+tests/test-endian.c
+tests/macros.h
+
+Depends-on:
+assert-h
+stdint-h
+endian-c++-tests
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-endian
+check_PROGRAMS += test-endian

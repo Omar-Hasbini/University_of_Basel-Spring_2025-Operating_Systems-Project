@@ -1,0 +1,25 @@
+Description:
+A <sys/time.h> that conforms better to POSIX.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_time-h' instead.
+
+Files:
+
+Depends-on:
+sys_time-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/time.h>
+
+License:
+LGPLv2+
+
+Maintainer:

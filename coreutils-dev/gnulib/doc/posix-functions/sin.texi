@@ -1,0 +1,16 @@
+@node sin
+@subsection @code{sin}
+@findex sin
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/sin.html}
+
+Gnulib module: sin
+@mindex sin
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

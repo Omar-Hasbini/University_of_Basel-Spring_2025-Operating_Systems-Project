@@ -1,0 +1,29 @@
+@node ftime
+@section @code{ftime}
+@findex ftime
+
+Removed in POSIX.1-2008.
+POSIX.1-2004 specification: @url{https://pubs.opengroup.org/onlinepubs/009695399/functions/ftime.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Mac OS X 10.3, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Android 9.0.
+@item
+This function is not declared on some platforms:
+Android 13.
+@item
+On native Windows platforms (mingw, MSVC), this function works incorrectly
+when the environment variable @env{TZ} has been set by Cygwin.
+@item
+This function is removed in POSIX.1-2008.  Better use
+@code{clock_gettime} instead, and use @code{ftime} only as a fallback for
+portability to Windows platforms.
+@end itemize

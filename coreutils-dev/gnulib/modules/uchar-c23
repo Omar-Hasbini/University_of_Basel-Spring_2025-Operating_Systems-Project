@@ -1,0 +1,29 @@
+Description:
+A <uchar.h> in which the char32_t values are always Unicode code points.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'uchar-h-c23' instead.
+
+Files:
+
+Depends-on:
+uchar-h-c23
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<uchar.h>
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPLv2+
+
+Maintainer:

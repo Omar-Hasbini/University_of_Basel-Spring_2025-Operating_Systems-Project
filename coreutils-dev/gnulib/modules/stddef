@@ -1,0 +1,25 @@
+Description:
+A <stddef.h> that works around platform issues.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stddef-h' instead.
+
+Files:
+
+Depends-on:
+stddef-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stddef.h>
+
+License:
+LGPLv2+
+
+Maintainer:

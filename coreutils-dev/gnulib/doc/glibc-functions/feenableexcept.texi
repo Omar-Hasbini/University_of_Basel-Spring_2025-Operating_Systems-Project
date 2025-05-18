@@ -1,0 +1,41 @@
+@node feenableexcept
+@subsection @code{feenableexcept}
+@findex feenableexcept
+
+LSB specification:@* @url{https://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic/baselib-feenableexcept.html}
+
+Documentation:
+@itemize
+@item
+@ifinfo
+@ref{Control Functions,,Floating-Point Control Functions,libc},
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Control-Functions.html},
+@end ifnotinfo
+@item
+@uref{https://www.kernel.org/doc/man-pages/online/pages/man3/feenableexcept.3.html,,man feenableexcept}.
+@end itemize
+
+Gnulib module: fenv-exceptions-trapping
+@mindex fenv-exceptions-trapping
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+macOS 14, musl libc, FreeBSD 5.2.1, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 11.4, Cygwin 1.7.7, mingw, MSVC 14, Android 4.4.
+@item
+This function does not detect failures on
+glibc 2.19/aarch64, FreeBSD 12.2/arm, FreeBSD 12.2/arm64,
+@c src/sys/arch/{aarch64,arm}/include/fenv.h src/lib/libm/arch/aarch64/fenv.c
+NetBSD 10.0/arm64.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+The resulting signal is @code{SIGILL} instead of @code{SIGFPE}
+on some platforms:
+Linux/hppa, macOS 14/arm64.
+@end itemize

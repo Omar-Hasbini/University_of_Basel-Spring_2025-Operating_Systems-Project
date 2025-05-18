@@ -1,0 +1,20 @@
+@node gethostbyname
+@section @code{gethostbyname}
+@findex gethostbyname
+
+Removed in POSIX.1-2008.
+POSIX.1-2004 specification: @url{https://pubs.opengroup.org/onlinepubs/009695399/functions/gethostbyname.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is declared in @code{<winsock2.h>} instead of @code{<netdb.h>}
+on some platforms:
+mingw, MSVC 14.
+@end itemize

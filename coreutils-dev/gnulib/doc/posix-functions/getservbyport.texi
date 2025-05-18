@@ -1,0 +1,23 @@
+@node getservbyport
+@subsection @code{getservbyport}
+@findex getservbyport
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/getservbyport.html}
+
+Gnulib module: servent
+@mindex servent
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is declared in @code{<winsock2.h>} instead of @code{<netdb.h>}
+on some platforms:
+mingw, MSVC 14.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+On Windows, in 32-bit mode, this function is defined with a calling
+convention that is different from @code{cdecl}.
+@end itemize

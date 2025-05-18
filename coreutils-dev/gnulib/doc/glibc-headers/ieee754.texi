@@ -1,0 +1,26 @@
+@node ieee754.h
+@section @file{ieee754.h}
+
+Defines the types @code{union ieee754_float}, @code{union ieee754_double},
+@code{union ieee854_long_double}.
+
+Gnulib module: ieee754-h
+@mindex ieee754-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This header file is missing on all non-glibc platforms:
+glibc/sparc64 in 32-bit mode, macOS 14, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 11.4, Cygwin, mingw, MSVC 14, Android 9.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+The substitute for this header file has not been tested for @code{long
+double} and does not work on some platforms.
+
+@item
+The substitute for this header file returns nonsense on (now-quite-rare)
+platforms that do not use IEEE floating point, such as Linux/m68k.
+@end itemize

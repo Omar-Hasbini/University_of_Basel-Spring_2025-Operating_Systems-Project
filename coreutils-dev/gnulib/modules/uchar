@@ -1,0 +1,25 @@
+Description:
+A GNU-like <uchar.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'uchar-h' instead.
+
+Files:
+
+Depends-on:
+uchar-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<uchar.h>
+
+License:
+LGPLv2+
+
+Maintainer:

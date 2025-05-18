@@ -1,0 +1,27 @@
+Description:
+c_vsnprintf(): print formatted output from an stdarg argument list to a
+fixed length string in C locale
+
+Files:
+lib/c-vsnprintf.h
+lib/c-vsnprintf.c
+
+Depends-on:
+stdint-h
+stdio-h
+c-vsnzprintf
+
+configure.ac:
+AC_REQUIRE([AC_C_RESTRICT])
+
+Makefile.am:
+lib_SOURCES += c-vsnprintf.c
+
+Include:
+"c-vsnprintf.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

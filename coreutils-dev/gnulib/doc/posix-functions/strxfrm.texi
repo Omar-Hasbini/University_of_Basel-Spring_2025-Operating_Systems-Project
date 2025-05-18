@@ -1,0 +1,19 @@
+@node strxfrm
+@subsection @code{strxfrm}
+@findex strxfrm
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/strxfrm.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function has a wrong return value on some platforms:
+@c https://dev.haiku-os.org/ticket/18347
+Haiku.
+@end itemize

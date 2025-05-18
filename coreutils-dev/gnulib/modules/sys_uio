@@ -1,0 +1,25 @@
+Description:
+A POSIX-like <sys/uio.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_uio-h' instead.
+
+Files:
+
+Depends-on:
+sys_uio-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/uio.h>
+
+License:
+LGPLv2+
+
+Maintainer:

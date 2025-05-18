@@ -1,0 +1,25 @@
+Description:
+A POSIX-like <sys/socket.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_socket-h' instead.
+
+Files:
+
+Depends-on:
+sys_socket-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/socket.h>
+
+License:
+LGPLv2+
+
+Maintainer:

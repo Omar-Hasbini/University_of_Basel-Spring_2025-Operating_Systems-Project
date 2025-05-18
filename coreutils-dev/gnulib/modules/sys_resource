@@ -1,0 +1,25 @@
+Description:
+A POSIX-like <sys/resource.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_resource-h' instead.
+
+Files:
+
+Depends-on:
+sys_resource-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/resource.h>
+
+License:
+LGPLv2+
+
+Maintainer:

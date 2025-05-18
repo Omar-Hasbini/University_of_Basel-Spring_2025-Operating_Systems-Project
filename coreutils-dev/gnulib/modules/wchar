@@ -1,0 +1,26 @@
+Description:
+A <wchar.h> that works around platform issues.
+Note also the wchar-single module.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'wchar-h' instead.
+
+Files:
+
+Depends-on:
+wchar-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<wchar.h>
+
+License:
+LGPLv2+
+
+Maintainer:

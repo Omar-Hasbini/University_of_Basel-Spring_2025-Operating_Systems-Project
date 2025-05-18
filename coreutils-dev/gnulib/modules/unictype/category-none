@@ -1,0 +1,24 @@
+Description:
+Empty category of Unicode characters.
+
+Files:
+lib/unictype/categ_none.c
+
+Depends-on:
+unictype/base
+
+configure.ac:
+dnl Since _UC_CATEGORY_NONE is not exported from an installed libunistring,
+dnl don't use gl_LIBUNISTRING_MODULE here.
+
+Makefile.am:
+lib_SOURCES += unictype/categ_none.c
+
+Include:
+"unictype.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

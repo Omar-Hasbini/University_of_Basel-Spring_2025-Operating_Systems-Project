@@ -1,0 +1,14 @@
+Files:
+tests/test-getusershell.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+strdup
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-getusershell
+check_PROGRAMS += test-getusershell
+test_getusershell_LDADD = $(LDADD) $(LIBINTL)

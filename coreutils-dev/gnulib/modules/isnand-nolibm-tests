@@ -1,0 +1,17 @@
+Files:
+tests/test-isnand-nolibm.c
+tests/test-isnand.h
+tests/minus-zero.h
+tests/infinity.h
+tests/macros.h
+
+Depends-on:
+nan
+snan
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-isnand-nolibm
+check_PROGRAMS += test-isnand-nolibm
+

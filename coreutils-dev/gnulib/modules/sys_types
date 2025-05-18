@@ -1,0 +1,25 @@
+Description:
+A <sys/types.h> that conforms better to POSIX.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_types-h' instead.
+
+Files:
+
+Depends-on:
+sys_types-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/types.h>
+
+License:
+LGPLv2+
+
+Maintainer:

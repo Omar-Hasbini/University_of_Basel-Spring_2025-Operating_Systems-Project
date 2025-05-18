@@ -1,0 +1,23 @@
+@node floorl
+@subsection @code{floorl}
+@findex floorl
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/floorl.html}
+
+Gnulib module: floorl or floorl-ieee
+@mindex floorl
+@mindex floorl-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 5.2.1, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, HP-UX 11, Solaris 9, Cygwin 1.7.x.
+@item
+This function is only defined as a macro with arguments on some platforms:
+MSVC 14.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

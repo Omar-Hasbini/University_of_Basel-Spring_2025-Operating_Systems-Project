@@ -1,0 +1,34 @@
+@node euidaccess
+@subsection @code{euidaccess}
+@findex euidaccess
+
+Documentation:@* @uref{https://www.kernel.org/doc/man-pages/online/pages/man3/euidaccess.3.html,,man euidaccess}
+
+Gnulib module: euidaccess
+@mindex euidaccess
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on many non-glibc platforms:
+macOS 14, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 11.3, Cygwin 1.5.x, mingw, MSVC 14, Android 9.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize
+
+Other problems of this function:
+@itemize
+@item
+There is an inherent race between calling this function and performing
+some action based on the results; you should think twice before trusting
+this function, especially in a set-uid or set-gid program.
+@item
+This function does not have an option for not following symbolic links
+(like @code{stat} versus @code{lstat}).  If you need this option, use
+the Gnulib module @code{faccessat} with the @code{AT_EACCESS} flag.
+@item
+On Solaris, for the root user, any file is @code{X_OK} even if the file
+does not have the @code{x} permission bit set.
+@end itemize

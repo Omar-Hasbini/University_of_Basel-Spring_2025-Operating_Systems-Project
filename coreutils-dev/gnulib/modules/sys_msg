@@ -1,0 +1,27 @@
+Description:
+<sys/msg.h> with extra checks.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_msg-h' instead.
+
+Files:
+
+Depends-on:
+sys_msg-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+#if HAVE_SYS_MSG_H
+<sys/msg.h>
+#endif
+
+License:
+LGPLv2+
+
+Maintainer:

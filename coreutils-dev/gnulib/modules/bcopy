@@ -1,0 +1,28 @@
+Description:
+Old BSD bcopy() function: copy memory area.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated because the standard way to copy memory is memcpy().
+
+Files:
+lib/bcopy.c
+
+Depends-on:
+strings-h
+
+configure.ac:
+AC_REPLACE_FUNCS(bcopy)
+
+Makefile.am:
+
+Include:
+<strings.h>
+
+License:
+GPL
+
+Maintainer:
+

@@ -1,0 +1,28 @@
+Description:
+Ensure that stdin, stdout, stderr are open.
+
+Files:
+lib/xstdopen.h
+lib/xstdopen.c
+
+Depends-on:
+stdopen
+error
+gettext-h
+gnulib-i18n
+exitfail
+
+configure.ac:
+gl_MODULE_INDICATOR([xstdopen])
+
+Makefile.am:
+lib_SOURCES += xstdopen.c
+
+Include:
+"xstdopen.h"
+
+License:
+GPL
+
+Maintainer:
+all

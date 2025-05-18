@@ -1,0 +1,39 @@
+Description:
+Search for an exact or abbreviated match of a string in an array of strings.
+
+Files:
+lib/argmatch.h
+lib/argmatch.c
+
+Depends-on:
+assert-h
+c99
+error
+exitfail
+getprogname
+gettext-h
+gnulib-i18n
+memcmp
+quote
+quotearg
+bool
+stdlib-h
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += argmatch.c
+
+Include:
+"argmatch.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+all

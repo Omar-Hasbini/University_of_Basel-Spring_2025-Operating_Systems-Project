@@ -1,0 +1,25 @@
+Description:
+A GNU-like <arpa/inet.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'arpa_inet-h' instead.
+
+Files:
+
+Depends-on:
+arpa_inet-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<arpa/inet.h>
+
+License:
+LGPLv2+
+
+Maintainer:

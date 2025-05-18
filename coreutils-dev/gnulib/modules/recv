@@ -1,0 +1,35 @@
+Description:
+recv() function: receive (read) data from a connected socket.
+
+Files:
+lib/recv.c
+lib/w32sock.h
+
+Depends-on:
+sys_socket-h
+socketlib
+errno-h         [test "$ac_cv_header_winsock2_h" = yes]
+msvc-nothrow    [test "$ac_cv_header_winsock2_h" = yes]
+
+configure.ac:
+AC_REQUIRE([gl_SYS_SOCKET_H])
+gl_CONDITIONAL([GL_COND_OBJ_RECV], [test "$ac_cv_header_winsock2_h" = yes])
+gl_SYS_SOCKET_MODULE_INDICATOR([recv])
+gl_MODULE_INDICATOR([recv])
+
+Makefile.am:
+if GL_COND_OBJ_RECV
+lib_SOURCES += recv.c
+endif
+
+Include:
+<sys/socket.h>
+
+Link:
+$(LIBSOCKET)
+
+License:
+LGPLv2+
+
+Maintainer:
+Paolo Bonzini, Simon Josefsson

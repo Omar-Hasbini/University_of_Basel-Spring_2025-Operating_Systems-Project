@@ -1,0 +1,16 @@
+@node asin
+@subsection @code{asin}
+@findex asin
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/asin.html}
+
+Gnulib module: asin
+@mindex asin
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

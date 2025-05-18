@@ -1,0 +1,16 @@
+@node atan
+@subsection @code{atan}
+@findex atan
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/atan.html}
+
+Gnulib module: atan
+@mindex atan
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

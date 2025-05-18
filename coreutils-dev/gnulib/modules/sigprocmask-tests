@@ -1,0 +1,19 @@
+Files:
+tests/test-sigprocmask.c
+tests/signature.h
+tests/virtualbox.h
+tests/macros.h
+
+Depends-on:
+inttypes-h
+sleep
+test-xfail
+
+configure.ac:
+
+Makefile.am:
+# Work around https://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=57213
+if !OS_IS_NETBSD
+TESTS += test-sigprocmask
+endif
+check_PROGRAMS += test-sigprocmask

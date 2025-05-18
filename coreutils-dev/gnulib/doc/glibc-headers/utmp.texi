@@ -1,0 +1,71 @@
+@node utmp.h
+@section @file{utmp.h}
+
+Defines functions for login and logout (to a tty session) and for examining the
+history of logins and logouts.
+
+Documentation:
+@itemize
+@item
+@ifinfo
+@ref{Manipulating the Database,,Manipulating the User Accounting Database,libc},
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Manipulating-the-Database.html},
+@end ifnotinfo
+@item
+@uref{https://www.kernel.org/doc/man-pages/online/pages/man5/utmp.5.html,,man utmp}.
+@end itemize
+
+Gnulib module: utmp-h
+@mindex utmp-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This header file is missing on some platforms:
+FreeBSD 14.0, mingw, MSVC 14.
+@item
+@code{<sys/types.h>} is a prerequisite of @code{<utmp.h>} on some platforms:
+FreeBSD 8.0, OpenBSD 7.2.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+While some platforms have the @code{struct utmp} field @code{ut_user},
+older platforms have the field @code{ut_name}.
+@item
+The @code{struct utmp} fields @code{ut_id}, @code{ut_pid}, @code{ut_type}
+do not exist on some platforms:
+macOS, old FreeBSD, NetBSD, OpenBSD, Minix.
+@item
+The @code{struct utmp} field @code{ut_host} does not exist on some platforms:
+Solaris.
+@item
+The @code{struct utmp} field @code{ut_exit} does not exist on some platforms:
+macOS, old FreeBSD, NetBSD, OpenBSD, Minix, Cygwin.
+@item
+The @code{struct utmp} field @code{ut_session} does not exist on some platforms:
+macOS, old FreeBSD, NetBSD, OpenBSD, Minix, AIX, HP-UX, Solaris, Cygwin.
+@item
+The @code{struct utmp} field @code{ut_addr} or @code{ut_addr_v6} does not exist
+on some platforms:
+macOS, old FreeBSD, NetBSD, OpenBSD, Minix, AIX, Solaris.
+@item
+On some platforms, this API does not support timestamps past the
+year 2038:
+glibc 2.38 on 32-bit platforms like x86 and ARM where @code{time_t}
+was historically 32 bits.
+@item
+@mindex year2038
+@mindex year2038-recommended
+On some platforms, this header misbehaves if the @code{year2038} or
+@code{year2038-recommended} modules are used and the program is
+configured without the @option{--disable-year2038} option.
+@mindex readutmp
+The @code{readutmp} module works around this problem:
+glibc 2.38 on 32-bit platforms like x86 and ARM where @code{time_t}
+was historically 32 bits.
+@xref{Avoiding the year 2038 problem}.
+@end itemize

@@ -1,0 +1,22 @@
+@node srand
+@subsection @code{srand}
+@findex srand
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/srand.html}
+
+Gnulib module: ---
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function is only defined as an inline function on some platforms:
+Android 4.4.
+@item
+This function has no effect on @code{rand} invocations in other threads
+on some platforms:
+Cygwin 3.4.6.
+@end itemize

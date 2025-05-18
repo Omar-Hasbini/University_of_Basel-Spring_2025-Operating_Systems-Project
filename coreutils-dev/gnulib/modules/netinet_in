@@ -1,0 +1,25 @@
+Description:
+A <netinet/in.h> for systems lacking it.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'netinet_in-h' instead.
+
+Files:
+
+Depends-on:
+netinet_in-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<netinet/in.h>
+
+License:
+LGPLv2+
+
+Maintainer:

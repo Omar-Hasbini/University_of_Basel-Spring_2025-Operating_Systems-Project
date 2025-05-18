@@ -1,0 +1,20 @@
+@node cbrtf
+@subsection @code{cbrtf}
+@findex cbrtf
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/cbrtf.html}
+
+Gnulib module: cbrtf or cbrtf-ieee
+@mindex cbrtf
+@mindex cbrtf-ieee
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, AIX 5.1, Solaris 9, MSVC 9.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

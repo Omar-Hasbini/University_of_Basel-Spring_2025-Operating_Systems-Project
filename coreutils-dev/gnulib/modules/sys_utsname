@@ -1,0 +1,25 @@
+Description:
+A <sys/utsname.h> for systems which lack it.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_utsname-h' instead.
+
+Files:
+
+Depends-on:
+sys_utsname-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/utsname.h>
+
+License:
+LGPLv2+
+
+Maintainer:

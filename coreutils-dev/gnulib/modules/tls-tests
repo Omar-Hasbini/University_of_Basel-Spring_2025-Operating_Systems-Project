@@ -1,0 +1,18 @@
+Files:
+tests/test-tls.c
+
+Depends-on:
+thread
+lock
+stdint-h
+yield
+random
+
+configure.ac:
+AC_CHECK_DECLS_ONCE([alarm])
+
+Makefile.am:
+TESTS += test-tls
+check_PROGRAMS += test-tls
+test_tls_LDADD = $(LDADD) @LIBMULTITHREAD@ @YIELD_LIB@
+

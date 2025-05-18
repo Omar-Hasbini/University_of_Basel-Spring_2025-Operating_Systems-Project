@@ -1,0 +1,25 @@
+Description:
+A <sys/times.h> for systems lacking it.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_times-h' instead.
+
+Files:
+
+Depends-on:
+sys_times-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/times.h>
+
+License:
+LGPLv2+
+
+Maintainer:

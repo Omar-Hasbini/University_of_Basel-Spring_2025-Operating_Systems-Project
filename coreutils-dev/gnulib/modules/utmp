@@ -1,0 +1,25 @@
+Description:
+A GNU-like <utmp.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'utmp-h' instead.
+
+Files:
+
+Depends-on:
+utmp-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<utmp.h>
+
+License:
+LGPLv2+
+
+Maintainer:

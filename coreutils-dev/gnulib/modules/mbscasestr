@@ -1,0 +1,36 @@
+Description:
+mbscasestr() function: case-insensitive search for a substring in a string.
+
+Files:
+lib/mbscasestr.c
+lib/str-kmp.h
+
+Depends-on:
+alignasof
+mbuiter
+bool
+string-h
+mbslen
+malloca
+c32tolower
+strnlen
+
+configure.ac:
+gl_STRING_MODULE_INDICATOR([mbscasestr])
+
+Makefile.am:
+lib_SOURCES += mbscasestr.c
+
+Include:
+<string.h>
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPL
+
+Maintainer:
+all

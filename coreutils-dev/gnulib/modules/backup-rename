@@ -1,0 +1,47 @@
+Description:
+Rename a file to a backup name.
+
+Files:
+lib/backup-internal.h
+lib/backup-rename.c
+lib/backupfile.c
+lib/backupfile.h
+m4/backupfile.m4
+
+Depends-on:
+argmatch
+attribute
+basename-lgpl
+c99
+closedir
+d-ino
+fcntl-h
+ialloc
+memcmp
+opendirat
+readdir
+renameatu
+bool
+stdckdint-h
+stdint-h
+xalloc-oversized
+
+configure.ac:
+gl_BACKUPFILE
+
+Makefile.am:
+lib_SOURCES += backupfile.c backup-rename.c
+
+Include:
+"backupfile.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

@@ -1,0 +1,26 @@
+Files:
+tests/nap.h
+tests/test-futimens.h
+tests/test-utimens-common.h
+tests/test-futimens.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+gettext-h
+fcntl-h
+ignore-value
+nanosleep
+stdckdint-h
+timespec
+dup
+utimecmp
+xconcat-filename
+xgetcwd-lgpl
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-futimens
+check_PROGRAMS += test-futimens
+test_futimens_LDADD = $(LDADD) $(CLOCK_TIME_LIB) $(NANOSLEEP_LIB) @LIBINTL@

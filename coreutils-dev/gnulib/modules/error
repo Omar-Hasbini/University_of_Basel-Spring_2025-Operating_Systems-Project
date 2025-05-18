@@ -1,0 +1,42 @@
+Description:
+error and error_at_line functions: Error reporting.
+
+Files:
+lib/error.c
+m4/error.m4
+
+Depends-on:
+error-h
+stddef-h
+stdio-h
+getprogname     [test $COMPILE_ERROR_C = 1]
+gettext-h       [test $COMPILE_ERROR_C = 1]
+gnulib-i18n     [test $COMPILE_ERROR_C = 1]
+strerror        [test $COMPILE_ERROR_C = 1]
+unistd-h        [test $COMPILE_ERROR_C = 1]
+msvc-nothrow    [test $COMPILE_ERROR_C = 1]
+
+configure.ac:
+AC_REQUIRE([gl_ERROR_H])
+gl_ERROR
+gl_CONDITIONAL([GL_COND_OBJ_ERROR], [test $COMPILE_ERROR_C = 1])
+AM_COND_IF([GL_COND_OBJ_ERROR], [
+  gl_PREREQ_ERROR
+])
+m4_ifdef([AM_XGETTEXT_OPTION],
+  [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
+   AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
+
+Makefile.am:
+if GL_COND_OBJ_ERROR
+lib_SOURCES += error.c
+endif
+
+Include:
+<error.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all, glibc

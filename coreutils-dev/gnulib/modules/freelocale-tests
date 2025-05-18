@@ -1,0 +1,14 @@
+Files:
+tests/test-freelocale.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+newlocale
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-freelocale
+check_PROGRAMS += test-freelocale
+test_freelocale_LDADD = $(LDADD) $(GETLOCALENAME_L_LIB)

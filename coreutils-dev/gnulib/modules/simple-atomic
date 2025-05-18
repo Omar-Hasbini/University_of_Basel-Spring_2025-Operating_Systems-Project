@@ -1,0 +1,27 @@
+Description:
+Simple atomic operations for multithreading.
+
+Files:
+lib/simple-atomic.h
+lib/simple-atomic.c
+m4/atomic-cas.m4
+
+Depends-on:
+stdint-h
+sparcv8+
+
+configure.ac:
+AC_CHECK_HEADERS_ONCE([pthread.h])
+AC_REQUIRE([gl_ATOMIC_COMPARE_AND_SWAP])
+
+Makefile.am:
+lib_SOURCES += simple-atomic.c
+
+Include:
+"simple-atomic.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

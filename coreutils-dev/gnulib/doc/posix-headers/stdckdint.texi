@@ -1,0 +1,23 @@
+@node stdckdint.h
+@section @file{stdckdint.h}
+
+POSIX specification:@* Not in POSIX yet, but we expect it will be.
+ISO draft C23
+(@url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf})
+section 7.20.
+
+Gnulib module: stdckdint-h
+@mindex stdckdint-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This header file is missing on many platforms:
+glibc 2.29, macOS 14, FreeBSD 13.2, NetBSD 10.0, OpenBSD 7.5, Minix 3.3.0, AIX 7.3.1, HP-UX 11.31, Solaris 11.4, Cygwin 2.9.0, mingw, MSVC 14, Android 9.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+In draft C23, arguments of @code{stdckdint.h} macros can have side effects.
+@end itemize

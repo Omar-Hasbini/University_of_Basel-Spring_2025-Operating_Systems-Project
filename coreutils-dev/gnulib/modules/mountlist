@@ -1,0 +1,36 @@
+Description:
+Return list of mounted file systems.
+
+Files:
+lib/mountlist.h
+lib/mountlist.c
+m4/fstypename.m4
+m4/mountlist.m4
+
+Depends-on:
+c-ctype
+fopen-gnu
+free-posix
+getline
+open
+unlocked-io-internal
+bool
+stdint-h
+strstr-simple
+xalloc
+
+configure.ac:
+gl_MOUNTLIST
+gl_PREREQ_MOUNTLIST_EXTRA
+
+Makefile.am:
+lib_SOURCES += mountlist.c
+
+Include:
+"mountlist.h"
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

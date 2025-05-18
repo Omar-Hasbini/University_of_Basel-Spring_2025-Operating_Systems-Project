@@ -1,0 +1,25 @@
+Description:
+A <sched.h> include file.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sched-h' instead.
+
+Files:
+
+Depends-on:
+sched-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sched.h>
+
+License:
+LGPLv2+
+
+Maintainer:

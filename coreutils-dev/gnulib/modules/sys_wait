@@ -1,0 +1,25 @@
+Description:
+A <sys/wait.h> for systems with missing declarations.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_wait-h' instead.
+
+Files:
+
+Depends-on:
+sys_wait-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/wait.h>
+
+License:
+LGPLv2+
+
+Maintainer:

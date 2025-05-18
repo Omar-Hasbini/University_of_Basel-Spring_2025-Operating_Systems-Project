@@ -1,0 +1,26 @@
+Description:
+putenv() function: change or add an environment variable.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'putenv-gnu' instead.
+
+Files:
+
+Depends-on:
+putenv-gnu
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdlib.h>
+
+License:
+LGPL
+
+Maintainer:
+all

@@ -1,0 +1,25 @@
+Description:
+A GNU-like <stdint.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stdint-h' instead.
+
+Files:
+
+Depends-on:
+stdint-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdint.h>
+
+License:
+LGPLv2+
+
+Maintainer:

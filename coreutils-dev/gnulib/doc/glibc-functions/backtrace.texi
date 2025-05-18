@@ -1,0 +1,48 @@
+@node backtrace
+@subsection @code{backtrace}
+@findex backtrace
+
+LSB specification:@* @url{https://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic/baselib-backtrace-1.html}
+
+Documentation:
+@itemize
+@item
+@ifinfo
+@ref{Backtraces,,Backtraces,libc},
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Backtraces.html},
+@end ifnotinfo
+@item
+@uref{https://www.kernel.org/doc/man-pages/online/pages/man3/backtrace.3.html,,man backtrace}.
+@end itemize
+
+Gnulib module: execinfo
+@mindex execinfo
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on many platforms:
+musl libc, FreeBSD 9.3, NetBSD 6.1, OpenBSD 6.9, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 10, Cygwin 2.9, mingw, MSVC 14, Android API level 32.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+The second argument is of type @code{size_t}, not @code{int}, on some platforms:
+FreeBSD, NetBSD, OpenBSD.
+@item
+The return value may be @code{(size_t)(-1)} instead of 0 on some platforms:
+FreeBSD 12.4/i386.
+@item
+The returned stack trace is empty if it would not entirely fit into the
+provided buffer on some platforms:
+FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5.
+@item
+The returned stack trace is always empty on some platforms:
+FreeBSD 11.0/i386, FreeBSD 12.2/sparc64.
+@item
+On platforms where the function is missing,
+the Gnulib substitute implementation is just a stub, and does nothing.
+@end itemize

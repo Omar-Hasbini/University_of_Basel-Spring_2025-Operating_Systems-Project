@@ -1,0 +1,32 @@
+@node sys/un.h
+@section @file{sys/un.h}
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/sys_un.h.html}
+
+Gnulib module: sys_un-h
+@mindex sys_un-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+@c Added in Windows 10 Insider Build 17063:
+@c <https://devblogs.microsoft.com/commandline/af_unix-comes-to-windows/>
+@c <https://blogs.windows.com/windows-insider/2017/12/19/announcing-windows-10-insider-preview-build-17063-pc/>
+This header file is missing on some platforms:
+mingw, MSVC 14.
+@item
+This header file does not define the @code{sa_family_t} type on some platforms:
+Cygwin 3.5.5, mingw, MSVC 14.
+@item
+This header file causes compilation errors in C++ mode on some platforms:
+@c https://sourceware.org/bugzilla/show_bug.cgi?id=32024
+glibc 2.41.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This header requires @code{sys/socket.h} to be included first on
+some platforms:
+Cygwin 1.7.18.
+@end itemize

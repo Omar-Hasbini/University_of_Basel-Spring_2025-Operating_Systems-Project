@@ -1,0 +1,34 @@
+Description:
+Information about terminal capabilities.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'terminfo' instead;
+it avoids buffer overflow problems when possible.
+
+Files:
+m4/termcap.m4
+m4/curses.m4
+lib/tparm.c
+lib/tputs.c
+
+Depends-on:
+havelib
+attribute
+c-ctype
+
+configure.ac:
+gl_TERMCAP
+
+Makefile.am:
+lib_LDFLAGS += $(LTLIBTERMCAP)
+
+Include:
+
+License:
+LGPL
+
+Maintainer:
+Bruno Haible

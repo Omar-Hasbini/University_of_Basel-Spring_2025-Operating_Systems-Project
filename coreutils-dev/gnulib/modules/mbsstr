@@ -1,0 +1,35 @@
+Description:
+mbsstr() function: search for a substring in a string.
+
+Files:
+lib/mbsstr.c
+lib/str-kmp.h
+
+Depends-on:
+alignasof
+mbuiter
+bool
+string-h
+mbslen
+malloca
+strnlen
+
+configure.ac:
+gl_STRING_MODULE_INDICATOR([mbsstr])
+
+Makefile.am:
+lib_SOURCES += mbsstr.c
+
+Include:
+<string.h>
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+LGPL
+
+Maintainer:
+all

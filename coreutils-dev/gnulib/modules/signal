@@ -1,0 +1,25 @@
+Description:
+A GNU-like <signal.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'signal-h' instead.
+
+Files:
+
+Depends-on:
+signal-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<signal.h>
+
+License:
+LGPLv2+
+
+Maintainer:

@@ -1,0 +1,19 @@
+@node error_print_progname
+@subsection @code{error_print_progname}
+@findex error_print_progname
+
+Documentation:@* @uref{https://www.kernel.org/doc/man-pages/online/pages/man3/error_print_progname.3.html,,man error_print_progname}
+
+Gnulib module: error
+@mindex error
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This variable is missing on many non-glibc platforms:
+macOS 14, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 11.4, Cygwin 1.7.9, mingw, MSVC 14, Android 5.1.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

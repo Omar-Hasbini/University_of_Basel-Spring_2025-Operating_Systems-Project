@@ -1,0 +1,39 @@
+@node lchown
+@subsection @code{lchown}
+@findex lchown
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/lchown.html}
+
+Gnulib module: lchown
+@mindex lchown
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms; however, the replacement
+fails with @code{ENOSYS}:
+mingw, MSVC 14.
+@item
+This function is missing on some platforms; however, the replacement
+fails on symlinks:
+Minix 3.2.1.
+@item
+Some platforms fail to detect trailing slash on non-directories, as in
+@code{lchown("link-to-file/",uid,gid)}:
+FreeBSD 7.2, Solaris 9.
+@item
+Some platforms fail to update the change time when at least one
+argument was not -1, but no ownership changes resulted.  However,
+without @code{lchmod}, the replacement only fixes this for non-symlinks:
+OpenBSD 4.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function sometimes fails with @code{EACCES} when the failure is
+due to lack of appropriate privileges (@code{EPERM}), not to
+search permission denied on the file name prefix (@code{EACCES}):
+Linux kernel 5.15 with glibc 2.35 and a CIFS v1 file system
+(see @url{https://bugs.gnu.org/65599}).
+@end itemize

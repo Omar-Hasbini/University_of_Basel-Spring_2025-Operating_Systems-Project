@@ -1,0 +1,31 @@
+Description:
+Quoting for a system command.
+
+Files:
+lib/system-quote.h
+lib/system-quote.c
+
+Depends-on:
+sh-quote
+bool
+xalloc
+
+configure.ac:
+AC_REQUIRE([AC_C_RESTRICT])
+
+Makefile.am:
+lib_SOURCES += system-quote.h system-quote.c
+
+Include:
+"system-quote.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+
+License:
+GPL
+
+Maintainer:
+all

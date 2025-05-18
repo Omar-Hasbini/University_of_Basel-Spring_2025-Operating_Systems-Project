@@ -1,0 +1,22 @@
+Files:
+tests/test-mtx.c
+tests/test-mtx-type.c
+tests/atomic-int-isoc.h
+tests/macros.h
+m4/semaphore.m4
+
+Depends-on:
+thrd
+stdint-h
+random
+
+configure.ac:
+AC_CHECK_HEADERS_ONCE([semaphore.h])
+AC_CHECK_DECLS_ONCE([alarm])
+AC_REQUIRE([gl_SEMAPHORE])
+
+Makefile.am:
+TESTS += test-mtx test-mtx-type
+check_PROGRAMS += test-mtx test-mtx-type
+test_mtx_LDADD = $(LDADD) @LIBSTDTHREAD@ @LIBTHREAD@ @LIB_SEMAPHORE@
+test_mtx_type_LDADD = $(LDADD) @LIBSTDTHREAD@

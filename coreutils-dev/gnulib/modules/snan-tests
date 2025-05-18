@@ -1,0 +1,22 @@
+Files:
+tests/test-snan-1.c
+tests/test-snan-2.sh
+tests/test-snan-2.c
+tests/macros.h
+m4/math_h.m4
+
+Status:
+unportable-test
+
+Depends-on:
+fenv-exceptions-tracking-c99
+fpe-trapping
+
+configure.ac:
+AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
+
+Makefile.am:
+TESTS += test-snan-1 test-snan-2.sh
+check_PROGRAMS += test-snan-1 test-snan-2
+test_snan_1_LDADD = $(LDADD) $(FENV_EXCEPTIONS_TRACKING_LIBM)
+test_snan_2_LDADD = $(LDADD) @FPE_TRAPPING_LIBM@

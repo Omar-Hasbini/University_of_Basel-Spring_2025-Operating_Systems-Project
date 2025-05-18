@@ -1,0 +1,20 @@
+@node strcat
+@subsection @code{strcat}
+@findex strcat
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/strcat.html}
+
+Gnulib module: string-h
+@mindex string-h
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function cannot be called from plain inline or extern inline functions
+on some platforms:
+macOS 10.8.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

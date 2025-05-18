@@ -1,0 +1,35 @@
+Description:
+Access control lists of files, with diagnostics.  (Unportable.)
+
+Files:
+lib/copy-acl.c
+lib/set-acl.c
+
+Depends-on:
+error
+gettext-h
+gnulib-i18n
+qcopy-acl
+qset-acl
+quote
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += copy-acl.c set-acl.c
+
+Include:
+"acl.h"
+
+Link:
+$(LTLIBUNISTRING) when linking with libtool, $(LIBUNISTRING) otherwise
+$(MBRTOWC_LIB)
+$(LTLIBC32CONV) when linking with libtool, $(LIBC32CONV) otherwise
+$(LIB_ACL)
+$(QCOPY_ACL_LIB)
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

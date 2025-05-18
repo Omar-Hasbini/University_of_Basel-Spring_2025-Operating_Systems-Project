@@ -1,0 +1,25 @@
+Description:
+A <sys/ioctl.h> for systems with missing declarations.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'sys_ioctl-h' instead.
+
+Files:
+
+Depends-on:
+sys_ioctl-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<sys/ioctl.h>
+
+License:
+LGPLv2+
+
+Maintainer:

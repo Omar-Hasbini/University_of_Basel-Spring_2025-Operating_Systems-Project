@@ -1,0 +1,25 @@
+Description:
+A GNU-like <math.h>.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'math-h' instead.
+
+Files:
+
+Depends-on:
+math-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<math.h>
+
+License:
+LGPLv2+
+
+Maintainer:

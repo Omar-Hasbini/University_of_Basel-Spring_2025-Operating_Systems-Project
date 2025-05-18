@@ -1,0 +1,16 @@
+@node pow
+@subsection @code{pow}
+@findex pow
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/pow.html}
+
+Gnulib module: pow
+@mindex pow
+
+Portability problems fixed by Gnulib:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

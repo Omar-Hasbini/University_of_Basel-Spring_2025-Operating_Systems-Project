@@ -1,0 +1,25 @@
+@node fetestexceptflag
+@subsection @code{fetestexceptflag}
+@findex fetestexceptflag
+
+Documentation:@*
+@ifinfo
+@ref{Status bit operations,,Examining the FPU status word,libc}.
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Status-bit-operations.html}.
+@end ifnotinfo
+
+Gnulib module: fenv-exceptions-state-c23
+@mindex fenv-exceptions-state-c23
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on all non-glibc platforms:
+glibc 2.24, macOS 14, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.4, Cygwin 2.9, mingw, MSVC 14, Android 9.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

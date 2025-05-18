@@ -1,0 +1,25 @@
+Description:
+A <stdbool.h> that nearly conforms to C99.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'stdbool-h-c99' instead.
+
+Files:
+
+Depends-on:
+stdbool-h-c99
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+<stdbool.h>
+
+License:
+LGPLv2+
+
+Maintainer:

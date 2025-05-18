@@ -1,0 +1,116 @@
+@node Avoiding the year 2038 problem
+@section Avoiding the year 2038 problem
+
+The @dfn{year 2038 problem} denotes unpredictable behaviour that will
+likely occur in the year 2038, for programs that use a 32-bit signed
+integer @samp{time_t} type that cannot represent timestamps on or
+after 2038-01-19 03:14:08 UTC@.  See
+@url{https://en.wikipedia.org/wiki/Year_2038_problem, Year 2038
+problem} for details.
+
+@mindex year2038
+The Gnulib module @samp{year2038} fixes this problem on some
+platforms, by making @code{time_t} wide enough to represent timestamps
+after 2038.  This has no effect on most current platforms, which have
+timestamps that are already wide enough.  However, @samp{year2038} by
+default arranges for builds on legacy 32-bit Linux kernels running
+glibc 2.34 and later to compile with @samp{_TIME_BITS=64} to get wider
+timestamps.  On older platforms that do not support timestamps after
+the year 2038, @samp{year2038} causes @command{configure} to issue a
+warning but still proceed.  On platforms that appear to support
+post-2038 timestamps but where something prevents this from working,
+@command{configure} fails.
+
+The default behavior of @samp{year2038} can be overridden by using the
+@command{configure} option @option{--disable-year2038}, which
+suppresses support for post-2038 timestamps.  This may be useful if
+the package links to other libraries whose user-facing ABIs still
+require @code{time_t} to be 32-bit on your platform.
+
+@mindex year2038-recommended
+The Gnulib module @samp{year2038-recommended} is like @samp{year2038},
+except it by default rejects platforms where @code{time_t} cannot represent
+timestamps after 2038.  If this module is used and a 32-platform cannot support
+64-bit @code{time_t}, one can still fix the year-2038 problem by using
+a 64-bit instead of a 32-bit build, as noted in the architecture list
+below.  If all else fails one can configure with
+@option{--disable-year2038}; however, the resulting programs will
+mishandle timestamps after 2038.
+
+The Gnulib module @samp{year2038-recommended} is designed
+for packages intended for use on 32-bit platforms
+after the year 2038.  If your package is commonly built on
+32-bit platforms that will not be used after the year 2038,
+you can use the @samp{year2038} module instead, to save builders
+the trouble of configuring with @option{--disable-year2038}.
+
+@mindex largefile
+If the Gnulib module @samp{largefile} is used but neither
+@samp{year2038} nor @samp{year2038-recommended} is used,
+@command{configure} will have an option @option{--enable-year2038}
+that causes @code{configure} to behave as if @samp{year2038} was used.
+This is for packages that have long used @samp{largefile} but have not
+gotten around to upgrading their Gnulib module list to include
+@samp{year2038} or @samp{year2038-recommended}.
+@xref{Large File Support}.
+
+With the @samp{year2038-recommended} module, @command{configure} by
+default should work on the following 32-bit platforms (or 32-bit ABIs
+in bi-arch systems):
+
+@itemize
+@item
+Linux kernel 5.1 (2019) and later with glibc 2.34 (2021) and later on
+x86, arm, mips (o32 or n32 ABI), powerpc32, sparc32, s390, hppa, m68k, sh, csky, microblaze, nios2,
+@item
+Linux kernel 5.1 (2019) and later with musl libc 1.2 (2020) and later on x86,
+@item
+Linux on arc, loong32, ork1, riscv32 and x86_64-x32,
+@item
+NetBSD 6.0 (2012) and later on x86 and sparc,
+@item
+OpenBSD 5.5 (2014) and later on x86,
+@item
+FreeBSD/arm,
+@item
+Minix 3.3 (2014).
+@end itemize
+
+@noindent
+Whereas with @samp{year2038-recommended}, @command{configure} should
+by default fail on earlier versions of the abovementioned platforms if
+a version is listed, and it should also by default fail on all
+versions of the following older 32-bit platforms or ABIs:
+
+@itemize
+@item
+Android on ARMv7 or x86,
+@item
+Mac OS X 10.6 (2009) and earlier on x86 and powerpc,
+@item
+GNU/Hurd/x86,
+@item
+GNU/kFreeBSD/x86,
+@item
+FreeBSD/x86 (this port demoted to Tier 2 in FreeBSD 13 [2021]
+and planned to never have 64-bit @code{time_t}),
+@item
+MidnightBSD/x86,
+@item
+AIX/powerpc (to fix, configure with @samp{CC='gcc -maix64' AR='ar -X64'}),
+@item
+Solaris 11.4 (2018) and earlier on x86 and sparc
+(to fix, configure with @samp{CC='gcc -m64'}),
+@item
+Cygwin 3.3.6 (2022) and earlier on x86,
+@item
+Haiku/x86.
+@end itemize
+
+If you use the @samp{year2038} or @samp{year2038-recommended} modules,
+and configure to support timestamps after the year 2038,
+your code should not include @samp{<utmp.h>} or @samp{<utmpx.h>}
+directly, because these include files do not work with 64-bit timestamps
+if the platform's @code{time_t} was traditionally 32 bits.
+Your code can instead use the @samp{readutmp} module,
+which works around this problem.

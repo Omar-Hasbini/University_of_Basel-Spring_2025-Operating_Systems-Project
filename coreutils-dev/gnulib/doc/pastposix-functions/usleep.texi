@@ -1,0 +1,28 @@
+@node usleep
+@section @code{usleep}
+@findex usleep
+
+Removed in POSIX.1-2008.
+POSIX.1-2004 specification:@* @url{https://pubs.opengroup.org/onlinepubs/009695399/functions/usleep.html}
+
+Gnulib module: usleep
+@mindex usleep
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+On some systems, @code{usleep} rejects attempts to sleep longer than 1
+second, as allowed by POSIX:
+NetBSD 10.0, mingw.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+According to POSIX, the @code{usleep} function may interfere with the program's
+use of the @code{SIGALRM} signal.  On Linux, it doesn't; on other platforms,
+it may.
+@item
+On some systems, @code{usleep} may sleep for less than the indicated duration:
+Cygwin 3.5.3.
+@end itemize

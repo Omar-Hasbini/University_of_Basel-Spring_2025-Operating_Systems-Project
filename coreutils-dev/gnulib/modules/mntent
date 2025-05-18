@@ -1,0 +1,27 @@
+Description:
+<mntent.h> with more declarations.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'mntent-h' instead.
+
+Files:
+
+Depends-on:
+mntent-h
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+#if HAVE_MNTENT_H
+<mntent.h>
+#endif
+
+License:
+LGPLv2+
+
+Maintainer:

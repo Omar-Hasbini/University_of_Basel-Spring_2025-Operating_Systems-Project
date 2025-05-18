@@ -1,0 +1,48 @@
+Description:
+Translate messages to user's native language.
+
+The purpose of this module is:
+  - So that gnulib testdirs include i18n support and thus expose possible
+    link errors on non-glibc platforms. We want to detect such link
+    errors from within gnulib and fix them by adding $(LIBINTL) to
+    various <program>_LDADD variables.
+  - To fix conflicts between older versions of 'gettextize' and the newer
+    versions of files found in gnulib.  See
+    https://www.gnu.org/software/gnulib/manual/html_node/gettextize-and-autopoint.html
+  - As a prototype if/when we someday unify gnulib-tool, libtoolize, and
+    gettextize in a single tool.
+
+Files:
+m4/gettext.m4
+m4/build-to-host.m4
+m4/host-cpu-c-abi.m4
+m4/iconv.m4
+m4/intl-thread-locale.m4
+m4/intlmacosx.m4
+m4/nls.m4
+m4/po.m4
+m4/progtest.m4
+build-aux/config.rpath
+
+Depends-on:
+extensions
+gettext-h
+havelib
+
+configure.ac:
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.22])
+
+Makefile.am:
+
+Include:
+"gettext.h"
+
+Link:
+$(LTLIBINTL) when linking with libtool, $(LIBINTL) otherwise
+
+License:
+LGPLv2+
+
+Maintainer:
+all

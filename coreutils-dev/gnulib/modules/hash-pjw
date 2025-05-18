@@ -1,0 +1,25 @@
+Description:
+Compute a hash value for a NUL-terminated string.
+
+Status:
+deprecated
+
+Notice:
+This module is deprecated. Use the module 'hashcode-string2' instead.
+
+Files:
+
+Depends-on:
+hashcode-string2
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+"hashcode-string2.h"
+
+License:
+LGPLv2+
+
+Maintainer:

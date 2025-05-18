@@ -1,0 +1,27 @@
+@node cbrtl
+@subsection @code{cbrtl}
+@findex cbrtl
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9799919799/functions/cbrtl.html}
+
+Gnulib module: cbrtl or cbrtl-ieee
+@mindex cbrtl
+@mindex cbrtl-ieee
+
+Portability problems fixed by either Gnulib module @code{cbrtl} or @code{cbrtl-ieee}
+@itemize
+@item
+This function is missing on some platforms:
+FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, Solaris 9, Cygwin 1.7.x, MSVC 9, Android 4.4.
+@item
+This function produces grossly wrong results on some platforms:
+OpenBSD 5.1/SPARC.
+@end itemize
+
+Portability problems fixed by Gnulib module @code{cbrtl-ieee}:
+@itemize
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@end itemize

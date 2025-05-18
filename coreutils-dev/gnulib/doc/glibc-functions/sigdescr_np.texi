@@ -1,0 +1,35 @@
+@node sigdescr_np
+@subsection @code{sigdescr_np}
+@findex sigdescr_np
+
+Documentation:@*
+@ifinfo
+@ref{Signal Messages,,Signal Messages,libc}.
+@end ifinfo
+@ifnotinfo
+@url{https://www.gnu.org/software/libc/manual/html_node/Signal-Messages.html}.
+@end ifnotinfo
+
+Gnulib module: sigdescr_np
+@mindex sigdescr_np
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on all non-glibc platforms:
+glibc 2.31, macOS 14, FreeBSD 14.0, NetBSD 10.0, OpenBSD 7.5, Minix 3.1.8, AIX 7.1, HP-UX 11.31, Solaris 11.4, Cygwin 2.9, mingw, MSVC 14, Android 9.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+The description of SIGCHLD is wrong on some platforms:
+glibc.
+@item
+The description of SIGEMT is completely unintelligible on some platforms:
+glibc.
+@end itemize
+
+Note: This function is hardly useful, because it returns English strings, not
+internationalized strings.  Better use the function @code{strsignal}, which
+returns internationalized strings.
