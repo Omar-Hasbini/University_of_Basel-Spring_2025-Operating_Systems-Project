@@ -1,3 +1,10 @@
+/*
+Metadata
+Author: Omar Fadi Hasbini
+Context: University of Basel, Operating Systems, Spring 2025
+License: Check - https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
+*/ 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,37 +15,22 @@
 #include <pwd.h>
 #include "tagdb.h"
 
-int add_tag(const char *filename, const char *tag) {
+// Let function caller free "*file_path"
+// Return 1 if file exists, 0 otherwise
+int check_file_exists(const char *file_path) {
+    FILE *fp = fopen(file_path, "r");
 
-    json_object* db = load_db();
+    if (fp) {
+        fclose(fp);
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-int remove_tag(const char *filename, const char *tag) {
-    json_object* db = load_db();
-}
-
-int search_by_tag(const char *tag) {
-    json_object* db = load_db();
-}
-
-int list_all_tags() {
-    json_object* db = load_db();
-}
-
-int list_file_tags(const char *filename) {
-    json_object* db = load_db();
-}
-
-struct json_object* load_db() {
-    
-}
-
-int save_db() {
-
-}
-
+// Return 1 if db exists, 0 otherwise
 int check_tagdb_exists() {
-    // Source: https://stackoverflow.com/questions/308695/how-do-i-concatenate-const-literal-strings-in-c
+    // Source (with personal modification): https://stackoverflow.com/questions/308695/how-do-i-concatenate-const-literal-strings-in-c
     char* home = get_home();
     const char* suffix = "/.file_tags/tags.json";
 
@@ -66,19 +58,7 @@ int check_tagdb_exists() {
     return status;
 }
 
-// Let function caller free "*file_path"
-int check_file_exists(const char *file_path) {
-    FILE *fp = fopen(file_path, "r");
-
-    if (fp) {
-        fclose(fp);
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-// Source: https://community.unix.com/t/getting-home-directory/248085/2
+// Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
 // This is not needed for shell inputs since the shell auto-expands the "~".
 char* get_home() {
     struct passwd *pwd; 
@@ -93,4 +73,53 @@ char* get_home() {
     }
 
     return NULL;
+}
+
+// Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
+struct json_object* load_tag_db() {
+    if (!check_tagdb_exists) {
+        fprintf(stderr, "Error: DB does not exist and cannot be loaded\n");
+        return NULL;
+    }
+
+    FILE *fp;
+    char buffer[1024];
+
+    struct json_object* parsed_json;
+
+}
+
+struct json_object* get_db_or_error() {
+    return load_tag_db();
+}
+
+int save_db() {
+    json_object* db = get_db_or_error();
+    if (!db) return -1;
+}
+
+
+int add_tag(const char *filename, const char *tag) {
+    json_object* db = get_db_or_error();
+    if (!db) return -1;
+}
+
+int remove_tag(const char *filename, const char *tag) {
+    json_object* db = get_db_or_error();
+    if (!db) return -1;
+}
+
+int search_by_tag(const char *tag) {
+    json_object* db = get_db_or_error();
+    if (!db) return -1;
+}
+
+int list_all_tags() {
+    json_object* db = get_db_or_error();
+    if (!db) return -1;
+}
+
+int list_file_tags(const char *filename) {
+    json_object* db = get_db_or_error();
+    if (!db) return -1;
 }
