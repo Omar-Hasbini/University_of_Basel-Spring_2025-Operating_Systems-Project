@@ -2,7 +2,7 @@
 Metadata
 Author: Omar Fadi Hasbini
 Context: University of Basel, Operating Systems, Spring 2025
-License: Check - https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
+License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
 */ 
 
 #include <stdio.h>
@@ -86,56 +86,61 @@ int check_tagdb_exists() {
 
 // Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
 struct json_object* load_tag_db() {
-    if (!check_tagdb_exists) {
+    if (!check_tagdb_exists()) {
         fprintf(stderr, "Error: DB does not exist and cannot be loaded\n");
         return NULL;
     }
+
     char* full_path = get_db_path;
-
-    FILE *fp;
     char buffer[1024];
+    FILE *fp;
+    struct json_object *parsed_json;
 
-    fp = fopen("")
 
-    free(fp);
+    fp = fopen(full_path, "r");
+    
+    if (!fp) {
+        fprintf(stderr, "Error: could not open the DB json file\n");
+        return NULL;
+    }
+
+    fread(buffer, 1024, 1, fp);
+    fclose(fp);
+
+    parsed_json = json_tokener_parse(buffer);
+
     free(full_path);
     free(buffer);
 
-    struct json_object* parsed_json;
-
-}
-
-struct json_object* get_db_or_error() {
-    return load_tag_db();
+    return parsed_json;
 }
 
 int save_db() {
-    json_object* db = get_db_or_error();
+    json_object* db = load_tag_db();
     if (!db) return -1;
 }
 
-
 int add_tag(const char *filename, const char *tag) {
-    json_object* db = get_db_or_error();
+    json_object* db = load_tag_db();
     if (!db) return -1;
 }
 
 int remove_tag(const char *filename, const char *tag) {
-    json_object* db = get_db_or_error();
+    json_object* db = load_tag_db();
     if (!db) return -1;
 }
 
 int search_by_tag(const char *tag) {
-    json_object* db = get_db_or_error();
+    json_object* db = load_tag_db();
     if (!db) return -1;
 }
 
 int list_all_tags() {
-    json_object* db = get_db_or_error();
+    json_object* db = load_tag_db();
     if (!db) return -1;
 }
 
 int list_file_tags(const char *filename) {
-    json_object* db = get_db_or_error();
+    json_object* db = load_tag_db();
     if (!db) return -1;
 }
