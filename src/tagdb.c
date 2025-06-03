@@ -15,49 +15,6 @@ License: Check - https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025
 #include <pwd.h>
 #include "tagdb.h"
 
-// Let function caller free "*file_path"
-// Return 1 if file exists, 0 otherwise
-int check_file_exists(const char *file_path) {
-    FILE *fp = fopen(file_path, "r");
-
-    if (fp) {
-        fclose(fp);
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-// Return 1 if db exists, 0 otherwise
-int check_tagdb_exists() {
-    // Source (with personal modification): https://stackoverflow.com/questions/308695/how-do-i-concatenate-const-literal-strings-in-c
-    char* home = get_home();
-    const char* suffix = "/.file_tags/tags.json";
-
-    if (!home) {
-        return 0;  
-    }
-
-    // Buffer allocation
-    size_t length_path = strlen(home) + strlen(suffix) + 1;
-    char* full_path = malloc(length_path);
-
-    if (!full_path) {
-        free(home);
-        return 0;
-    }
-
-    strcpy(full_path, home);
-    strcat(full_path, suffix);
-
-    int status = check_file_exists(full_path);
-
-    free(full_path);
-    free(home);
-
-    return status;
-}
-
 // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
 // This is not needed for shell inputs since the shell auto-expands the "~".
 char* get_home() {
@@ -75,15 +32,74 @@ char* get_home() {
     return NULL;
 }
 
+// Let function caller free "*file_path"
+// Return 1 if file exists, 0 otherwise
+int check_file_exists(const char *file_path) {
+    FILE *fp = fopen(file_path, "r");
+
+    if (fp) {
+        fclose(fp);
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+char* get_db_path() {
+    // Source (with personal modification): https://stackoverflow.com/questions/308695/how-do-i-concatenate-const-literal-strings-in-c
+    char* home = get_home();
+    const char* suffix = "/.file_tags/tags.json";
+
+    if (!home) {
+        return NULL;  
+    }
+
+    // Buffer allocation
+    size_t length_path = strlen(home) + strlen(suffix) + 1;
+    char* full_path = malloc(length_path);
+
+    if (!full_path) {
+        free(home);
+        return NULL;
+    }
+
+    strcpy(full_path, home);
+    strcat(full_path, suffix);
+
+    return full_path;
+}
+
+
+// Return 1 if db exists, 0 otherwise
+int check_tagdb_exists() {
+    char* full_path = get_db_path();
+    if (!full_path) {
+        return 0; 
+    }
+
+    int status = check_file_exists(full_path);
+    free(full_path);
+
+    return status;
+}
+
+
 // Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
 struct json_object* load_tag_db() {
     if (!check_tagdb_exists) {
         fprintf(stderr, "Error: DB does not exist and cannot be loaded\n");
         return NULL;
     }
+    char* full_path = get_db_path;
 
     FILE *fp;
     char buffer[1024];
+
+    fp = fopen("")
+
+    free(fp);
+    free(full_path);
+    free(buffer);
 
     struct json_object* parsed_json;
 
