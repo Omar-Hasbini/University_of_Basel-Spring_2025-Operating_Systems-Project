@@ -38,39 +38,53 @@ int save_db() {
 }
 
 int check_tagdb_exists() {
-    char dir[] = "~/home/.filetags/tags.json";
-    FILE fp* = fopen(dir);
-    if (fp) {
-        return 0;
-    } else {
-        return 1;
-    }
-}
-
-int check_file_exists() {
     // Source: https://stackoverflow.com/questions/308695/how-do-i-concatenate-const-literal-strings-in-c
-
-    char* home[] = get_home;
+    char* home = get_home();
+    const char* suffix = "/.file_tags/tags.json";
 
     if (!home) {
-        return 1;  
+        return 0;  
     }
 
-    FILE fp* = fopen(tags_file_dir);
-    if (fp) {
+    // Buffer allocation
+    size_t length_path = strlen(home) + strlen(suffix) + 1;
+    char* full_path = malloc(length_path);
+
+    if (!full_path) {
+        free(home);
         return 0;
-    } else {
+    }
+
+    strcpy(full_path, home);
+    strcat(full_path, suffix);
+
+    int status = check_file_exists(full_path);
+
+    free(full_path);
+    free(home);
+
+    return status;
+}
+
+// Let function caller free "*file_path"
+int check_file_exists(const char *file_path) {
+    FILE *fp = fopen(file_path, "r");
+
+    if (fp) {
+        fclose(fp);
         return 1;
+    } else {
+        return 0;
     }
 }
 
 // Source: https://community.unix.com/t/getting-home-directory/248085/2
-
+// This is not needed for shell inputs since the shell auto-expands the "~".
 char* get_home() {
     struct passwd *pwd; 
     if ( (pwd=getpwuid(getuid())) != NULL )
     {
-        returns strdup(pwd->pw_dir);
+        return strdup(pwd->pw_dir);
     } else {
         char* home_env = getenv("HOME");
         if (home_env != NULL) {
