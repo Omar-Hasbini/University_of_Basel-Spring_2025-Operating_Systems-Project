@@ -144,26 +144,68 @@ int save_db() {
 }
 
 int add_tag(const char *filename, const char *tag) {
+    if (!check_file_exists(filename)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
-    if (!db) return -1;
+    if (!db) {
+        fprintf(stderr, "Error: could not load the database.\n");
+        return -1;
+    }
+        
+
 }
 
 int remove_tag(const char *filename, const char *tag) {
+    if (!check_file_exists(filename)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
-    if (!db) return -1;
+    if (!db) {
+        fprintf(stderr, "Error: could not load the database.\n");
+        return -1;
+    }
 }
 
 int search_by_tag(const char *tag) {
+    if (!check_file_exists(filename)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
-    if (!db) return -1;
+    if (!db) {
+        fprintf(stderr, "Error: could not load the database.\n");
+        return -1;
+    }
 }
 
 int list_all_tags() {
+    if (!check_file_exists(filename)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
-    if (!db) return -1;
+    if (!db) {
+        fprintf(stderr, "Error: could not load the database.\n");
+        return -1;
+    }
 }
 
 int list_file_tags(const char *filename) {
+    if (!check_file_exists(filename)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
-    if (!db) return -1;
+    if (!db) {
+        fprintf(stderr, "Error: could not load the database.\n");
+        return -1;
+    }
 }
