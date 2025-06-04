@@ -93,7 +93,7 @@ struct json_object* load_tag_db() {
     char* full_path = get_db_path();
     FILE *fp;
 
-    struct json_object *parsed_json;
+    struct json_object* parsed_json;
 
 
     fp = fopen(full_path, "r");
@@ -139,7 +139,21 @@ struct json_object* load_tag_db() {
 }
 
 int save_db(json_object* db) {
+    char* full_path = get_db_path();
+    
+    FILE* fp = fopen(full_path, "w");
+    if (!fp) {
+        fprintf(stderr, "Error: could not open the DB json file.\n");
+        free(full_path);
+        return -1;
+    }
 
+    const char* json_as_string = json_object_to_json_string_ext(db, JSON_C_TO_STRING_PRETTY);
+
+    fprintf(fp, "%s\n",json_as_string);
+
+    fclose(fp);
+    free(full_path);
     return 0;
 }
 
