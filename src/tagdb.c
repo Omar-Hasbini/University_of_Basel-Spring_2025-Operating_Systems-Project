@@ -83,7 +83,6 @@ int check_tagdb_exists() {
     return status;
 }
 
-
 // Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
 struct json_object* load_tag_db() {
     if (!check_tagdb_exists()) {
@@ -91,9 +90,9 @@ struct json_object* load_tag_db() {
         return NULL;
     }
 
-    char* full_path = get_db_path;
-    char buffer[1024];
+    char* full_path = get_db_path();
     FILE *fp;
+
     struct json_object *parsed_json;
 
 
@@ -101,11 +100,35 @@ struct json_object* load_tag_db() {
     
     if (!fp) {
         fprintf(stderr, "Error: could not open the DB json file\n");
+        free(full_path);
         return NULL;
     }
 
-    fread(buffer, 1024, 1, fp);
+    // Source: https://stackoverflow.com/questions/238603/how-can-i-get-a-files-size-in-c
+    fseek(fp, 0L, SEEK_END);
+    size_t size_db = ftell(fp);
+    // EOS
+    rewind(fp);
+
+    char *buffer = malloc(size_db + 1);
+
+    if (!buffer) {
+        fprintf(stderr, "Error: could not allocate memory for buffer while loading the database.\n");
+        free(full_path);
+        return NULL;
+    }
+
+    size_t read_bytes = fread(buffer, 1, size_db, fp);
     fclose(fp);
+
+    if (read_bytes != size_db) {
+        fprintf(stderr, "Error: could not read the database file.\n");
+        free(buffer);
+        free(full_path);
+        return NULL;
+    }
+
+    buffer[size_db] = '\0';
 
     parsed_json = json_tokener_parse(buffer);
 
