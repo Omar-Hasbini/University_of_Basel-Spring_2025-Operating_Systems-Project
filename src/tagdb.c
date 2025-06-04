@@ -149,11 +149,23 @@ int add_tag(const char *filename, const char *tag) {
         return -1;
     }
 
+    if (tag == NULL || strlen(tag) == 0 || strlen(tag) > 255) {
+        fprintf(stderr, "Error: Tag is empty or is too long (max 255 char).\n");
+    }
+
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the database.\n");
         return -1;
     }
+
+    json_object* file_entry;
+    if (!json_object_object_get_ex(db, filename, &file_entry)) {
+        json_object* tags_array = json_object_new_array();
+        json_object_array_add(tags_array, json_object_new_string(tag));
+        json_object_object_add(db, filename, tags_array);
+    }
+    
         
 }
 
