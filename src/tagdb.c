@@ -138,9 +138,9 @@ struct json_object* load_tag_db() {
     return parsed_json;
 }
 
-int save_db() {
-    json_object* db = load_tag_db();
-    if (!db) return -1;
+int save_db(json_object* db) {
+
+    return 0;
 }
 
 int add_tag(const char *filename, const char *tag) {
@@ -151,6 +151,7 @@ int add_tag(const char *filename, const char *tag) {
 
     if (tag == NULL || strlen(tag) == 0 || strlen(tag) > 255) {
         fprintf(stderr, "Error: Tag is empty or is too long (max 255 char).\n");
+        return -1;
     }
 
     json_object* db = load_tag_db();
@@ -160,13 +161,34 @@ int add_tag(const char *filename, const char *tag) {
     }
 
     json_object* file_entry;
-    if (!json_object_object_get_ex(db, filename, &file_entry)) {
+    json_object_object_get_ex(db, filename, &file_entry);
+
+    if (!file_entry) {
         json_object* tags_array = json_object_new_array();
         json_object_array_add(tags_array, json_object_new_string(tag));
         json_object_object_add(db, filename, tags_array);
+    } else {
+        int tag_exists_already = 0;     
+        for (int i = 0; i < json_object_array_length(file_entry); i++ ) {
+            json_object* current_tag = json_object_array_get_idx(file_entry, i);
+
+            if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+                tag_exists_already = 1;
+                break;
+            }
+        }
+
+        if(tag_exists_already) {
+            fprintf(stderr, "Error: file already assigned this tag.\n");
+            return -1;
+        } else {
+            json_object_array_add(file_entry, json_object_new_string(tag));
+        }
     }
-    
-        
+
+    fprintf(stdout, "Success: added tag to file\n");
+    save_db(db);
+    return 0;
 }
 
 int remove_tag(const char *filename, const char *tag) {
