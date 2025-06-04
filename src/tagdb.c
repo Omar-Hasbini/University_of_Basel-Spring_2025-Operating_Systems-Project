@@ -155,7 +155,6 @@ int add_tag(const char *filename, const char *tag) {
         return -1;
     }
         
-
 }
 
 int remove_tag(const char *filename, const char *tag) {
@@ -172,11 +171,6 @@ int remove_tag(const char *filename, const char *tag) {
 }
 
 int search_by_tag(const char *tag) {
-    if (!check_file_exists(filename)) {
-        fprintf(stderr, "Error: file does not exist.\n");
-        return -1;
-    }
-
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the database.\n");
@@ -185,11 +179,6 @@ int search_by_tag(const char *tag) {
 }
 
 int list_all_tags() {
-    if (!check_file_exists(filename)) {
-        fprintf(stderr, "Error: file does not exist.\n");
-        return -1;
-    }
-
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the database.\n");
