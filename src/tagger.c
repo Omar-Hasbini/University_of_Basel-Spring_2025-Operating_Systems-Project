@@ -1,3 +1,10 @@
+/*
+Metadata
+Author: Omar Fadi Hasbini
+Context: University of Basel, Operating Systems, Spring 2025
+License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
+*/ 
+
 #include <stdio.h>
 #include <string.h>
 #include "tagdb.h"
@@ -11,10 +18,26 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger add <file> <tag>\n");
         fprintf(stderr, "  tagger remove <file> <tag>\n");
-        return 1;
+        return -1;
     } else if (argc == 2) {
         if (strcmp(argv[1], "list") == 0) {
-            return list_all_tags();
+            char*** list_all_tags = NULL;
+            size_t* count_out = 0;
+
+            int status = list_all_tags(list_all_tags, count_out);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
+            for (size_t i = 0; i < count_out; i++) {
+                printf("%s\n", list_all_tags[i]);
+                free(list_all_tags[i]);
+            }
+            
+            free(list_all_tags);  
+            return 0;
         } else {
             fprintf(stderr, "Error: unknown command\n");
             return 1;
@@ -40,6 +63,6 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     } 
-    
+
     return 1;
 }
