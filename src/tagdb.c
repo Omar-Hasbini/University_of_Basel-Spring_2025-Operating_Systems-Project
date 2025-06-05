@@ -199,13 +199,20 @@ int assign_tag(const char *filename, const char *tag) {
 
         if(tag_exists_already) {
             fprintf(stderr, "Error: file already assigned this tag.\n");
+            json_object_put(db);
             return -1;
         } else {
-            json_object_array_add(file_entry, json_object_new_string(tag));
+            int status_assign = json_object_array_add(file_entry, json_object_new_string(tag));
+            if (status_assign == 0) {
+                fprintf(stdout, "Success: tag was assigned.\n");
+            } else {
+                fprintf(stderr, "Error: tag could not be assigned.\n");
+                json_object_put(db);
+                return -1;
+            }
         }
     }
 
-    
     json_object* all_tags_entry;
     json_object_object_get_ex(db, all_tags, &all_tags_entry);
 
@@ -225,19 +232,28 @@ int assign_tag(const char *filename, const char *tag) {
             }
 
         if(!tag_exists_globally) {
-            json_object_array_add(all_tags_entry, json_object_new_string(tag));
-            fprintf(stdout, "New tag detected: added to the list of all tags.\n");
+            int status_assign_global = json_object_array_add(all_tags_entry, json_object_new_string(tag));
+            if (status_assign_global == 0) {
+                fprintf(stdout, "New tag detected: added to the list of all tags.\n");
+            } else {
+                fprintf(stderr, "Error: tag could not be added to the list of all tags.\n");
+                json_object_put(db);
+                return -1;
+            }
         }
     }
 
-    fprintf(stdout, "Success: added tag to file\n");
-    save_db(db);
+
+    if (save_db(db) != 0) {
+        fprintf(stderr, "Error: could not save the DB after successful assignment.\n");
+        json_object_put(db);
+        return -1;
+    }
     json_object_put(db);
     return 0;
 }
 
-// TO-DO: sync globally
-int remove_tag(const char *filename, const char *tag) {
+int deassign_tag(const char *filename, const char *tag) {
     if (!check_file_exists(filename)) {
         fprintf(stderr, "Error: file does not exist.\n");
         return -1;
@@ -254,37 +270,58 @@ int remove_tag(const char *filename, const char *tag) {
 
     if (!file_entry) {
         fprintf(stderr, "Error: file has no assigned tags.\n");
+        json_object_put(db);
         return -1;
-    } else {
-        int tag_exists_already = 0;     
+    } else { 
+        int tag_index = -1;   
         for (int i = 0; i < json_object_array_length(file_entry); i++ ) {
             json_object* current_tag = json_object_array_get_idx(file_entry, i);
 
             if (strcmp(json_object_get_string(current_tag), tag) == 0) {
-                tag_exists_already = 1;
+                tag_index = i;
                 break;
             }
         }
 
-        if(tag_exists_already) {
-            fprintf(stderr, "Error: file already assigned this tag.\n");
+        if(tag_index == -1) {
+            fprintf(stderr, "Error: this tag is not assigned to this file.\n");
+            json_object_put(db);
             return -1;
         } else {
-            json_object_array_add(file_entry, json_object_new_string(tag));
+            int status_deletion = json_object_array_del_idx(file_entry, tag_index, 1);
+            if (status_deletion == 0) {
+                fprintf(stdout, "Success: tag was deassigned.\n");
+            } else {
+                fprintf(stderr, "Error: tag could not be deassigned.\n");
+                json_object_put(db);
+                return -1;
+            }
         }
     }
-
     // TO-DO: sync globally
+    //
 
+    if (save_db(db) != 0) {
+        fprintf(stderr, "Error: could not save the DB after successful deletion.\n");
+        json_object_put(db);
+        return -1;
+    }
 
-    fprintf(stdout, "Success: removed tag from file\n");
-    save_db(db);
     json_object_put(db);
     return 0;
-
 }
 
-int search_by_tag(const char *tag) {
+/*  
+    Source: Comment generated with ChatGPT 4o
+
+    Search for files by tag.
+    Returns a dynamically allocated array of strings (filenames).
+    The number of matched files is stored in "*count_out".
+    Returns 0 on success, -1 on failure.
+
+    - EOS -
+*/
+int search_by_tag(const char *tag, char*** result_files, size_t* count_ount) {
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
