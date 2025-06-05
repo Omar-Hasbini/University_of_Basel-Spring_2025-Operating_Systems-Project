@@ -11,7 +11,7 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 
 int main(int argc, char *argv[]) {
     if (argc == 1 || argc >= 5) {
-        fprintf(stderr, "Error: you didn't provide the correct amount of arguments\n");
+        fprintf(stderr, "Error: Invalid amount of arguments\n");
         fprintf(stderr, "Usage:\n");
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger list <file>\n");
@@ -88,21 +88,28 @@ int main(int argc, char *argv[]) {
 
     } else if (argc == 4) {
         if (strcmp(argv[1], "assign") == 0) {
+            int status = assign_tag(argv[2], argv[3]);
 
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+            return 0;
+        } else if (strcmp(argv[1], "deassign") == 0) {
+            int status = deassign_tag(argv[2], argv[3]);
 
-
-
-        }
-        else if (strcmp(argv[1], "deassign") == 0) {
-
-
-
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+            return 0;
         } else {
+            // Unreachable code but may be necessary to avoid compiler error
             fprintf(stderr, "Error: unknown command\n");
             return -1;
         }
     } else {
-        // unreachable but needed to avoid compiler giving an error
+        // Unreachable but may be necessary for the compiler to compiler and not throw an error.
+        fprintf(stderr, "Error: Invalid amount of arguments\n");
     }
-
 }
