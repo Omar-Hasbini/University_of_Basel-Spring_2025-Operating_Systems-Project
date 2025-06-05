@@ -16,8 +16,8 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
-        fprintf(stderr, "  tagger add <file> <tag>\n");
-        fprintf(stderr, "  tagger remove <file> <tag>\n");
+        fprintf(stderr, "  tagger assign <file> <tag>\n");
+        fprintf(stderr, "  tagger deassign <file> <tag>\n");
         return -1;
     } else if (argc == 2) {
         if (strcmp(argv[1], "list") == 0) {
@@ -39,31 +39,70 @@ int main(int argc, char *argv[]) {
             free(all_tags);  
             return 0;
         } else {
-
             fprintf(stderr, "Error: unknown command\n");
-            return 1;
+            return -1;
         }
     } else if (argc == 3) {
-        if (strcmp(argv[1], "list") == 0) {
-            return list_file_tags(argv[2]);
+        if (strcmp(argv[1], "list") == 0) { 
+            char** file_tags = NULL;
+            size_t count_out = 0;
+
+            int status = list_file_tags(argv[2], &file_tags, &count_out);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
+            for (size_t i = 0; i < count_out; i++) {
+                printf("%s\n", file_tags[i]);
+                free(file_tags[i]);
+            }
+
+            free(file_tags);  
+            return 0;
+            
         } else if (strcmp(argv[1], "search") == 0) {
-            return search_by_tag(argv[2]);
+            char** result_files = NULL;
+            size_t count_out = 0;
+
+            int status = search_by_tag(argv[2], &result_files, &count_out);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
+            for (size_t i = 0; i < count_out; i++) {
+                printf("%s\n", result_files[i]);
+                free(result_files[i]);
+            }
+
+            free(result_files);  
+            return 0;
         }
         else {
             fprintf(stderr, "Error: unknown command\n");
-            return 1;
+            return -1;
         }
+
     } else if (argc == 4) {
-        if (strcmp(argv[1], "add") == 0) {
-            return add_tag(argv[2], argv[3]);
+        if (strcmp(argv[1], "assign") == 0) {
+
+
+
+
         }
-        else if (strcmp(argv[1], "remove") == 0) {
-            return remove_tag(argv[2], argv[3]);
+        else if (strcmp(argv[1], "deassign") == 0) {
+
+
+
         } else {
             fprintf(stderr, "Error: unknown command\n");
-            return 1;
+            return -1;
         }
-    } 
+    } else {
+        // unreachable but needed to avoid compiler giving an error
+    }
 
-    return 1;
 }
