@@ -13,5 +13,7 @@ int deassign_tag(const char *filename, const char *tag);
 int search_by_tag(const char *tag, char*** result_files, size_t* count_out);
 int list_all_tags(char*** list_all_tags, size_t* count_out);
 int list_file_tags(const char *filename, char*** list_file_tags, size_t* count_out);
+int deassign_all_tags_systemwide();
+int deassign_all_tags(const char *file_name);
 
 #endif
