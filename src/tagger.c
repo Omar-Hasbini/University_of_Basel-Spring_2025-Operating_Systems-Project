@@ -14,12 +14,18 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Error: Invalid amount of arguments\n");
         fprintf(stderr, "Usage:\n");
         fprintf(stderr, "  tagger list\n");
-        fprintf(stderr, "  tagger deassign_all\n");
+        fprintf(stderr, "  tagger deassign-all\n");
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
+        fprintf(stderr, "\n");
+        fprintf(stderr, "See LICENSE for details. This tool is provided for educational purposes only.\n");
+        fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
+        fprintf(stderr, "and provides no warranty, liability, or guarantee. It is not intended for use in\n");
+        fprintf(stderr, "any critical systems, including but not limited to flight control.\n");
         return -1;
+        
     } else if (argc == 2) {
         if (strcmp(argv[1], "list") == 0) {
             char** all_tags = NULL;
@@ -39,7 +45,7 @@ int main(int argc, char *argv[]) {
 
             free(all_tags);  
             return 0;
-        } else if (strcmp(argv[1], "deassign_all") == 0){
+        } else if (strcmp(argv[1], "deassign-all") == 0){
              int status = deassign_all_tags_systemwide();
 
             if (status == -1) {
