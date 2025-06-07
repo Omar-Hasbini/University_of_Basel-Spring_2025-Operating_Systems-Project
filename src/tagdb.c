@@ -196,7 +196,15 @@ int assign_tag(const char *filename, const char *tag) {
     //  "/" is usually reserved Linux Filesystems and so can never collide
     const char* all_tags = "/__all_tags__";
 
-    if (!check_file_exists(filename)) {
+    char *absolute_path = realpath(filename, NULL);
+
+    if (!absolute_path) {
+        perror("realpath failed");
+        return -1;
+    }
+    // ... use absolute_path ...
+    
+    if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
         return -1;
     }
@@ -213,12 +221,12 @@ int assign_tag(const char *filename, const char *tag) {
     }
 
     json_object* file_entry;
-    json_object_object_get_ex(db, filename, &file_entry);
+    json_object_object_get_ex(db, absolute_path, &file_entry);
 
     if (!file_entry) {
         json_object* tags_array = json_object_new_array();
         json_object_array_add(tags_array, json_object_new_string(tag));
-        json_object_object_add(db, filename, tags_array);
+        json_object_object_add(db, absolute_path, tags_array);
     } else {
         int tag_exists_already = 0;     
 
@@ -286,12 +294,16 @@ int assign_tag(const char *filename, const char *tag) {
         json_object_put(db);
         return -1;
     }
+
+    free(absolute_path);
     json_object_put(db);
     return 0;
 }
 
 int deassign_tag(const char *filename, const char *tag) {
-    if (!check_file_exists(filename)) {
+    char *absolute_path = realpath(filename, NULL);
+
+    if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
         return -1;
     }
@@ -303,7 +315,7 @@ int deassign_tag(const char *filename, const char *tag) {
     }
 
     json_object* file_entry;
-    json_object_object_get_ex(db, filename, &file_entry);
+    json_object_object_get_ex(db, absolute_path, &file_entry);
 
     if (!file_entry) {
         fprintf(stderr, "Error: file has no assigned tags.\n");
@@ -346,6 +358,7 @@ int deassign_tag(const char *filename, const char *tag) {
         return -1;
     }
 
+    free(absolute_path);
     json_object_put(db);
     return 0;
 }
@@ -361,6 +374,8 @@ int deassign_tag(const char *filename, const char *tag) {
 */
 int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     const char* all_tags = "/__all_tags__";
+    char *absolute_path = realpath(filename, NULL);
+
 
     json_object* db = load_tag_db();
     if (!db) {
@@ -402,6 +417,8 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
         
     }	
 
+
+    free(absolute_path);
     json_object_put(db);
     return 0;
 }
@@ -452,7 +469,7 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
 }
 
 int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
-    if (!check_file_exists(filename)) {
+    if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
         return -1;
     }
@@ -464,7 +481,7 @@ int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
     }
 
     json_object* file_entry;
-    json_object_object_get_ex(db, filename, &file_entry);
+    json_object_object_get_ex(db, absolute_path, &file_entry);
 
     if (!file_entry || json_object_array_length(file_entry) == 0) {
         fprintf(stderr, "Error: file has no entry in the DB or the set of its tags is empty.\n");
