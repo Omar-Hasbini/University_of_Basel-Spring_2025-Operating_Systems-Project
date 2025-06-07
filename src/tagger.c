@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger tag-exists <tag>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
+        fprintf(stderr, "  tagger file-has-tag <file> <tag>\n");
         fprintf(stderr, "\n");
         fprintf(stderr, "See LICENSE for details. This tool is provided for educational purposes only.\n");
         fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
@@ -154,6 +155,20 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
             return 0;
+            
+        } else if (strcmp(argv[1], "file-has-tag") == 0) {
+
+            int exists = file_has_tag(argv[2], argv[3]);
+            if (exists == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            } else if (exists == 1) {
+                printf("The tag is assigned to this file.\n");
+            } else {
+                printf("The tag is not assigned to this file.\n");
+            }
+            return 0;
+
         } else {
             // Unreachable code but may be necessary to avoid compiler error
             fprintf(stderr, "Error: unknown command\n");
