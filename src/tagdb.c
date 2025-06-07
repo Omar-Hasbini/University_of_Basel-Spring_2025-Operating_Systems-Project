@@ -341,7 +341,7 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     // Nested for loop, $O(n^2)$ runtime unfortunately. 
     json_object_object_foreach(db, key, val) {
 
-        if (!strcmp(json_object_get_string(key), all_tags)) {
+        if (!strcmp(key, all_tags)) {
 
             size_t size_current_val = json_object_array_length(val);
             for (int i = 0; i < size_current_val; i++ ) {
@@ -356,10 +356,10 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
                         return -1;
                     }
 
-                    (*result_files)[*count_out - 1] = strdup(json_object_get_string(key));
+                    (*result_files)[*count_out - 1] = strdup(key);
 
                     if (!(*result_files)[*count_out - 1]) {
-                        fprintf(stderr, "Error: could allocate memory for a filename in the list.\n");
+                        fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
                         return -1;
                     }
                     // it is enough to find 1 tag 
