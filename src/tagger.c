@@ -109,11 +109,13 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[1], "count-tags")) {
 
             size_t count_out = 0;
-            int status =  count_tags(arg[2], &count_out);
+            int status =  count_tags(argv[2], &count_out);
 
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
             }
+
+            printf("File has %zu tag(s)", count_out);
             return 0;
 
         } else {
