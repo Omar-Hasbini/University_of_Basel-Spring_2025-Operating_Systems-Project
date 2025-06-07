@@ -372,7 +372,7 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     // Nested for loop, $O(n^2)$ runtime unfortunately. 
     json_object_object_foreach(db, key, val) {
 
-        if (!strcmp(key, all_tags)) {
+        if (strcmp(key, all_tags) != 0) {
 
             size_t size_current_val = json_object_array_length(val);
             for (int i = 0; i < size_current_val; i++ ) {
@@ -500,4 +500,6 @@ int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
         - deassign_all_tags
         - list_all_files_with_tags()
         - search_file_has_tag(file, tag)
+        - MakeFile
+        - distribute
 */ 
