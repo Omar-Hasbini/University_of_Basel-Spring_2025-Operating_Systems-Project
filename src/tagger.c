@@ -168,14 +168,13 @@ int main(int argc, char *argv[]) {
                 printf("The tag is not assigned to this file.\n");
             }
             return 0;
-
+            
         } else {
             // Unreachable code but may be necessary to avoid compiler error
             fprintf(stderr, "Error: unknown command\n");
             return -1;
         }
     } else {
-        // Unreachable but may be necessary for the compiler to compiler and not throw an error.
         fprintf(stderr, "Error: Invalid amount of arguments\n");
         return -1;
     }
