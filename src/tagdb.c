@@ -518,7 +518,7 @@ int deassign_all_tags_systemwide() {
     }
 
     int status = remove(full_path);
-    free(path);
+    free(full_path);
 
     if (status != 0) {
         fprintf(stderr, "Error: could not deassign all tags.\n");
