@@ -374,8 +374,6 @@ int deassign_tag(const char *filename, const char *tag) {
 */
 int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     const char* all_tags = "/__all_tags__";
-    char *absolute_path = realpath(filename, NULL);
-
 
     json_object* db = load_tag_db();
     if (!db) {
@@ -417,8 +415,6 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
         
     }	
 
-
-    free(absolute_path);
     json_object_put(db);
     return 0;
 }
