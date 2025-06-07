@@ -14,9 +14,11 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Error: Invalid amount of arguments\n");
         fprintf(stderr, "Usage:\n");
         fprintf(stderr, "  tagger list\n");
-        fprintf(stderr, "  tagger deassign-all\n");
+        fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
+        fprintf(stderr, "  tagger count-tags <file>\n");
+        fprintf(stderr, "  tagger desassign-all-tags <file>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
         fprintf(stderr, "\n");
@@ -25,7 +27,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "and provides no warranty, liability, or guarantee. It is not intended for use in\n");
         fprintf(stderr, "any critical systems, including but not limited to flight control.\n");
         return -1;
-        
+
     } else if (argc == 2) {
         if (strcmp(argv[1], "list") == 0) {
             char** all_tags = NULL;
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
 
             free(all_tags);  
             return 0;
-        } else if (strcmp(argv[1], "deassign-all") == 0){
+        } else if (strcmp(argv[1], "deassign-all-tags-systemwide") == 0){
              int status = deassign_all_tags_systemwide();
 
             if (status == -1) {
@@ -96,8 +98,27 @@ int main(int argc, char *argv[]) {
 
             free(result_files);  
             return 0;
-        }
-        else {
+        } else if (strcmp(argv[1], "desassign-all-tags") == 0) {
+
+            int status = deassign_all_tags(argv[2]);
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+            }
+            return 0;
+
+        } else if (strcmp(argv[1], "count-tags")) {
+
+            size_t count_out = 0;
+            int status =  count_tags(argv[2], &count_out);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+            }
+
+            printf("File has %zu tag(s)", count_out);
+            return 0;
+
+        } else {
             fprintf(stderr, "Error: unknown command\n");
             return -1;
         }

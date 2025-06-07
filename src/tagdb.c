@@ -15,6 +15,7 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 #include <pwd.h>
 #include "tagdb.h"
 
+
 // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
 // This is not needed for shell inputs since the shell auto-expands the "~".
 char* get_home() {
@@ -35,14 +36,8 @@ char* get_home() {
 // Let function caller free "*file_path"
 // Return 1 if file exists, 0 otherwise
 int check_file_exists(const char *file_path) {
-    FILE *fp = fopen(file_path, "r");
+    return access(file_path, F_OK) == 0;
 
-    if (fp) {
-        fclose(fp);
-        return 1;
-    } else {
-        return 0;
-    }
 }
 
 char* get_db_path() {
@@ -153,7 +148,7 @@ struct json_object* load_tag_db() {
     fp = fopen(full_path, "r");
     
     if (!fp) {
-        fprintf(stderr, "Error: could not open the DB json file\n");
+        fprintf(stderr, "Error: could not open the DB .json file\n");
         free(full_path);
         return NULL;
     }
@@ -192,12 +187,12 @@ struct json_object* load_tag_db() {
     return parsed_json;
 }
 
-int assign_tag(const char *filename, const char *tag) {
+int assign_tag(const char *file_name, const char *tag) {
     // Entry in the JSON DB to keep track of all existing tags,
     //  "/" is usually reserved Linux Filesystems and so can never collide
     const char* all_tags = "/__all_tags__";
 
-    char *absolute_path = realpath(filename, NULL);
+    char *absolute_path = realpath(file_name, NULL);
 
     if (!absolute_path) {
         perror("realpath failed");
@@ -218,6 +213,7 @@ int assign_tag(const char *filename, const char *tag) {
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
         return -1;
     }
 
@@ -306,6 +302,7 @@ int deassign_tag(const char *filename, const char *tag) {
 
     if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
+        free(absolute_path);
         return -1;
     }
 
@@ -425,7 +422,7 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     The number of tags is stored in "*count_out".
     Returns 0 on success, -1 on failure.
 */
-int list_all_tags(char*** all_tags, size_t* count_out) {
+int list_all_tags(const char*** all_tags, size_t* count_out) {
     const char* all_tags_key = "/__all_tags__";
 
     json_object* db = load_tag_db();
@@ -465,7 +462,7 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
     return 0;
 }
 
-int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
+int list_file_tags(const char *filename, const char*** file_tags, size_t* count_out) {
 
     char *absolute_path = realpath(filename, NULL);
 
@@ -510,6 +507,48 @@ int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
     return 0;
 }
 
+int deassign_all_tags(const char *file_name) {  
+    char *absolute_path = realpath(file_name, NULL);
+
+    if (!absolute_path) {
+        perror("realpath failed");
+        return -1;
+    }
+
+    if (!check_file_exists(absolute_path)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        free(absolute_path);
+        return -1;
+    }
+
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
+        return -1;
+    }
+
+    json_object* empty_array = json_object_new_array();
+
+    json_object *existing;
+    if (!json_object_object_get_ex(db, absolute_path, &existing)) {
+        fprintf(stderr, "Warning: file had no tags assigned. Command is idempotent in this case and will proceed.\n");
+    }
+
+    // Note: This overwrites safely, even if the key doesn't exist in the DB.
+    json_object_object_del(db, absolute_path);
+    json_object_object_add(db, absolute_path, empty_array);
+    // EON
+
+    save_db(db);
+    json_object_put(db);
+    free(absolute_path);
+
+    fprintf(stdout, "Success: the file has no more tags assigned.\n");
+    return 0;
+}
+
+
 int deassign_all_tags_systemwide() {
     char* full_path = get_db_path();
     if (!full_path) {
@@ -529,14 +568,47 @@ int deassign_all_tags_systemwide() {
     return 0;
 }
 
+int count_tags(const char* file_name, size_t* count_out) {
+    char *absolute_path = realpath(file_name, NULL);
+
+    if (!check_file_exists(absolute_path)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        return -1;
+    }
+
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
+        return -1;
+    }
+
+    json_object* file_entry;
+    json_object_object_get_ex(db, absolute_path, &file_entry);
+
+    if (!file_entry) {
+        *count_out = 0;
+    } else { 
+        *count_out = json_object_array_length(file_entry);   
+    }
+    free(absolute_path);
+    json_object_put(db);
+    return 0;
+}
+
+
 
 /*
     can be implemented if time allows:
+        - tag_exists <tag>
         - assign_all_tags_to_file
         - copy_and_assign_tags_from
-        - deassign_all_tags
         - list_all_files_with_tags()
-        - search_file_has_tag(file, tag)
+        - count_tags <file>
+        - count_files_with_tag <tag>
+        - file_has_tag(file, tag)
+        - rename_tag <old_tag> <new_tag>
+        - remove_tag_globally <tag>
         - MakeFile
         - distribute
 */ 
