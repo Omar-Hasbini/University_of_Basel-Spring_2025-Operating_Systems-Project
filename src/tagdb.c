@@ -69,6 +69,27 @@ char* get_db_path() {
     return full_path;
 }
 
+int save_db(json_object* db) {
+    char* full_path = get_db_path();
+    
+    FILE* fp = fopen(full_path, "w");
+    if (!fp) {
+        fprintf(stderr, "Error: could not open the DB json file.\n");
+        free(full_path);
+        return -1;
+    }
+
+    // Can also use the variant without "_ext" suffix, but it will create minified / compact JSON
+    const char* json_as_string = json_object_to_json_string_ext(db, JSON_C_TO_STRING_PRETTY);
+
+    // Add \n so that the JSON file ends with a new line (for compatiblity purposes).
+    fprintf(fp, "%s\n", json_as_string);
+
+    fclose(fp);
+    free(full_path);
+    return 0;
+}
+
 // Return 1 if db exists, 0 otherwise
 int check_tagdb_exists() {
     char* full_path = get_db_path();
@@ -83,8 +104,33 @@ int check_tagdb_exists() {
 }
 
 int create_db() {
+    char* full_path = get_db_path();
+
+    char* last_slash = NULL;
+    size_t index = 0;
 
 
+    for (size_t i = 0; i < strlen(full_path); i++) {
+        if (full_path[i] == '/') {
+            last_slash = &full_path[i]; 
+            index = i;
+        }
+    }
+
+    full_path[index + 1] = '\0';
+
+    mkdir(full_path, 0700);
+    json_object* db = json_object_new_object();
+
+    int status = save_db(db);
+
+    if (status == -1) {
+        fprintf(stderr, "Error: Newly created DB could not be saved.\n");
+        return -1;
+    }
+
+    free(full_path);
+    return 0;
 }
 
 // Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
@@ -143,27 +189,6 @@ struct json_object* load_tag_db() {
     free(buffer);
 
     return parsed_json;
-}
-
-int save_db(json_object* db) {
-    char* full_path = get_db_path();
-    
-    FILE* fp = fopen(full_path, "w");
-    if (!fp) {
-        fprintf(stderr, "Error: could not open the DB json file.\n");
-        free(full_path);
-        return -1;
-    }
-
-    // Can also use the variant without "_ext" suffix, but it will create minified / compact JSON
-    const char* json_as_string = json_object_to_json_string_ext(db, JSON_C_TO_STRING_PRETTY);
-
-    // Add \n so that the JSON file ends with a new line (for compatiblity purposes).
-    fprintf(fp, "%s\n", json_as_string);
-
-    fclose(fp);
-    free(full_path);
-    return 0;
 }
 
 int assign_tag(const char *filename, const char *tag) {
