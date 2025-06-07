@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger deassign-all\n");
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
+        fprintf(stderr, "desassign-all-tags\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
         fprintf(stderr, "\n");
@@ -103,7 +104,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
             }
             return 0;
-            
+
         } else {
             fprintf(stderr, "Error: unknown command\n");
             return -1;
