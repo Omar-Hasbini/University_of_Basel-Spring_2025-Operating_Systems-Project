@@ -26,6 +26,8 @@
 #include "nautilus-monitor.h"
 #include "nautilus-file-undo-operations.h"
 
+#include "tags/tagdb.h"
+
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
 	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon"
 
@@ -90,6 +92,8 @@ struct NautilusFilePrivate
 	char *thumbnail_path;
 	GdkTexture *thumbnail;
 	time_t thumbnail_mtime;
+
+	char      **labels;           /* Cached, NULL until first query */
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
 	GIcon *custom_icon;

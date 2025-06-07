@@ -133,6 +133,8 @@ if get_option('cloudproviders')
 endif
 gi_docgen = find_program('gi-docgen', required: get_option('docs'))
 
+json_c  = dependency('json-c')
+
 ####################
 # End dependencies #
 ####################

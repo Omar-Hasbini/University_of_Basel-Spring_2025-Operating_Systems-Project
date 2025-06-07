@@ -65,6 +65,8 @@
 #include "nautilus-vfs-file.h"
 #include "nautilus-video-mime-types.h"
 
+#include "tags/tagdb.h"
+
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif
@@ -164,6 +166,7 @@ static GQuark attribute_name_q,
               attribute_volume_q,
               attribute_free_space_q,
               attribute_starred_q;
+              attribute_labels_q;
 
 static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface);
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
@@ -577,6 +580,9 @@ nautilus_file_clear_info (NautilusFile *file)
     g_clear_pointer (&file->details->group, g_ref_string_release);
 
     g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
+
+    g_strfreev (file->details->labels);		
+    file->details->labels = NULL;
 
     clear_metadata (file);
 }
@@ -6695,6 +6701,13 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     {
         return nautilus_file_get_volume_free_space (file);
     }
+    if (attribute_q == attribute_labels_q)
+    {
+        /* Join the NULL-terminated tag array with “, ”.  Returns g_malloc’d
+         * string that the caller must free.                                     
+         */
+        return g_strjoinv (", ", nautilus_file_get_labels (file));
+    }
 
     extension_attribute = NULL;
 
@@ -6825,6 +6838,12 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
     {
         /* If n/a */
         return g_strdup ("—");
+    }
+    if (attribute_q == attribute_labels_q)
+    {
+        /* If no tags yet, show nothing instead of “Unknown”.              
+         */
+        return g_strdup ("");
     }
 
     /* Fallback, use for both unknown attributes and attributes
@@ -8653,6 +8672,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_volume_q = g_quark_from_static_string ("volume");
     attribute_free_space_q = g_quark_from_static_string ("free_space");
     attribute_starred_q = g_quark_from_static_string ("starred");
+    attribute_labels_q = g_quark_from_static_string ("labels");
 
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
@@ -9052,6 +9072,78 @@ nautilus_file_get_file_type (NautilusFile *file)
 
     return file->details->type;
 }
+
+/**
+ * nautilus_file_get_labels:
+ * @file: (type NautilusFile*):
+ *
+ * Load labels (tags) for @file from tagdb, but only the first
+ * time the property is asked for.  Subsequent calls are O(1).
+ */
+char **
+nautilus_file_get_labels (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    NautilusFileDetails *d = file->details;
+
+    /* On first call, populate the cache --------------------------- */
+    if (G_UNLIKELY (d->labels == NULL))
+    {
+        char **tags   = NULL;
+        size_t count  = 0;
+        const char *path = nautilus_file_get_path (file); /* UTF-8 */
+
+        if (path && list_file_tags (path, &tags, &count) == 0)
+        {
+            /* list_file_tags() returns malloc-ed NULL-terminated array
+             * that *we* must free.  Good: just store it.            */
+            d->labels = tags;
+        }
+        else
+        {
+            /* Error or none – store a *singleton* empty array so we
+             * don’t hammer the JSON file again on each call.       */
+            d->labels = g_new0 (char *, 1);  /* array[0] == NULL */
+        }
+    }
+    return d->labels;
+}
+
+void
+nautilus_file_set_labels (NautilusFile *file,
+                          char       **labels)
+{
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+    NautilusFileDetails *d = file->details;
+    const char *path       = nautilus_file_get_path (file);
+
+    /* 1.  Write-through to DB ------------------------------------ */
+    if (path)
+    {
+        /* Brutal but easy: remove all existing tags first */
+        if (d->labels) {
+            for (char **p = d->labels; *p; ++p)
+                deassign_tag (path, *p);
+        }
+        /* Add new ones */
+        if (labels) {
+            for (char **p = labels; *p; ++p)
+                assign_tag (path, *p);
+        }
+    }
+
+    /* 2.  Replace in-memory cache -------------------------------- */
+    g_strfreev (d->labels);
+    d->labels = g_strdupv (labels);
+    
+    /* 3.  Notify views that property changed --------------------- */
+    nautilus_file_changed (file,
+                           NAUTILUS_FILE_ATTRIBUTE_INFO,
+                           NAUTILUS_FILE_CHANGE_TYPE_CONTENTS);
+}
+
 
 static GFile *
 get_location (NautilusFileInfo *file_info)
