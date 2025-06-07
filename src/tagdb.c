@@ -15,7 +15,8 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 #include <pwd.h>
 #include "tagdb.h"
 
-
+// Entry in the JSON DB to keep track of all existing tags,
+//  "/" is usually reserved Linux Filesystems and so can never collide
 #define ALL_TAGS_KEY "/__all_tags__"
 
 // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
@@ -189,16 +190,13 @@ struct json_object* load_tag_db() {
 }
 
 int assign_tag(const char *file_name, const char *tag) {
-    // Entry in the JSON DB to keep track of all existing tags,
-    //  "/" is usually reserved Linux Filesystems and so can never collide
-
     char *absolute_path = realpath(file_name, NULL);
 
     if (!absolute_path) {
         perror("realpath failed");
         return -1;
     }
-    // ... use absolute_path ...
+
     
     if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
@@ -206,7 +204,7 @@ int assign_tag(const char *file_name, const char *tag) {
     }
 
     if (tag == NULL || strlen(tag) == 0 || strlen(tag) > 255) {
-        fprintf(stderr, "Error: Tag is empty or is too long (max 255 char).\n");
+        fprintf(stderr, "Error: tag is empty or is too long (max 255 char).\n");
         return -1;
     }
 
@@ -595,7 +593,7 @@ int count_tags(const char* file_name, size_t* count_out) {
 }
 
 /*
-    Returns 1 if tag exists, 0 if not
+    Returns 1 if tag exists, 0 if not.
 */
 int tag_exists(const char* tag) {
     json_object* db = load_tag_db();
@@ -622,20 +620,36 @@ int tag_exists(const char* tag) {
         }
         
     }
-    
+
     json_object_put(db);
     return 0;
+}
+
+/* 
+    Returns 1 if file has tag assigned, 0 if not.
+*/
+int file_has_tag(const char* file_path, const char* tag) {
+        int tag_exists_already = 0;     
+
+        int len = json_object_array_length(file_entry);  
+        for (int i = 0; i < len; i++ ) {
+            json_object* current_tag = json_object_array_get_idx(file_entry, i);
+
+            if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+                tag_exists_already = 1;
+                break;
+            }
+        }
+
 }
 
 
 /*
     can be implemented if time allows:
-        - tag_exists <tag>
         - assign_all_tags_to_file
         - copy_and_assign_tags_from
         - list_all_files_with_tags()
         - count_files_with_tag <tag>
-        - file_has_tag(file, tag)
         - rename_tag <old_tag> <new_tag>
         - remove_tag_globally <tag>
         - distribute
