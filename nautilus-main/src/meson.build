@@ -325,10 +325,27 @@ libnautilus_dep = declare_dependency(
   sources: resources
 )
 
+tagdb_lib = static_library(
+  'tagdb',                       # output → libtagdb.a
+  ['../tagdb.c'],                # source file(s)
+  include_directories : [
+      include_directories('..')  # so <tagdb.h> is found
+  ],
+  dependencies : [
+      json_dep,                  # you already exposed this in the
+      glib_dep                   # top-level meson.build
+  ],
+  c_args : ['-D_GNU_SOURCE']     # same switches Nautilus uses
+)
+
+
 nautilus = executable(
   'nautilus',
   'nautilus-main.c',
   dependencies: libnautilus_dep,
+  link_with : [
+    tagdb_lib
+  ]
   install: true
 )
 
