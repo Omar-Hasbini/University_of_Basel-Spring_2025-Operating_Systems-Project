@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
             free(all_tags);  
             return 0;
-        } else if (strcmp(argv[1], "desassign_all") == 0){
+        } else if (strcmp(argv[1], "deassign_all") == 0){
              int status = deassign_all_tags_systemwide();
 
             if (status == -1) {
