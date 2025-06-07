@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "and provides no warranty, liability, or guarantee. It is not intended for use in\n");
         fprintf(stderr, "any critical systems, including but not limited to flight control.\n");
         return -1;
-        
+
     } else if (argc == 2) {
         if (strcmp(argv[1], "list") == 0) {
             char** all_tags = NULL;
@@ -96,8 +96,15 @@ int main(int argc, char *argv[]) {
 
             free(result_files);  
             return 0;
-        }
-        else {
+        } else if (strcmp(argv[1], "desassign-all-tags") == 0) {
+
+            int status = deassign_all_tags(argv[2]);
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+            }
+            return 0;
+            
+        } else {
             fprintf(stderr, "Error: unknown command\n");
             return -1;
         }
