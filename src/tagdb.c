@@ -93,6 +93,7 @@ int save_db(json_object* db) {
 // Return 1 if db exists, 0 otherwise
 int check_tagdb_exists() {
     char* full_path = get_db_path();
+
     if (!full_path) {
         return 0; 
     }
@@ -506,6 +507,25 @@ int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
     
     free(absolute_path);
     json_object_put(db);
+    return 0;
+}
+
+int deassign_all_tags_systemwide() {
+    char* full_path = get_db_path();
+    if (!full_path) {
+        fprintf(stderr, "Error: the DB for the tags doesn't exist yet and so you cannot execute this command.\n");
+        return -1; 
+    }
+
+    int status = remove(full_path);
+    free(path);
+
+    if (status != 0) {
+        fprintf(stderr, "Error: could not deassign all tags.\n");
+        return -1;
+    }   
+
+    fprintf(stdout, "Sucess: all tags have been deassigned (i.e., the DB was deleted).");
     return 0;
 }
 
