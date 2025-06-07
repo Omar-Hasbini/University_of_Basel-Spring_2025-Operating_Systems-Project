@@ -54,17 +54,6 @@
       ]
     },
     {
-      "name": "gnome-autoar",
-      "buildsystem": "meson",
-      "sources": [
-        {
-	  "type": "git",
-	  "url": "https://gitlab.gnome.org/GNOME/gnome-autoar.git",
-	  "branch": "main"
-        }
-      ]
-    },
-    {
       "name": "gexiv2",
       "buildsystem": "meson",
       "builddir": true,
@@ -143,7 +132,8 @@
       "sources": [
         {
           "type": "git",
-          "url": "https://gitlab.gnome.org/GNOME/gnome-autoar.git"
+          "url": "https://gitlab.gnome.org/GNOME/gnome-autoar.git",
+	  "branch": "master"
         }
       ]
     },
