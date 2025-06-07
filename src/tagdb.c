@@ -469,6 +469,9 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
 }
 
 int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
+
+    char *absolute_path = realpath(filename, NULL);
+
     if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
         return -1;
@@ -505,6 +508,7 @@ int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
         (*file_tags)[i] = strdup(json_object_get_string(current_entry)); 
     }
     
+    free(absolute_path);
     json_object_put(db);
     return 0;
 }
