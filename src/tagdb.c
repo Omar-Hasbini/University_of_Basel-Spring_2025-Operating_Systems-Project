@@ -82,11 +82,19 @@ int check_tagdb_exists() {
     return status;
 }
 
+int create_db() {
+
+
+}
+
 // Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
 struct json_object* load_tag_db() {
     if (!check_tagdb_exists()) {
-        fprintf(stderr, "Error: DB does not exist and cannot be loaded\n");
-        return NULL;
+        int status = create_db();
+        if (status == -1) {
+            fprintf(stderr, "Error: DB could not be created.\n");
+            return NULL;
+        }
     }
 
     char* full_path = get_db_path();
@@ -317,12 +325,10 @@ int deassign_tag(const char *filename, const char *tag) {
     return 0;
 }
 
-/*  
-    Source: Comment generated with ChatGPT 4o
-
-    - Search for files by tag.
-    - Returns a dynamically allocated array of strings (filenames).
-    - The number of matched files is stored in "*count_out".
+/* 
+    - Search for the files who have this tag assigned to them.
+    - Returns a dynamically allocated array of strings for the filenames.
+    - count_out is the # of matched files
 
     Returns 0 on success, -1 on failure.
 
