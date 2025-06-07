@@ -629,18 +629,45 @@ int tag_exists(const char* tag) {
     Returns 1 if file has tag assigned, 0 if not.
 */
 int file_has_tag(const char* file_path, const char* tag) {
-        int tag_exists_already = 0;     
+    char *absolute_path = realpath(file_path, NULL);
 
-        int len = json_object_array_length(file_entry);  
-        for (int i = 0; i < len; i++ ) {
-            json_object* current_tag = json_object_array_get_idx(file_entry, i);
+    if (!check_file_exists(absolute_path)) {
+        fprintf(stderr, "Error: file does not exist.\n");
+        free(absolute_path);
+        return -1;
+    }
 
-            if (strcmp(json_object_get_string(current_tag), tag) == 0) {
-                tag_exists_already = 1;
-                break;
-            }
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
+        return -1;
+    }
+
+    json_object* file_entry;
+    json_object_object_get_ex(db, absolute_path, &file_entry);
+
+    if (!file_entry) {
+        free(absolute_path);
+        json_object_put(db);
+        return 0;
+    }
+
+    int file_has_tag = 0;     
+
+    int len = json_object_array_length(file_entry);  
+    for (int i = 0; i < len; i++ ) {
+        json_object* current_tag = json_object_array_get_idx(file_entry, i);
+
+        if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+            file_has_tag = 1;
+            break;
         }
+    }
 
+
+    free(absolute_path);
+    json_object_put(db);
+    return file_has_tag;
 }
 
 
