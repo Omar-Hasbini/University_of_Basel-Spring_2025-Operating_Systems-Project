@@ -16,6 +16,8 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 #include "tagdb.h"
 
 
+#define ALL_TAGS_KEY "/__all_tags__"
+
 // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
 // This is not needed for shell inputs since the shell auto-expands the "~".
 char* get_home() {
@@ -37,7 +39,6 @@ char* get_home() {
 // Return 1 if file exists, 0 otherwise
 int check_file_exists(const char *file_path) {
     return access(file_path, F_OK) == 0;
-
 }
 
 char* get_db_path() {
@@ -190,7 +191,6 @@ struct json_object* load_tag_db() {
 int assign_tag(const char *file_name, const char *tag) {
     // Entry in the JSON DB to keep track of all existing tags,
     //  "/" is usually reserved Linux Filesystems and so can never collide
-    const char* all_tags = "/__all_tags__";
 
     char *absolute_path = realpath(file_name, NULL);
 
@@ -254,12 +254,12 @@ int assign_tag(const char *file_name, const char *tag) {
     }
 
     json_object* all_tags_entry;
-    json_object_object_get_ex(db, all_tags, &all_tags_entry);
+    json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
     if (!all_tags_entry) {
         json_object* all_tags_array = json_object_new_array();
         json_object_array_add(all_tags_array, json_object_new_string(tag));
-        json_object_object_add(db, all_tags, all_tags_array);
+        json_object_object_add(db, ALL_TAGS_KEY, all_tags_array);
     } else {
         int tag_exists_globally = 0; 
 
@@ -371,7 +371,6 @@ int deassign_tag(const char *filename, const char *tag) {
     EOS
 */
 int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
-    const char* all_tags = "/__all_tags__";
 
     json_object* db = load_tag_db();
     if (!db) {
@@ -383,7 +382,7 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     // Nested for loop, $O(n^2)$ runtime unfortunately. 
     json_object_object_foreach(db, key, val) {
 
-        if (strcmp(key, all_tags) != 0) {
+        if (strcmp(key, ALL_TAGS_KEY) != 0) {
 
             size_t size_current_val = json_object_array_length(val);
             for (int i = 0; i < size_current_val; i++ ) {
@@ -423,8 +422,7 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     Returns 0 on success, -1 on failure.
 */
 int list_all_tags(const char*** all_tags, size_t* count_out) {
-    const char* all_tags_key = "/__all_tags__";
-
+    
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
@@ -432,7 +430,7 @@ int list_all_tags(const char*** all_tags, size_t* count_out) {
     }
 
     json_object* all_tags_entry;
-    json_object_object_get_ex(db, all_tags_key, &all_tags_entry);
+    json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
 
     if (!all_tags_entry || json_object_array_length(all_tags_entry) == 0) {
@@ -596,6 +594,38 @@ int count_tags(const char* file_name, size_t* count_out) {
     return 0;
 }
 
+/*
+    Returns 1 if tag exists, 0 if not
+*/
+int tag_exists(const char* tag) {
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
+        return -1;
+    }
+
+    json_object* file_entry;
+    json_object_object_get_ex(db, ALL_TAGS_KEY, &file_entry);
+
+    if (!file_entry) {
+        json_object_put(db);
+        return 0;
+    } else { 
+        int len = json_object_array_length(file_entry);  
+        for (int i = 0; i < len; i++) {
+            json_object* current_tag = json_object_array_get_idx(file_entry, i);
+
+            if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+                json_object_put(db);
+                return 1;
+            }
+        }
+        
+    }
+    
+    json_object_put(db);
+    return 0;
+}
 
 
 /*
@@ -604,11 +634,9 @@ int count_tags(const char* file_name, size_t* count_out) {
         - assign_all_tags_to_file
         - copy_and_assign_tags_from
         - list_all_files_with_tags()
-        - count_tags <file>
         - count_files_with_tag <tag>
         - file_has_tag(file, tag)
         - rename_tag <old_tag> <new_tag>
         - remove_tag_globally <tag>
-        - MakeFile
         - distribute
 */ 

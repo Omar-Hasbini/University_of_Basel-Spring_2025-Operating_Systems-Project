@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger count-tags <file>\n");
         fprintf(stderr, "  tagger desassign-all-tags <file>\n");
+        fprintf(stderr, "  tagger tag-exists <tag>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
         fprintf(stderr, "\n");
@@ -116,6 +117,19 @@ int main(int argc, char *argv[]) {
             }
 
             printf("File has %zu tag(s)", count_out);
+            return 0;
+
+        } else if (strcmp(argv[1], "tag-exists")) {
+
+            int exists = tag_exists(argv[2]);
+            if (exists == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            } else if (exists == 1) {
+                printf("This tag exists in the DB.\n");
+            } else {
+                printf("This tag does not exist in the DB.\n");
+            }
             return 0;
 
         } else {
