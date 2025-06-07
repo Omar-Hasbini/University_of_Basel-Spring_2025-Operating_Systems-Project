@@ -456,6 +456,16 @@ GList *                 nautilus_file_list_filter                       (GList  
                                                                          gpointer                        user_data);
 gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
 
+char ** 				nautilus_file_get_labels						(NautilusFile 					*file);
+/* Returns **NULL-terminated** array of strings in UTF-8.
+ * Caller does NOT own the internal pointer – copy if you keep it. */
+
+void    				nautilus_file_set_labels 						(NautilusFile 					*file,
+                                  										char       						**labels);
+/* Accepts **NULL-terminated** array (may be empty) that NautilusFile
+ * will take ownership of (free with g_strfreev in dispose).        */
+
+
 /* Debugging */
 
 void                    nautilus_file_dump                              (NautilusFile                   *file);
