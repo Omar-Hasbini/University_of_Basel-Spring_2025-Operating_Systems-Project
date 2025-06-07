@@ -111,5 +111,6 @@ int main(int argc, char *argv[]) {
     } else {
         // Unreachable but may be necessary for the compiler to compiler and not throw an error.
         fprintf(stderr, "Error: Invalid amount of arguments\n");
+        return -1;
     }
 }

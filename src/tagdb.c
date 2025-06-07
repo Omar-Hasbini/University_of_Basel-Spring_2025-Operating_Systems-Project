@@ -188,7 +188,9 @@ int assign_tag(const char *filename, const char *tag) {
         json_object_object_add(db, filename, tags_array);
     } else {
         int tag_exists_already = 0;     
-        for (int i = 0; i < json_object_array_length(file_entry); i++ ) {
+
+        int len = json_object_array_length(file_entry);  
+        for (int i = 0; i < len; i++ ) {
             json_object* current_tag = json_object_array_get_idx(file_entry, i);
 
             if (strcmp(json_object_get_string(current_tag), tag) == 0) {
@@ -221,15 +223,17 @@ int assign_tag(const char *filename, const char *tag) {
         json_object_array_add(all_tags_array, json_object_new_string(tag));
         json_object_object_add(db, all_tags, all_tags_array);
     } else {
-        int tag_exists_globally = 0;     
-            for (int i = 0; i < json_object_array_length(all_tags_entry); i++ ) {
-                json_object* current_tag = json_object_array_get_idx(all_tags_entry, i);
+        int tag_exists_globally = 0; 
 
-                if (strcmp(json_object_get_string(current_tag), tag) == 0) {
-                    tag_exists_globally = 1;
-                    break;
-                }
+        int len = json_object_array_length(all_tags_entry);  
+        for (int i = 0; i < len; i++ ) {
+            json_object* current_tag = json_object_array_get_idx(all_tags_entry, i);
+
+            if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+                tag_exists_globally = 1;
+                break;
             }
+        }
 
         if(!tag_exists_globally) {
             int status_assign_global = json_object_array_add(all_tags_entry, json_object_new_string(tag));
@@ -273,8 +277,10 @@ int deassign_tag(const char *filename, const char *tag) {
         json_object_put(db);
         return -1;
     } else { 
-        int tag_index = -1;   
-        for (int i = 0; i < json_object_array_length(file_entry); i++ ) {
+        int tag_index = -1;
+
+        int len = json_object_array_length(file_entry);   
+        for (int i = 0; i < len; i++ ) {
             json_object* current_tag = json_object_array_get_idx(file_entry, i);
 
             if (strcmp(json_object_get_string(current_tag), tag) == 0) {
@@ -302,7 +308,7 @@ int deassign_tag(const char *filename, const char *tag) {
     //
 
     if (save_db(db) != 0) {
-        fprintf(stderr, "Error: could not save the DB after successful deletion.\n");
+        fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
         json_object_put(db);
         return -1;
     }
@@ -314,19 +320,59 @@ int deassign_tag(const char *filename, const char *tag) {
 /*  
     Source: Comment generated with ChatGPT 4o
 
-    Search for files by tag.
-    Returns a dynamically allocated array of strings (filenames).
-    The number of matched files is stored in "*count_out".
+    - Search for files by tag.
+    - Returns a dynamically allocated array of strings (filenames).
+    - The number of matched files is stored in "*count_out".
+
     Returns 0 on success, -1 on failure.
 
-    - EOS -
+    EOS
 */
-int search_by_tag(const char *tag, char*** result_files, size_t* count_ount) {
+int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
+    const char* all_tags = "/__all_tags__";
+
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
+    (*count_out) = 0;
+
+    // Nested for loop, $O(n^2)$ runtime unfortunately. 
+    json_object_object_foreach(db, key, val) {
+
+        if (!strcmp(json_object_get_string(key), all_tags)) {
+
+            size_t size_current_val = json_object_array_length(val);
+            for (int i = 0; i < size_current_val; i++ ) {
+                json_object* current_tag = json_object_array_get_idx(val, i);
+
+                if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+                    (*count_out)++;
+                    *result_files = realloc(*result_files, *count_out * sizeof(char*));
+
+                    if (!*result_files) {
+                        fprintf(stderr, "Error: could not allocate memory for the list of files.\n");
+                        return -1;
+                    }
+
+                    (*result_files)[*count_out - 1] = strdup(json_object_get_string(key));
+
+                    if (!(*result_files)[*count_out - 1]) {
+                        fprintf(stderr, "Error: could allocate memory for a filename in the list.\n");
+                        return -1;
+                    }
+                    // it is enough to find 1 tag 
+                    break;
+                }
+            }
+
+        }
+        
+    }	
+
+    json_object_put(db);
+    return 0;
 }
 
 /*
@@ -334,8 +380,8 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_ount) {
     The number of tags is stored in "*count_out".
     Returns 0 on success, -1 on failure.
 */
-int list_all_tags(char*** list_all_tags, size_t* count_out) {
-    const char* all_tags = "/__all_tags__";
+int list_all_tags(char*** all_tags, size_t* count_out) {
+    const char* all_tags_key = "/__all_tags__";
 
     json_object* db = load_tag_db();
     if (!db) {
@@ -344,7 +390,7 @@ int list_all_tags(char*** list_all_tags, size_t* count_out) {
     }
 
     json_object* all_tags_entry;
-    json_object_object_get_ex(db, all_tags, &all_tags_entry);
+    json_object_object_get_ex(db, all_tags_key, &all_tags_entry);
 
 
     if (!all_tags_entry || json_object_array_length(all_tags_entry) == 0) {
@@ -352,14 +398,14 @@ int list_all_tags(char*** list_all_tags, size_t* count_out) {
         fprintf(stderr, "Error: there is no collection with all the tags in the DB.\n");
         *count_out = 0;
         json_object_put(db);
-        *list_all_tags = NULL;
+        *all_tags = NULL;
         return -1;
     }   
     
     *count_out = json_object_array_length(all_tags_entry); 
-    *list_all_tags = malloc(*count_out * sizeof(char*));
+    *all_tags = malloc(*count_out * sizeof(char*));
 
-    if (!(*list_all_tags)) {
+    if (!(*all_tags)) {
         json_object_put(db);
         fprintf(stderr, "Error: could not allocate memory for the list of tags.\n");
         return -1;
@@ -367,15 +413,14 @@ int list_all_tags(char*** list_all_tags, size_t* count_out) {
 
     for (int i = 0; i < *count_out; i++) {
         json_object* current_entry = json_object_array_get_idx(all_tags_entry, i);
-        (*list_all_tags)[i] = strdup(json_object_get_string(current_entry)); 
+        (*all_tags)[i] = strdup(json_object_get_string(current_entry)); 
     }
     
-
     json_object_put(db);
     return 0;
 }
 
-int list_file_tags(const char *filename, char*** list_file_tags, size_t* count_out) {
+int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
     if (!check_file_exists(filename)) {
         fprintf(stderr, "Error: file does not exist.\n");
         return -1;
@@ -393,15 +438,15 @@ int list_file_tags(const char *filename, char*** list_file_tags, size_t* count_o
     if (!file_entry || json_object_array_length(file_entry) == 0) {
         fprintf(stderr, "Error: file has no entry in the DB or the set of its tags is empty.\n");
         *count_out = 0;
-        *list_file_tags = NULL;
+        *file_tags = NULL;
         json_object_put(db);
         return -1;
     } 
 
     *count_out = json_object_array_length(file_entry); 
-    *list_file_tags = malloc(*count_out * sizeof(char*));
+    *file_tags = malloc(*count_out * sizeof(char*));
 
-    if (!(*list_file_tags)) {
+    if (!(*file_tags)) {
         json_object_put(db);
         fprintf(stderr, "Error: could not allocate memory for the list of tags.\n");
         return -1;
@@ -409,7 +454,7 @@ int list_file_tags(const char *filename, char*** list_file_tags, size_t* count_o
 
     for (int i = 0; i < *count_out; i++) {
         json_object* current_entry = json_object_array_get_idx(file_entry, i);
-        (*list_file_tags)[i] = strdup(json_object_get_string(current_entry)); 
+        (*file_tags)[i] = strdup(json_object_get_string(current_entry)); 
     }
     
     json_object_put(db);
