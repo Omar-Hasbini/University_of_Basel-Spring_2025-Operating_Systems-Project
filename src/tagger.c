@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Error: Invalid amount of arguments\n");
         fprintf(stderr, "Usage:\n");
         fprintf(stderr, "  tagger list\n");
+        fprintf(stderr, "  tagger deassign_all\n");
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
@@ -37,6 +38,15 @@ int main(int argc, char *argv[]) {
             }
 
             free(all_tags);  
+            return 0;
+        } else if (strcmp(argv[1], "desassign_all") == 0){
+             int status = deassign_all_tags_systemwide();
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
             return 0;
         } else {
             fprintf(stderr, "Error: unknown command\n");
