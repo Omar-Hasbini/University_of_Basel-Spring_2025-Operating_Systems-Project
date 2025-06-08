@@ -48,6 +48,7 @@ char* get_db_path() {
     const char* suffix = "/.file_tags/tags.json";
 
     if (!home) {
+        fprintf(stderr, "Error: could not determine the home directory path.\n");
         return NULL;  
     }
 
@@ -62,12 +63,18 @@ char* get_db_path() {
 
     strcpy(full_path, home);
     strcat(full_path, suffix);
+    free(home);
 
     return full_path;
 }
 
 int save_db(json_object* db) {
     char* full_path = get_db_path();
+
+    if (!full_path) {
+        fprintf(stderr, "Error: could not retrieve the DB's path.\n");
+        return -1;
+    }
     
     FILE* fp = fopen(full_path, "w");
     if (!fp) {
@@ -103,6 +110,11 @@ int check_tagdb_exists() {
 
 int create_db() {
     char* full_path = get_db_path();
+
+     if (!full_path) {
+        fprintf(stderr, "Error: could not retrieve the DB's path.\n");
+        return -1;
+    }
 
     char* last_slash = NULL;
     size_t index = 0;
@@ -142,6 +154,12 @@ struct json_object* load_tag_db() {
     }
 
     char* full_path = get_db_path();
+
+     if (!full_path) {
+        fprintf(stderr, "Error: could not retrieve the DB's path.\n");
+        return -1;
+    }
+
     FILE *fp;
 
     struct json_object* parsed_json;
@@ -550,9 +568,10 @@ int deassign_all_tags(const char *file_name) {
 
 int deassign_all_tags_systemwide() {
     char* full_path = get_db_path();
-    if (!full_path) {
-        fprintf(stderr, "Error: the DB for the tags doesn't exist yet and so you cannot execute this command.\n");
-        return -1; 
+
+     if (!full_path) {
+        fprintf(stderr, "Error: could not retrieve the DB's path.\n");
+        return -1;
     }
 
     int status = remove(full_path);
@@ -704,8 +723,9 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
 
     json_object_put(db);
     return 0;
-}   
+}  
 
+int assign_all_tags_to_file() {}
 
 /*
     can be implemented if time allows:
