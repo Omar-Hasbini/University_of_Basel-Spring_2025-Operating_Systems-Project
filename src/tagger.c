@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger count-tags <file>\n");
-        fprintf(stderr, "  tagger desassign-all-tags <file>\n");
+        fprintf(stderr, "  tagger deassign-all-tags <file>\n");
         fprintf(stderr, "  tagger tag-exists <tag>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
             }
             return 0;
 
-        } else if (strcmp(argv[1], "count-tags")) {
+        } else if (strcmp(argv[1], "count-tags") == 0) {
 
             size_t count_out = 0;
             int status =  count_tags(argv[2], &count_out);
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
             printf("File has %zu tag(s)", count_out);
             return 0;
 
-        } else if (strcmp(argv[1], "tag-exists")) {
+        } else if (strcmp(argv[1], "tag-exists") == 0) {
 
             int exists = tag_exists(argv[2]);
             if (exists == -1) {
