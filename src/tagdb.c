@@ -157,7 +157,7 @@ struct json_object* load_tag_db() {
 
      if (!full_path) {
         fprintf(stderr, "Error: could not retrieve the DB's path.\n");
-        return -1;
+        return NULL;
     }
 
     FILE *fp;
