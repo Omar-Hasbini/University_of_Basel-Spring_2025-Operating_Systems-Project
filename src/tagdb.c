@@ -218,6 +218,7 @@ int assign_tag(const char *file_name, const char *tag) {
     
     if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
+        free(absolute_path);
         return -1;
     }
 
@@ -440,7 +441,7 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     The number of tags is stored in "*count_out".
     Returns 0 on success, -1 on failure.
 */
-int list_all_tags(const char*** all_tags, size_t* count_out) {
+int list_all_tags(char*** all_tags, size_t* count_out) {
     
     json_object* db = load_tag_db();
     if (!db) {
@@ -479,7 +480,7 @@ int list_all_tags(const char*** all_tags, size_t* count_out) {
     return 0;
 }
 
-int list_file_tags(const char *filename, const char*** file_tags, size_t* count_out) {
+int list_file_tags(const char *filename, char*** file_tags, size_t* count_out) {
 
     char *absolute_path = realpath(filename, NULL);
 
