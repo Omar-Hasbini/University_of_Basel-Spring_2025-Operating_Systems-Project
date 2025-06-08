@@ -387,20 +387,23 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
                 json_object* current_tag = json_object_array_get_idx(val, i);
 
                 if (strcmp(json_object_get_string(current_tag), tag) == 0) {
-                    (*count_out)++;
-                    *result_files = realloc(*result_files, *count_out * sizeof(char*));
+                    
+                    char** temp = realloc(*result_files, (*count_out + 1) * sizeof(char*));
 
-                    if (!*result_files) {
+                    if (!temp) {
                         fprintf(stderr, "Error: could not allocate memory for the list of files.\n");
+                        json_object_put(db);
                         return -1;
                     }
 
-                    (*result_files)[*count_out - 1] = strdup(key);
-
-                    if (!(*result_files)[*count_out - 1]) {
+                    *result_files = temp;
+                    (*result_files)[*count_out] = strdup(key);
+                    if (!(*result_files)[*count_out]) {
                         fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
+                        json_object_put(db);
                         return -1;
                     }
+                    (*count_out)++;
                     // it is enough to find 1 tag 
                     break;
                 }
@@ -670,12 +673,44 @@ int file_has_tag(const char* file_path, const char* tag) {
     return file_has_tag;
 }
 
+int list_all_files_with_tags(char*** result_files, size_t* count_out) {
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
+        return -1;
+    }
+
+    json_object_object_foreach(db, key, val) {
+        size_t size_current_val = json_object_array_length(val);
+        if (size_current_val >= 1) {
+            char** temp = realloc(*result_files, (*count_out + 1) * sizeof(char*));
+
+            if (!temp) {
+                fprintf(stderr, "Error: could not allocate memory for the list of files.\n");
+                json_object_put(db);
+                return -1;
+            }
+
+            *result_files = temp;
+            (*result_files)[*count_out] = strdup(key);
+            if (!(*result_files)[*count_out]) {
+                fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
+                json_object_put(db);
+                return -1;
+            }
+            (*count_out)++;
+        }  
+    }	
+
+    json_object_put(db);
+    return 0;
+}   
+
 
 /*
     can be implemented if time allows:
         - assign_all_tags_to_file
         - copy_and_assign_tags_from
-        - list_all_files_with_tags()
         - count_files_with_tag <tag>
         - rename_tag <old_tag> <new_tag>
         - remove_tag_globally <tag>

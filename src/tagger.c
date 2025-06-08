@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Usage:\n");
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
+        fprintf(stderr, "  tagger list-all-files-with-tags\n");
         fprintf(stderr, "  tagger list <file>\n");
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger count-tags <file>\n");
@@ -57,6 +58,24 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
+            return 0;
+        } else if (strcmp(argv[1], "list-all-files-with-tags") == 0) {
+            char** result_files = NULL;
+            size_t count_out = 0;
+
+            int status = list_all_files_with_tags(&result_files, &count_out);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
+            for (size_t i = 0; i < count_out; i++) {
+                printf("%s\n", result_files[i]);
+                free(result_files[i]);
+            }
+
+            free(result_files);  
             return 0;
         } else {
             fprintf(stderr, "Error: unknown command\n");
