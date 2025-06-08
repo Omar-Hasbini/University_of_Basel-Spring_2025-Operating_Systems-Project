@@ -135,6 +135,11 @@
           "url": "https://gitlab.gnome.org/GNOME/gnome-autoar.git",
 	  "branch": "master"
         }
+      ],
+      "cleanup": ["/share/gtk-doc"],
+      "post-install": [
+        "install -d /app/lib/pkgconfig",
+        "cp /app/lib/pkgconfig/gnome-autoaor-0.pc /app/lib/pkgconfig/"
       ]
     },
     {
