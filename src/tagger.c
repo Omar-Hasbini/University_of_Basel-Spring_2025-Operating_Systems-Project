@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger count-tags <file>\n");
         fprintf(stderr, "  tagger deassign-all-tags <file>\n");
         fprintf(stderr, "  tagger tag-exists <tag>\n");
+        fprintf(stderr, "  tagger assign-all-tags-to-file <tag>\n");
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
         fprintf(stderr, "  tagger file-has-tag <file> <tag>\n");
@@ -119,12 +120,15 @@ int main(int argc, char *argv[]) {
 
             free(result_files);  
             return 0;
-        } else if (strcmp(argv[1], "desassign-all-tags") == 0) {
+        } else if (strcmp(argv[1], "deassign-all-tags") == 0) {
 
             int status = deassign_all_tags(argv[2]);
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
             }
+
+            fprintf(stdout, "Success: the file has no more tags assigned.\n");
             return 0;
 
         } else if (strcmp(argv[1], "count-tags") == 0) {
@@ -152,9 +156,15 @@ int main(int argc, char *argv[]) {
             }
             return 0;
 
-        } else {
-            fprintf(stderr, "Error: unknown command\n");
-            return -1;
+        } else if (strcmp(argv[1], "assign-all-tags-to-file") == 0) {
+            int status = assign_all_tags_to_file(argv[2]);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+            }
+
+            printf("Success: all tags assigned to file");
+            return 0;
         }
 
     } else if (argc == 4) {

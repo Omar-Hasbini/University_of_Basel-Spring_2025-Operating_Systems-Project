@@ -19,6 +19,18 @@
     //  "/" is usually reserved Linux Filesystems and so can never collide
     #define ALL_TAGS_KEY "/__all_tags__"
 
+    /*
+        This library prints out to stdout and stderr, which shouldn't be the case ideally
+        as a library should not concern itself with this and since it floods these communication channels
+        Nevertheless it works out for this project's use case, however such an implementation should be avoided
+        in the future.
+    */
+
+    /*
+        The code has been tested and cleaned up partially, however it is still affected by a short deadline. 
+        Thus, further testing, refactoring and treating with precaution is desirable.
+    */
+
     // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
     // This is not needed for shell inputs since the shell auto-expands the "~".
     char* get_home() {
@@ -200,7 +212,6 @@
         buffer[size_db] = '\0';
 
         parsed_json = json_tokener_parse(buffer);
-        
         if (!parsed_json) {
             fprintf(stderr, "Error: JSON DB is corrupted or invalid.\n");
             free(buffer);
@@ -216,14 +227,10 @@
 
     int assign_tag(const char *file_name, const char *tag) {
         char *absolute_path = realpath(file_name, NULL);
+
         if (!absolute_path) {
-            if (access(file_name, F_OK) == 0) {
-                fprintf(stderr, "Warning: realpath failed, using raw path\n");
-                absolute_path = strdup(file_name);
-            } else {
-                perror("realpath failed");
-                return -1;
-            }
+            perror("realpath failed");
+            return -1;
         }
 
         if (!check_file_exists(absolute_path)) {
@@ -327,13 +334,8 @@
     int deassign_tag(const char *file_name, const char *tag) {
         char *absolute_path = realpath(file_name, NULL);
         if (!absolute_path) {
-            if (access(file_name, F_OK) == 0) {
-                fprintf(stderr, "Warning: realpath failed, using raw path\n");
-                absolute_path = strdup(file_name);
-            } else {
-                perror("realpath failed");
-                return -1;
-            }
+            perror("realpath failed");
+            return -1;
         }
 
         if (!check_file_exists(absolute_path)) {
@@ -578,22 +580,17 @@
 
         json_object *existing;
         if (!json_object_object_get_ex(db, absolute_path, &existing)) {
-            fprintf(stderr, "Warning: file had no tags assigned. Command is idempotent in this case and will proceed.\n");
+            fprintf(stderr, "Warning: file had no tags assigned. It's key will be removed from the DB.\n");
         }
 
-        // Note: This overwrites safely, even if the key doesn't exist in the DB.
         json_object_object_del(db, absolute_path);
-        json_object_object_add(db, absolute_path, empty_array);
-        // EON
 
         save_db(db);
         json_object_put(db);
         free(absolute_path);
 
-        fprintf(stdout, "Success: the file has no more tags assigned.\n");
         return 0;
     }
-
 
     int deassign_all_tags_systemwide() {
         char* full_path = get_db_path();
@@ -761,11 +758,56 @@
         return 0;
     }  
 
-    // int assign_all_tags_to_file() {}
+    int assign_all_tags_to_file(const char* file_path) {
+        char *absolute_path = realpath(file_name, NULL);
+        
+        if (!absolute_path) {
+            perror("realpath failed");
+            return -1;
+        }
+
+        if (!check_file_exists(absolute_path)) {
+            fprintf(stderr, "Error: file does not exist.\n");
+            free(absolute_path);
+            return -1;
+        }
+
+        json_object* db = load_tag_db();
+        if (!db) {
+            fprintf(stderr, "Error: could not load the DB.\n");
+            return -1;
+        }
+
+        json_object* all_tags_entry;
+        json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
+
+
+        size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
+
+        if (!all_tags_entry || len_arr_all_tags == 0) {
+            fprintf(stderr, "Error: there are no tags yet in the DB and so none can be assigned to this file.\n");
+            json_object_put(db);
+            free(absolute_path);
+            return -1;
+        }
+
+        json_object* arr_with_all_tags = json_object_new_array()
+
+        // Safe overwrite due to monotonicity S_1 >= S_0 because $S_1 := S_0 \cup \{all tags\}$
+        for (size_t i = 0; i < len_arr_all_tags; i++) {
+            json_object_array_add(arr_with_all_tags, json_object_array_get_idx(all_tags_entry, i));
+        }
+
+        json_object_object_add(db, absolute_path, arr_with_all_tags);
+
+        save_db(db);
+        json_object_put(db);
+        free(absolute_path);
+        return 0;
+    }
 
     /*
         can be implemented if time allows:
-            - assign_all_tags_to_file
             - copy_and_assign_tags_from
             - count_files_with_tag <tag>
             - rename_tag <old_tag> <new_tag>
