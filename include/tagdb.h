@@ -19,5 +19,6 @@ int count_tags(const char* file_name, size_t* count_out);
 int tag_exists(const char* tag);
 int file_has_tag(const char* file_path, const char* tag);
 int list_all_files_with_tags(char*** result_files, size_t* count_out);
+int assign_all_tags_to_file(const char* file_path);
 
 #endif

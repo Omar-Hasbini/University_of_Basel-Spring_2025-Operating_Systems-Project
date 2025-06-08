@@ -759,7 +759,7 @@
     }  
 
     int assign_all_tags_to_file(const char* file_path) {
-        char *absolute_path = realpath(file_name, NULL);
+        char *absolute_path = realpath(file_path, NULL);
         
         if (!absolute_path) {
             perror("realpath failed");
@@ -791,11 +791,12 @@
             return -1;
         }
 
-        json_object* arr_with_all_tags = json_object_new_array()
+        json_object* arr_with_all_tags = json_object_new_array();
 
         // Safe overwrite due to monotonicity S_1 >= S_0 because $S_1 := S_0 \cup \{all tags\}$
         for (size_t i = 0; i < len_arr_all_tags; i++) {
-            json_object_array_add(arr_with_all_tags, json_object_array_get_idx(all_tags_entry, i));
+            char* current_tag = json_object_get_string(json_object_array_get_idx(all_tags_entry, i));
+            json_object_array_add(arr_with_all_tags, json_object_new_string(current_tag));
         }
 
         json_object_object_add(db, absolute_path, arr_with_all_tags);
