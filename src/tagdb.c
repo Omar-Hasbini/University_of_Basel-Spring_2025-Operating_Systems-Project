@@ -215,7 +215,6 @@ int assign_tag(const char *file_name, const char *tag) {
         return -1;
     }
 
-    
     if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
         free(absolute_path);
@@ -316,6 +315,11 @@ int assign_tag(const char *file_name, const char *tag) {
 
 int deassign_tag(const char *filename, const char *tag) {
     char *absolute_path = realpath(filename, NULL);
+
+    if (!absolute_path) {
+        perror("realpath failed");
+        return -1;
+    }
 
     if (!check_file_exists(absolute_path)) {
         fprintf(stderr, "Error: file does not exist.\n");
@@ -726,7 +730,7 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
     return 0;
 }  
 
-int assign_all_tags_to_file() {}
+// int assign_all_tags_to_file() {}
 
 /*
     can be implemented if time allows:
