@@ -200,6 +200,13 @@
         buffer[size_db] = '\0';
 
         parsed_json = json_tokener_parse(buffer);
+        
+        if (!parsed_json) {
+            fprintf(stderr, "Error: JSON DB is corrupted or invalid.\n");
+            free(buffer);
+            free(full_path);
+            return NULL;
+        }
 
         free(full_path);
         free(buffer);
