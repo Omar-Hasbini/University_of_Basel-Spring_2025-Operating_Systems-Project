@@ -36,6 +36,7 @@ void print_usage() {
 }
 
 int main(int argc, char *argv[]) {
+    
     if (argc == 1 || argc >= 5) {
         fprintf(stderr, "Error: Invalid amount of arguments\n");
         print_usage();
@@ -53,15 +54,16 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
+            printf("Total: %zu tags\n", count_out);
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", all_tags[i]);
                 free(all_tags[i]);
             }
-
             free(all_tags);  
             return 0;
+            
         } else if (strcmp(argv[1], "deassign-all-tags-systemwide") == 0){
-             int status = deassign_all_tags_systemwide();
+            int status = deassign_all_tags_systemwide();
 
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
@@ -81,8 +83,8 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
             
+            printf("Total: %zu tags\n", count_out);
             printf("List:\n");
-
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
                 free(result_files[i]);
@@ -107,8 +109,8 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
+            printf("Total: %zu tags\n", count_out);
             printf("List:\n");
-
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", file_tags[i]);
                 free(file_tags[i]);
@@ -128,12 +130,12 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
+            printf("Total: %zu tags\n", count_out);
             printf("List of files with this tag:\n");
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
                 free(result_files[i]);
             }
-
             free(result_files);  
             return 0;
         } else if (strcmp(argv[1], "deassign-all-tags") == 0) {
@@ -143,7 +145,6 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-
             printf("Success: the file has no more tags assigned.\n");
             return 0;
 
@@ -151,11 +152,9 @@ int main(int argc, char *argv[]) {
 
             size_t count_out = 0;
             int status =  count_tags(argv[2], &count_out);
-
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
             }
-
             printf("Outcome: File has %zu tag(s)\n", count_out);
             return 0;
 
@@ -173,38 +172,33 @@ int main(int argc, char *argv[]) {
             return 0;
 
         } else if (strcmp(argv[1], "assign-all-tags-to-file") == 0) {
-            int status = assign_all_tags_to_file(argv[2]);
 
+            int status = assign_all_tags_to_file(argv[2]);
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-
             printf("Success: all tags assigned to file\n");
             return 0;
 
         } else if (strcmp(argv[1], "count-files-with-tag") == 0) {
 
             size_t count_out;
-
             int status = count_files_with_tag(argv[2], &count_out);
-
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-
             printf("There are %zu file(s) with this tag\n", count_out);
             return 0;
 
         } else if (strcmp(argv[1], "remove-tag-globally") == 0) {
-            int status = remove_tag_globally(argv[2]);
 
+            int status = remove_tag_globally(argv[2]);
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-
             printf("Success: tag was removed globally.\n");
             return 0;
         
