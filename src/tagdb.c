@@ -372,7 +372,7 @@
             if(tag_index == -1) {
                 fprintf(stderr, "Error: either tag not assigned to the file and/or the file has no entry in the DB.\n");
                 json_object_put(db);
-                free(absolute_path)
+                free(absolute_path);
                 return -1;
             } else {
 
