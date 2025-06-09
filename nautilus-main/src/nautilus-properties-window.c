@@ -3534,6 +3534,52 @@ setup_permissions_page (NautilusPropertiesWindow *self)
     }
 }
 
+// ------------------------------------------------------------------
+// setting the notes page
+static void
+setup_notes_page (NautilusPropertiesWindow *self)
+{
+    self->initial_permissions = NULL;
+
+    if (all_can_get_permissions (self->files))
+    {
+        self->initial_permissions = get_initial_permissions (self->files);
+        self->has_recursive_apply = files_has_changable_permissions_directory (self);
+
+        gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permissions-box");
+        create_simple_permissions (self);
+
+#ifdef HAVE_SELINUX
+        gtk_widget_set_visible (self->security_context_group, TRUE);
+        add_updatable_row (self, self->security_context_row, "selinux_context");
+#endif
+
+        if (self->has_recursive_apply)
+        {
+            gtk_widget_set_visible (self->change_permissions_enclosed_files_group, TRUE);
+        }
+    }
+    else
+    {
+        /*
+         *  This if block only gets executed if its a single file window,
+         *  in which case the label text needs to be different from the
+         *  default label text. The default label text for a multifile
+         *  window is set in nautilus-properties-window.ui so no else block.
+         */
+        if (!is_multi_file_window (self))
+        {
+            g_autofree gchar *prompt_text = NULL;
+
+            prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."),
+                                           nautilus_file_get_display_name (get_file (self)));
+            adw_status_page_set_description (ADW_STATUS_PAGE (self->unknown_permissions_page), prompt_text);
+        }
+
+        gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permission-indeterminable");
+    }
+}
+
 static void
 refresh_extension_model_pages (NautilusPropertiesWindow *self)
 {
@@ -3720,6 +3766,8 @@ create_properties_window (StartupData *startup_data)
     {
         gtk_widget_set_visible (GTK_WIDGET (window->execution_row), TRUE);
     }
+    
+    setup_notes_page (window);
 
     /* Update from initial state */
     properties_window_update (window, NULL);
