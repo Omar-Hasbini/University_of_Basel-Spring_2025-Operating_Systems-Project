@@ -20,8 +20,8 @@ LIBS = -ljson-c
 
 # Default when you run "make" with no additional arguments
 all:
-    gcc $(SRCS) $(LIBS) $(INCLUDES) -o $(OUT)
+	gcc $(SRCS) $(LIBS) $(INCLUDES) -o $(OUT)
 
 # Use with "make clean"
 clean:
-    rm -f $(OUT)
+	rm -f $(OUT)
