@@ -1,0 +1,91 @@
+.TH TAGGER 1 "June 2025" "v1.0" "User Commands"
+.SH NAME
+tagger \- file tagging system for managing and querying file metadata tags
+
+.SH SYNOPSIS
+.B tagger
+[\fIcommand\fR] [\fIarguments\fR]
+
+.SH DESCRIPTION
+\fBtagger\fR is a command-line tool to manage metadata tags on files. It supports assigning, removing, counting, and listing tags. Tags are persisted in a system-wide JSON database.
+
+.SH COMMANDS
+.TP
+\fBhelp\fR
+Show usage summary or point to man page.
+
+.TP
+\fBlist\fR
+List all tags in the system.
+
+.TP
+\fBlist <file_path>\fR
+List all tags assigned to a specific file.
+
+.TP
+\fBlist-all-files-with-tags\fR
+List all files currently tracked with at least one tag.
+
+.TP
+\fBsearch <tag>\fR
+List all files that have the specified tag.
+
+.TP
+\fBassign <file_path> <tag>\fR
+Assign a tag to the specified file.
+
+.TP
+\fBdeassign <file_path> <tag>\fR
+Remove a tag from the specified file.
+
+.TP
+\fBdeassign-all-tags <file_path>\fR
+Remove all tags from the specified file.
+
+.TP
+\fBdeassign-all-tags-systemwide\fR
+Clear the entire tag database (remove all tags from all files).
+
+.TP
+\fBassign-all-tags-to-file <file_path>\fR
+Assign all known tags to the given file.
+
+.TP
+\fBcount-tags <file_path>\fR
+Print how many tags are assigned to the specified file.
+
+.TP
+\fBcount-files-with-tag <tag>\fR
+Count how many files currently have this tag.
+
+.TP
+\fBremove-tag-globally <tag>\fR
+Delete the tag entirely from the database, removing it from all files.
+
+.TP
+\fBfile-has-tag <file_path> <tag>\fR
+Check if a specific file has a given tag.
+
+.TP
+\fBtag-exists <tag>\fR
+Check if the tag is defined in the tag database.
+
+.SH OPTIONS
+None. All arguments are positional.
+
+.SH FILES
+.TP
+\fB~/.tagger_db.json\fR
+Tag database storing tag associations (exact path may vary depending on implementation).
+
+.SH EXIT STATUS
+Returns 0 on success, -1 on failure.
+
+.SH AUTHOR
+Omar Fadi Hasbini
+
+.SH SEE ALSO
+json-c(3), find(1), grep(1)
+
+.SH DISCLAIMER
+This tool is for educational use only. No warranty is provided.

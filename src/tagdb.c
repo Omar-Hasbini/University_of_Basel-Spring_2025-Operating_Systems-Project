@@ -5,6 +5,14 @@
     License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
     */ 
 
+    /*
+        can be implemented if time allows:
+            - groups of files or groups of tags
+            - copy_and_assign_tags_from (seems redundant when considering the option above)
+            - distribute with apt
+            - auto-complete terminal
+    */ 
+
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
@@ -927,15 +935,3 @@
         json_object_put(db);
         return 0;
     }
-
-    
-
-    
-    /*
-        can be implemented if time allows:
-            - groups of files or groups of tags
-            - copy_and_assign_tags_from (seems redundant when considering the option above)
-            - distribute
-            - auto-complete terminal
-            - man page
-    */ 
