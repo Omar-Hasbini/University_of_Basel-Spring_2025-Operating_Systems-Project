@@ -22,5 +22,6 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out);
 int assign_all_tags_to_file(const char* file_path);
 // int rename_tag(const char* old_tag, const char* new_tag);
 int count_files_with_tag(const char* tag, size_t* count_out);
+int remove_tag_globally(const char* tag)
 
 #endif

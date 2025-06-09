@@ -896,9 +896,36 @@
     }
 
     int remove_tag_globally(const char* tag) {
+        json_object* db = load_tag_db();
+        if (!db) {
+            fprintf(stderr, "Error: could not load the DB.\n");
+            return -1;
+        }
 
+        json_object_object_foreach(db, key, val) {
+            ssize_t size_current_val = json_object_array_length(val);
+            ssize_t index = -1;
+            
+            for (ssize_t i = 0; i < size_current_val; i++ ) {
+                char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
 
+                if (strcmp(current_tag, tag) == 0) {
+                    index = i;
+                    break;
+                }
+            }
 
+            if (index != -1) {
+                json_object_array_del_idx(val, index, 1);
+                // File had only 1 tag which was removed
+                if (size_current_val == 1) {
+                    json_object_object_del(db, key);
+                }
+            }
+        }
+
+        json_object_put(db);
+        return 0;
     }
 
     
@@ -906,8 +933,9 @@
     
     /*
         can be implemented if time allows:
-            - groups of tags
-            - copy_and_assign_tags_from
+            - groups of files or groups of tags
+            - copy_and_assign_tags_from (seems redundant when considering the option above)
             - distribute
             - auto-complete terminal
+            - man page
     */ 

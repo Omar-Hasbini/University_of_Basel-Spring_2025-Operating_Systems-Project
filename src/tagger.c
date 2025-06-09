@@ -22,6 +22,7 @@ void print_usage() {
         fprintf(stderr, "  tagger tag-exists <tag>\n");
         fprintf(stderr, "  tagger assign-all-tags-to-file <file_path>\n");
         fprintf(stderr, "  tagger count-files-with-tag <tag>\n");
+        fprintf(stderr, "  tagger remove-tag-globally <tag>\n");
         fprintf(stderr, "  tagger assign <file_path> <tag>\n");
         fprintf(stderr, "  tagger deassign <file_path> <tag>\n");
         fprintf(stderr, "  tagger file-has-tag <file_path> <tag>\n");
@@ -193,6 +194,17 @@ int main(int argc, char *argv[]) {
             }
 
             printf("There are %zu file(s) with this tag\n", count_out);
+            return 0;
+
+        } else if (strcmp(argv[1], "remove-tag-globally") == 0) {
+            int status = remove_tag_globally(argv[2]);
+
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
+            printf("Success: tag was removed globally.\n");
             return 0;
 
         } else {
