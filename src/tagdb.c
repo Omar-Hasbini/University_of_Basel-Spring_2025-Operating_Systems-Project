@@ -17,7 +17,7 @@
 
     // Entry in the JSON DB to keep track of all existing tags,
     //  "/" is usually reserved Linux Filesystems and so can never collide
-    #define ALL_TAGS_KEY "/__all_tags__"
+    #define ALL_TAGS_KEY "__meta__:all_tags"
 
     /*
         This library prints out to stdout and stderr, which shouldn't be the case ideally
@@ -892,6 +892,8 @@
         json_object_put(db);
         return 0;
     }
+
+
     /*
         can be implemented if time allows:
             - copy_and_assign_tags_from

@@ -60,8 +60,9 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-
+            printf("Sucess: all tags have been deassigned (i.e., the DB was deleted).\n");
             return 0;
+
         } else if (strcmp(argv[1], "list-all-files-with-tags") == 0) {
             char** result_files = NULL;
             size_t count_out = 0;
@@ -73,6 +74,8 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
             
+            printf("List:\n");
+
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
                 free(result_files[i]);
@@ -96,6 +99,8 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
+            printf("List:\n");
+
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", file_tags[i]);
                 free(file_tags[i]);
@@ -115,6 +120,7 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
+            printf("List of files with this tag:\n");
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
                 free(result_files[i]);
@@ -130,7 +136,7 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
-            fprintf(stdout, "Success: the file has no more tags assigned.\n");
+            printf("Success: the file has no more tags assigned.\n");
             return 0;
 
         } else if (strcmp(argv[1], "count-tags") == 0) {
@@ -152,9 +158,9 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             } else if (exists == 1) {
-                printf("This tag exists in the DB.\n");
+                printf("Outcome: This tag exists in the DB.\n");
             } else {
-                printf("This tag does not exist in the DB.\n");
+                printf("Outcome: This tag does not exist in the DB.\n");
             }
             return 0;
 
@@ -197,6 +203,8 @@ int main(int argc, char *argv[]) {
                     fprintf(stderr, "Error: command failed. See previous output for details.\n");
                     return -1;
                 }
+
+                printf("Success: the tag was assigned to this file.\n");
                 return 0;
         } else if (strcmp(argv[1], "deassign") == 0) {
             int status = deassign_tag(argv[2], argv[3]);
@@ -205,7 +213,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-            printf("Success: tag was deassigned from file successfully.\n");
+            printf("Success: the tag was deassigned from this file.\n");
             return 0;
             
         } else if (strcmp(argv[1], "file-has-tag") == 0) {
