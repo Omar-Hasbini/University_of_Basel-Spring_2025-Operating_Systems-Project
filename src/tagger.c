@@ -9,10 +9,9 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 #include <string.h>
 #include "tagdb.h"
 
-int main(int argc, char *argv[]) {
-    if (argc == 1 || argc >= 5) {
-        fprintf(stderr, "Error: Invalid amount of arguments\n");
-        fprintf(stderr, "Usage:\n");
+void print_usage() {
+        fprintf(stderr, "\n");
+        fprintf(stderr, "Usage (<file_path> can be relative or absolute):\n");
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
         fprintf(stderr, "  tagger list-all-files-with-tags\n");
@@ -32,6 +31,12 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
         fprintf(stderr, "and provides no warranty, liability, or guarantee. It is not intended for use in\n");
         fprintf(stderr, "any critical systems, including but not limited to flight control.\n");
+}
+
+int main(int argc, char *argv[]) {
+    if (argc == 1 || argc >= 5) {
+        fprintf(stderr, "Error: Invalid amount of arguments\n");
+        print_usage();
         return -1;
 
     } else if (argc == 2) {
@@ -85,6 +90,7 @@ int main(int argc, char *argv[]) {
             return 0;
         } else {
             fprintf(stderr, "Error: unknown command\n");
+            print_usage();
             return -1;
         }
     } else if (argc == 3) {
@@ -191,6 +197,7 @@ int main(int argc, char *argv[]) {
 
         } else {
             fprintf(stderr, "Error: unknown command\n");
+            print_usage();
             return -1;
         } 
     
@@ -244,10 +251,12 @@ int main(int argc, char *argv[]) {
             // Unreachable code but may be necessary to avoid compiler error
             // No turns out it is reachable.
             fprintf(stderr, "Error: unknown command\n");
+            print_usage();
             return -1;
         }
     } else {
         fprintf(stderr, "Error: Invalid amount of arguments\n");
+        print_usage();
         return -1;
     }
 }

@@ -16,7 +16,7 @@
     #include "tagdb.h"
 
     // Entry in the JSON DB to keep track of all existing tags,
-    //  "/" is usually reserved Linux Filesystems and so can never collide
+    // Collision is impossible, since we store the full path of a file, which will include at least the "/" from the root dir.
     #define ALL_TAGS_KEY "__meta__:all_tags"
 
     /*
@@ -277,9 +277,7 @@
                 return -1;
             } else {
                 int status_assign = json_object_array_add(file_entry, json_object_new_string(tag));
-                if (status_assign == 0) {
-                    fprintf(stdout, "Success: tag was assigned.\n");
-                } else {
+                if (status_assign != 0) {
                     fprintf(stderr, "Error: tag could not be assigned.\n");
                     json_object_put(db);
                     return -1;
@@ -610,7 +608,6 @@
             return -1;
         }   
 
-        fprintf(stdout, "Sucess: all tags have been deassigned (i.e., the DB was deleted).");
         return 0;
     }
 
@@ -756,6 +753,8 @@
     }  
 
     int assign_all_tags_to_file(const char* file_path) {
+        // Idempotent function
+
         char *absolute_path = realpath(file_path, NULL);
         
         if (!absolute_path) {
@@ -803,68 +802,71 @@
         return 0;
     }
 
-    // int rename_tag(const char* old_tag, const char* new_tag) {
-    //     json_object* db = load_tag_db();
-    //     if (!db) {
-    //         fprintf(stderr, "Error: could not load the DB.\n");
-    //         return -1;
-    //     }
+//  Disabled due to time constraints and needing further case-handling.
+/*
+    int rename_tag(const char* old_tag, const char* new_tag) {
+        json_object* db = load_tag_db();
+        if (!db) {
+            fprintf(stderr, "Error: could not load the DB.\n");
+            return -1;
+        }
 
-    //     // check if tag exists 
-    //     json_object* all_tags_entry;
-    //     json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
-
-
-    //     if (!all_tags_entry) {
-    //         fprintf(stderr, "Error: there are no tags yet in the DB => the old tag does not exist in the first place.\n");
-    //         json_object_put(db);
-    //         return -1;
-    //     }
-
-    //     size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
-
-    //     if (len_arr_all_tags == 0){
-    //         fprintf(stderr, "Error: there are no tags yet in the DB => the old tag does not exist in the first place.\n");
-    //         json_object_put(db);
-    //         return -1;
-    //     }
+        // check if tag exists 
+        json_object* all_tags_entry;
+        json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
 
-    //     int tag_exists = 0;
-    //     char* current_tag;
+        if (!all_tags_entry) {
+            fprintf(stderr, "Error: there are no tags yet in the DB => the old tag does not exist in the first place.\n");
+            json_object_put(db);
+            return -1;
+        }
 
-    //     for (size_t i = 0; i < len_arr_all_tags; i++) {
-    //         current_tag = json_object_get_string(json_object_array_get_idx(all_tags_entry, i));
+        size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
+
+        if (len_arr_all_tags == 0){
+            fprintf(stderr, "Error: there are no tags yet in the DB => the old tag does not exist in the first place.\n");
+            json_object_put(db);
+            return -1;
+        }
+
+
+        int tag_exists = 0;
+        char* current_tag;
+
+        for (size_t i = 0; i < len_arr_all_tags; i++) {
+            current_tag = json_object_get_string(json_object_array_get_idx(all_tags_entry, i));
             
-    //         if (strcmp(current_tag, old_tag) == 0) {
-    //             tag_exists = 1;
-    //             break;
-    //         }
-    //     }
+            if (strcmp(current_tag, old_tag) == 0) {
+                tag_exists = 1;
+                break;
+            }
+        }
 
-    //     if (!tag_exists) {
-    //         fprintf(stderr, "Error: the old tag could not be found in the DB.\n");
-    //         json_object_put(db);
-    //         return -1;
-    //     }
+        if (!tag_exists) {
+            fprintf(stderr, "Error: the old tag could not be found in the DB.\n");
+            json_object_put(db);
+            return -1;
+        }
 
-    //     json_object_object_foreach(db, key, val) {
-    //         size_t size_current_val = json_object_array_length(val);
-    //             for (int i = 0; i < size_current_val; i++ ) {
-    //                 char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
+        json_object_object_foreach(db, key, val) {
+            size_t size_current_val = json_object_array_length(val);
+                for (int i = 0; i < size_current_val; i++ ) {
+                    char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
 
-    //                 if (strcmp(json_object_get_string(current_tag), old_tag) == 0) {
-    //                     json_object_array_put_idx(val, i, current_tag);
+                    if (strcmp(json_object_get_string(current_tag), old_tag) == 0) {
+                        json_object_array_put_idx(val, i, current_tag);
 
-    //                     // Only 1 instance of this tag should exist.
-    //                     break;
-    //                 }
-    //             }
-    //     }
+                        // Only 1 instance of this tag should exist.
+                        break;
+                    }
+                }
+        }
 
-    //     json_object_put(db);
-    //     return 0;
-    // }
+        json_object_put(db);
+        return 0;
+    }
+*/
 
     int count_files_with_tag(const char* tag, size_t* count_out) {
         json_object* db = load_tag_db();
@@ -893,11 +895,19 @@
         return 0;
     }
 
+    int remove_tag_globally(const char* tag) {
 
+
+
+    }
+
+    
+
+    
     /*
         can be implemented if time allows:
+            - groups of tags
             - copy_and_assign_tags_from
-            - remove_tag_globally <tag>
             - distribute
             - auto-complete terminal
     */ 
