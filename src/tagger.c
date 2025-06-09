@@ -16,16 +16,17 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
         fprintf(stderr, "  tagger list-all-files-with-tags\n");
-        fprintf(stderr, "  tagger list <file>\n");
+        fprintf(stderr, "  tagger list <file_path>\n");
         fprintf(stderr, "  tagger search <tag>\n");
-        fprintf(stderr, "  tagger count-tags <file>\n");
-        fprintf(stderr, "  tagger deassign-all-tags <file>\n");
+        fprintf(stderr, "  tagger count-tags <file_path>\n");
+        fprintf(stderr, "  tagger deassign-all-tags <file_path>\n");
         fprintf(stderr, "  tagger tag-exists <tag>\n");
-        fprintf(stderr, "  tagger assign-all-tags-to-file <tag>\n");
-        fprintf(stderr, "  tagger assign <file> <tag>\n");
-        fprintf(stderr, "  tagger deassign <file> <tag>\n");
-        fprintf(stderr, "  tagger file-has-tag <file> <tag>\n");
-        fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>\n");
+        fprintf(stderr, "  tagger assign-all-tags-to-file <file_path>\n");
+        fprintf(stderr, "  tagger count-files-with-tag <tag>\n");
+        fprintf(stderr, "  tagger assign <file_path> <tag>\n");
+        fprintf(stderr, "  tagger deassign <file_path> <tag>\n");
+        fprintf(stderr, "  tagger file-has-tag <file_path> <tag>\n");
+//      fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>\n");
         fprintf(stderr, "\n");
         fprintf(stderr, "See LICENSE for details. This tool is provided for educational purposes only.\n");
         fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
@@ -141,7 +142,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
             }
 
-            printf("Outcome: File has %zu tag(s)", count_out);
+            printf("Outcome: File has %zu tag(s)\n", count_out);
             return 0;
 
         } else if (strcmp(argv[1], "tag-exists") == 0) {
@@ -162,21 +163,41 @@ int main(int argc, char *argv[]) {
 
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
             }
 
-            printf("Success: all tags assigned to file");
+            printf("Success: all tags assigned to file\n");
             return 0;
-        }
 
-    } else if (argc == 4) {
-        if (strcmp(argv[1], "assign") == 0) {
-            int status = assign_tag(argv[2], argv[3]);
+        } else if (strcmp(argv[1], "count-files-with-tag") == 0) {
+
+            size_t count_out;
+
+            int status = count_files_with_tag(argv[2], &count_out);
 
             if (status == -1) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
+
+            printf("There are %zu file(s) with this tag\n", count_out);
             return 0;
+
+        } else {
+            fprintf(stderr, "Error: unknown command\n");
+            return -1;
+        } 
+    
+    } else if (argc == 4) {
+
+        if (strcmp(argv[1], "assign") == 0) {
+                int status = assign_tag(argv[2], argv[3]);
+
+                if (status == -1) {
+                    fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                    return -1;
+                }
+                return 0;
         } else if (strcmp(argv[1], "deassign") == 0) {
             int status = deassign_tag(argv[2], argv[3]);
 
