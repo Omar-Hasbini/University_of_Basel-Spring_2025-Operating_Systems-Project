@@ -361,6 +361,7 @@
             int tag_index = -1;
 
             int len = json_object_array_length(file_entry);   
+
             for (int i = 0; i < len; i++ ) {
                 json_object* current_tag = json_object_array_get_idx(file_entry, i);
 
@@ -371,17 +372,22 @@
             }
 
             if(tag_index == -1) {
-                fprintf(stderr, "Error: this tag is not assigned to this file.\n");
+                fprintf(stderr, "Error: either tag not assigned to the file and/or the file has no entry in the DB.\n");
                 json_object_put(db);
+                free(absolute_path)
                 return -1;
             } else {
-                int status_deletion = json_object_array_del_idx(file_entry, tag_index, 1);
-                if (status_deletion == 0) {
-                    fprintf(stdout, "Success: tag was deassigned.\n");
+
+                if (len == 1) {
+                    json_object_object_del(db, absolute_path);
                 } else {
-                    fprintf(stderr, "Error: tag could not be deassigned.\n");
-                    json_object_put(db);
-                    return -1;
+                    int status_deletion = json_object_array_del_idx(file_entry, tag_index, 1);
+                    if (status_deletion !=  0) {
+                        fprintf(stderr, "Error: tag could not be deassigned.\n");
+                        json_object_put(db);
+                        free(absolute_path);
+                        return -1;
+                    }
                 }
             }
         }
@@ -391,6 +397,7 @@
         if (save_db(db) != 0) {
             fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
             json_object_put(db);
+            free(absolute_path);
             return -1;
         }
 
@@ -554,13 +561,8 @@
         char *absolute_path = realpath(file_name, NULL);
 
         if (!absolute_path) {
-            if (access(file_name, F_OK) == 0) {
-                fprintf(stderr, "Warning: realpath failed, using raw path\n");
-                absolute_path = strdup(file_name);
-            } else {
-                perror("realpath failed");
-                return -1;
-            }
+            perror("realpath failed");
+            return -1;
         }
 
         if (!check_file_exists(absolute_path)) {
@@ -683,13 +685,8 @@
     int file_has_tag(const char* file_name, const char* tag) {
         char *absolute_path = realpath(file_name, NULL);
         if (!absolute_path) {
-            if (access(file_name, F_OK) == 0) {
-                fprintf(stderr, "Warning: realpath failed, using raw path\n");
-                absolute_path = strdup(file_name);
-            } else {
-                perror("realpath failed");
-                return -1;
-            }
+            perror("realpath failed");
+            return -1;
         }
 
         json_object* db = load_tag_db();
@@ -869,10 +866,35 @@
     //     return 0;
     // }
 
+    int count_files_with_tag(const char* tag, size_t* count_out) {
+        json_object* db = load_tag_db();
+        if (!db) {
+            fprintf(stderr, "Error: could not load the DB.\n");
+            return -1;
+        }
+        (*count_out) = 0;
+
+
+        json_object_object_foreach(db, key, val) {
+            if (strcmp(key, ALL_TAGS_KEY) != 0) {
+                size_t size_current_val = json_object_array_length(val);
+                for (size_t i = 0; i < size_current_val; i++ ) {
+                    char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
+
+                    if (strcmp(current_tag, tag) == 0) {
+                        (*count_out)++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        json_object_put(db);
+        return 0;
+    }
     /*
         can be implemented if time allows:
             - copy_and_assign_tags_from
-            - count_files_with_tag <tag>
             - remove_tag_globally <tag>
             - distribute
             - auto-complete terminal
