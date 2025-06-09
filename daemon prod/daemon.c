@@ -28,7 +28,8 @@ static int handle_event(void *ctx, void *data, size_t len) {
 
     printf("🧠 Event received: PID=%u, filename=%s\n", e->pid, e->filename);
     if (!realpath(e->filename, resolved)) {
-        fprintf(stderr, "⚠️ realpath failed for %s: %s\n", e->filename, strerror(errno));
+        fprintf(stderr, "⚠️ realpath failed for %s: %s\n",
+                e->filename, strerror(errno));
         return 0;
     }
 
@@ -44,17 +45,20 @@ static int handle_event(void *ctx, void *data, size_t len) {
         return 0;
     }
 
-    // Attribut setzen
-    const char *origin = "local";
-    if (setxattr(resolved, ORIGIN_ATTR, origin, strlen(origin), 0) == 0)
+    // Attribut setzen → absolute path
+    const char *origin = resolved;
+    if (setxattr(resolved, ORIGIN_ATTR,
+                 origin, strlen(origin), 0) == 0)
         printf("✅ Origin set on %s → %s\n", resolved, origin);
     else
-        fprintf(stderr, "❌ setxattr failed on %s: %s\n", resolved, strerror(errno));
+        fprintf(stderr, "❌ setxattr failed on %s: %s\n",
+                resolved, strerror(errno));
 
     return 0;
 }
 
-static int libbpf_print_fn(enum libbpf_print_level level, const char *fmt, va_list args) {
+static int libbpf_print_fn(enum libbpf_print_level level,
+                          const char *fmt, va_list args) {
     return vfprintf(stderr, fmt, args);
 }
 

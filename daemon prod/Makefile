@@ -8,8 +8,10 @@ all: filetrace.bpf.o daemon
 filetrace.bpf.o: filetrace.bpf.c
 	$(BPF_CLANG) $(BPF_CFLAGS) -c $< -o $@
 
-daemon: daemon.c filetrace.bpf.o
-	cc -g -Wall -I/usr/include/bpf -o daemon daemon.c -lbpf -lelf -lz
+daemon: daemon.c
+	cc -g -Wall -I/usr/include/bpf \
+	   -o daemon daemon.c \
+	   -lbpf -lelf -lz
 
 clean:
 	rm -f filetrace.bpf.o daemon

@@ -5,13 +5,11 @@
 
 char LICENSE[] SEC("license") = "GPL";
 
-// Event-Daten für User-Space
 struct event_t {
     u32 pid;
     char filename[256];
 };
 
-// Ringbuffer-Map
 struct {
     __uint(type, BPF_MAP_TYPE_RINGBUF);
     __uint(max_entries, 1 << 24); // 16 MiB
@@ -31,7 +29,8 @@ int handle_openat(struct trace_event_raw_sys_enter *ctx) {
         return 0;
 
     e->pid = bpf_get_current_pid_tgid() >> 32;
-    bpf_probe_read_user_str(e->filename, sizeof(e->filename), fname);
+    bpf_probe_read_user_str(e->filename,
+                            sizeof(e->filename), fname);
 
     bpf_ringbuf_submit(e, 0);
     return 0;
