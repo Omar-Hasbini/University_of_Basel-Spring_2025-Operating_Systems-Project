@@ -1,32 +1,27 @@
+# Metadata
+# Author: Omar Fadi Hasbini
+# Context: University of Basel, Operating Systems, Spring 2025
+# License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
+
 # Compiler
 CC = gcc
 
-# Compiler flags
-CFLAGS = -Wall -Wextra -std=c99 -g -Iinclude
-
-# Source files
-SRCS = src/tagdb.c src/tagger.c
-
-# Object files (one .o per .c)
-OBJS = src/tagdb.o src/tagger.o
-
-# Output binary
+# Executable's name
 OUT = tagger
 
-# Linker flags
+# .c files to compile
+SRCS = src/tagger.c src/tagdb.c
+
+# Directory with .h files
+INCLUDES = -Iinclude
+
+# Libraries
 LIBS = -ljson-c
 
-# Default target
-all: $(OUT)
+# Default when you run "make" with no additional arguments
+all:
+    gcc $(SRCS) $(LIBS) $(INCLUDES) -o $(OUT)
 
-# Build rule for the output binary
-$(OUT): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
-
-# Compile each .c to .o (implicit rule)
-src/%.o: src/%.c include/tagdb.h
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-# Clean target to delete all build outputs
+# Use with "make clean"
 clean:
-	rm -f $(OUT) src/*.o
+    rm -f $(OUT)
