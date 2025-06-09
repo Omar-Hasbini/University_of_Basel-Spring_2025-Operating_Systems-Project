@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "  tagger assign <file> <tag>\n");
         fprintf(stderr, "  tagger deassign <file> <tag>\n");
         fprintf(stderr, "  tagger file-has-tag <file> <tag>\n");
+        fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>\n");
         fprintf(stderr, "\n");
         fprintf(stderr, "See LICENSE for details. This tool is provided for educational purposes only.\n");
         fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
-
+            
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
                 free(result_files[i]);
@@ -140,7 +141,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
             }
 
-            printf("File has %zu tag(s)", count_out);
+            printf("Outcome: File has %zu tag(s)", count_out);
             return 0;
 
         } else if (strcmp(argv[1], "tag-exists") == 0) {
@@ -183,6 +184,7 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             }
+            printf("Success: tag was deassigned from file successfully.\n");
             return 0;
             
         } else if (strcmp(argv[1], "file-has-tag") == 0) {
@@ -192,14 +194,26 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Error: command failed. See previous output for details.\n");
                 return -1;
             } else if (exists == 1) {
-                printf("The tag is assigned to this file.\n");
+                printf("Outcome: The tag is assigned to this file.\n");
             } else {
-                printf("The tag is not assigned to this file.\n");
+                printf("Outcome: The tag is not assigned to this file.\n");
             }
             return 0;
             
+        // } 
+        // else if (strcmp(argv[1], "rename-tag")) {
+        //     int status = rename_tag(argv[2], argv[3]):;
+
+        //     if (status == -1) {
+        //         fprintf(stderr, "Error: command failed. See previous output for details.\n");
+        //         return -1;
+        //     }
+
+        //     printf("Success: tag was renamed and this change was propagated throughout the DB.\n");
+        //     return 0;
         } else {
             // Unreachable code but may be necessary to avoid compiler error
+            // No turns out it is reachable.
             fprintf(stderr, "Error: unknown command\n");
             return -1;
         }

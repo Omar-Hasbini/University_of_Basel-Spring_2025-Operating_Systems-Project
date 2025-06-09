@@ -781,7 +781,6 @@
         json_object* all_tags_entry;
         json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
-
         size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
 
         if (!all_tags_entry || len_arr_all_tags == 0) {
@@ -807,11 +806,74 @@
         return 0;
     }
 
+    int rename_tag(const char* old_tag, const char* new_tag) {
+        json_object* db = load_tag_db();
+        if (!db) {
+            fprintf(stderr, "Error: could not load the DB.\n");
+            return -1;
+        }
+
+        // check if tag exists 
+        json_object* all_tags_entry;
+        json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
+
+
+        if (!all_tags_entry) {
+            fprintf(stderr, "Error: there are no tags yet in the DB => the old tag does not exist in the first place.\n");
+            json_object_put(db);
+            return -1;
+        }
+
+        size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
+
+        if (len_arr_all_tags == 0){
+            fprintf(stderr, "Error: there are no tags yet in the DB => the old tag does not exist in the first place.\n");
+            json_object_put(db);
+            return -1;
+        }
+
+
+        int tag_exists = 0;
+        char* current_tag;
+
+        for (size_t i = 0; i < len_arr_all_tags; i++) {
+            current_tag = json_object_get_string(json_object_array_get_idx(all_tags_entry, i));
+            
+            if (strcmp(current_tag, old_tag) == 0) {
+                tag_exists = 1;
+                break;
+            }
+        }
+
+        if (!tag_exists) {
+            fprintf(stderr, "Error: the old tag could not be found in the DB.\n");
+            json_object_put(db);
+            return -1;
+        }
+
+        json_object_object_foreach(db, key, val) {
+            size_t size_current_val = json_object_array_length(val);
+                for (int i = 0; i < size_current_val; i++ ) {
+                    char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
+
+                    if (strcmp(json_object_get_string(current_tag), old_tag) == 0) {
+                        json_object_array_put_idx(val, i, current_tag);
+
+                        // Only 1 instance of this tag should exist.
+                        break;
+                    }
+                }
+        }
+
+        json_object_put(db);
+        return 0;
+    }
+
     /*
         can be implemented if time allows:
             - copy_and_assign_tags_from
             - count_files_with_tag <tag>
-            - rename_tag <old_tag> <new_tag>
             - remove_tag_globally <tag>
             - distribute
+            - auto-complete terminal
     */ 
