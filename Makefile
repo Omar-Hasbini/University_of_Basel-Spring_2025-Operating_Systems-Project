@@ -20,8 +20,17 @@ LIBS = -ljson-c
 
 # Default when you run "make" with no additional arguments
 all:
-	gcc $(SRCS) $(LIBS) $(INCLUDES) -o $(OUT)
+	echo "Compiling into the executable"
+	$(CC) $(SRCS) $(LIBS) $(INCLUDES) -o $(OUT)
+#
 
-# Use with "make clean"
 clean:
-	rm -f $(OUT)
+	rm -f $(OUT) *.o
+
+install: all
+	echo "Installing the extension systemwide"
+	sudo cp $(OUT) /usr/local/bin/$(OUT)
+
+uninstall:
+	echo "Removing the tagger extension from the system path"
+	sudo rm -f /usr/local/bin/$(OUT)

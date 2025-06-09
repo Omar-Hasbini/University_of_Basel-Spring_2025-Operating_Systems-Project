@@ -11,7 +11,8 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 
 void print_usage() {
         fprintf(stderr, "\n");
-        fprintf(stderr, "Usage (<file_path> can be relative or absolute):\n");
+        fprintf(stderr, "Usage (N.B.: <file_path> can be relative or absolute):\n");
+        fprintf(stderr, "  tagger help\n");
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
         fprintf(stderr, "  tagger list-all-files-with-tags\n");
@@ -206,7 +207,10 @@ int main(int argc, char *argv[]) {
 
             printf("Success: tag was removed globally.\n");
             return 0;
-
+        
+        } else if (strcmp(argv[1], "help") == 0) { 
+            printf("For more information, consult the man page by typing in the shell's terminal: man tagger\n");
+            return 0;
         } else {
             fprintf(stderr, "Error: unknown command\n");
             print_usage();
