@@ -3534,8 +3534,8 @@ setup_permissions_page (NautilusPropertiesWindow *self)
     }
 }
 
-------------------------------------------------------------------
-# setting the notes page
+// ------------------------------------------------------------------
+// setting the notes page
 static void
 setup_notes_page (NautilusPropertiesWindow *self)
 {
