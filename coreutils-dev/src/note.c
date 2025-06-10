@@ -1,11 +1,12 @@
-#include <config.h>
+//#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/xattr.h>
+//#include <sys/xattr.h>
+#include "note_db.h"
 
 #define NOTE_XATTR "user.note"
 
@@ -21,9 +22,9 @@ usage(const char *prog)
 {
     (void) prog;  // suppress unused parameter warning
     fprintf(stderr, "Usage:\n");
-    fprintf(stderr, "  note add <file> <note>\n");
-    fprintf(stderr, "  note show <file>\n");
-    fprintf(stderr, "  note remove <file>\n");
+    fprintf(stderr, "  note -add <file> <note>\n");
+    fprintf(stderr, "  note -show <file>\n");
+    fprintf(stderr, "  note -remove <file>\n");
     fprintf(stderr, "  note --help\n");
     fprintf(stderr, "  note --version\n");
     exit(EXIT_FAILURE);
@@ -32,24 +33,29 @@ usage(const char *prog)
 static void
 version(void)
 {
-    printf("note (coreutils) %s\n", PACKAGE_VERSION);
+    //printf("note (coreutils) %s\n", PACKAGE_VERSION);
     exit(EXIT_SUCCESS);
 }
 
 static void
 add_note(const char *file, const char *note)
 {
-    if (setxattr(file, NOTE_XATTR, note, strlen(note), 0) != 0)
+    /*if (setxattr(file, NOTE_XATTR, note, strlen(note), 0) != 0)
     {
         perror("setxattr");
         exit(EXIT_FAILURE);
+    }*/
+    if (assign_note(file, note) != 0)
+    {
+    	fprintf(stderr, "Error assigning note to %s\n", file);
+    	exit(EXIT_FAILURE);
     }
 }
 
 static void
 show_note(const char *file)
 {
-    ssize_t size = getxattr(file, NOTE_XATTR, NULL, 0);
+    /*ssize_t size = getxattr(file, NOTE_XATTR, NULL, 0);
     if (size < 0)
     {
         if (errno == ENODATA)
@@ -77,13 +83,31 @@ show_note(const char *file)
 
     buffer[size] = '\0';
     printf("%s\n", buffer);
-    free(buffer);
+    free(buffer);*/
+    
+    char *note = NULL;
+    if (show_file_note(file, &note) != 0)
+    {
+    	fprintf(stderr, "Error retrieving note for %s\n", file);
+    	exit(EXIT_FAILURE);
+    }
+    
+    if (note == NULL || strlen(note) == 0)
+    {
+    	printf("No note set\n");
+    }
+    else
+    {
+    	printf("%s\n", note);
+    }
+    
+    free(note);
 }
 
 static void
 remove_note(const char *file)
 {
-    if (removexattr(file, NOTE_XATTR) != 0)
+    /*if (removexattr(file, NOTE_XATTR) != 0)
     {
         if (errno == ENODATA)
         {
@@ -92,6 +116,11 @@ remove_note(const char *file)
         }
         perror("removexattr");
         exit(EXIT_FAILURE);
+    }*/
+    
+    if (deassign_note(file) != 0)
+    {
+    	printf("No note to remove.\n");
     }
 }
 
@@ -109,19 +138,20 @@ main(int argc, char *argv[])
     if (argc < 3)
         usage(argv[0]);
 
-    if (strcmp(argv[1], "add") == 0)
+    if (strcmp(argv[1], "-add") == 0)
     {
+    	printf("It joined this line.... for -add");
         if (argc != 4)
             usage(argv[0]);
         add_note(argv[2], argv[3]);
     }
-    else if (strcmp(argv[1], "show") == 0)
+    else if (strcmp(argv[1], "-show") == 0)
     {
         if (argc != 3)
             usage(argv[0]);
         show_note(argv[2]);
     }
-    else if (strcmp(argv[1], "remove") == 0)
+    else if (strcmp(argv[1], "-remove") == 0)
     {
         if (argc != 3)
             usage(argv[0]);
