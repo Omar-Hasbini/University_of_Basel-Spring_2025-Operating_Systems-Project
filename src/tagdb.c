@@ -464,6 +464,13 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
         fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
+
+    if (!count_out) {
+        fprintf(stderr, "Error: count_out is NULL.\n");
+        free(absolute_path);
+        return -1;
+    }
+
     (*count_out) = 0;
 
     // Nested for loop, $O(n^2)$ runtime unfortunately. 
@@ -519,6 +526,12 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
         return -1;
     }
 
+    if (!count_out) {
+        fprintf(stderr, "Error: count_out is NULL.\n");
+        free(absolute_path);
+        return -1;
+    }
+
     json_object* all_tags_entry;
     json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
@@ -554,13 +567,14 @@ int list_file_tags(const char *file_name, char*** file_tags, size_t* count_out) 
 
     char *absolute_path = realpath(file_name, NULL);
     if (!absolute_path) {
-        if (access(file_name, F_OK) == 0) {
-            fprintf(stderr, "Warning: realpath failed, using raw path\n");
-            absolute_path = strdup(file_name);
-        } else {
-            perror("realpath failed");
-            return -1;
-        }
+        perror("realpath failed");
+        return -1;
+    }
+
+    if (!count_out) {
+        fprintf(stderr, "Error: count_out is NULL.\n");
+        free(absolute_path);
+        return -1;
     }
 
     json_object* db = load_tag_db();
@@ -678,11 +692,8 @@ int count_tags(const char* file_name, size_t* count_out) {
     json_object* file_entry;
     json_object_object_get_ex(db, absolute_path, &file_entry);
 
-    if (!file_entry ) {
-        fprintf(stderr, "Warning: file has no key in the DB.\n");
-        *count_out = 0;
-    } else if (!json_object_is_type(file_entry, json_type_array)) {
-        fprintf(stderr, "Warning: file's entry seems to be corrupted.\n");
+    if (!file_entry || !json_object_is_type(file_entry, json_type_array)) {
+        fprintf(stderr, "Warning: file has no corresponding key in the DB or its entry is corrupted.\n");
         *count_out = 0;
     } else { 
         *count_out = json_object_array_length(file_entry);   
@@ -782,6 +793,12 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
+        return -1;
+    }
+
+    if (!count_out) {
+        fprintf(stderr, "Error: count_out is NULL.\n");
+        free(absolute_path);
         return -1;
     }
 
@@ -955,6 +972,13 @@ int count_files_with_tag(const char* tag, size_t* count_out) {
         fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
+
+    if (!count_out) {
+        fprintf(stderr, "Error: count_out is NULL.\n");
+        free(absolute_path);
+        return -1;
+    }
+
     *count_out = 0;
 
     json_object_object_foreach(db, key, val) {
