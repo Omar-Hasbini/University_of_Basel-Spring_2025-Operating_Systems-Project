@@ -467,7 +467,6 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
 
     if (!count_out) {
         fprintf(stderr, "Error: count_out is NULL.\n");
-        free(absolute_path);
         return -1;
     }
 
@@ -528,7 +527,6 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
 
     if (!count_out) {
         fprintf(stderr, "Error: count_out is NULL.\n");
-        free(absolute_path);
         return -1;
     }
 
@@ -620,12 +618,11 @@ int list_file_tags(const char *file_name, char*** file_tags, size_t* count_out) 
             fprintf(stderr, "Error: memory allocation failed for tag at index %d.\n", i);
 
             free_string_array(*file_tags, &i);
-            free(*file_tags);
             *file_tags = NULL;
             *count_out = 0;
             free(absolute_path);
             json_object_put(db);
-            return 0; 
+            return -1; 
         }
     }
     
@@ -822,7 +819,6 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
 
     if (!count_out) {
         fprintf(stderr, "Error: count_out is NULL.\n");
-        free(absolute_path);
         return -1;
     }
 
@@ -999,7 +995,6 @@ int count_files_with_tag(const char* tag, size_t* count_out) {
 
     if (!count_out) {
         fprintf(stderr, "Error: count_out is NULL.\n");
-        free(absolute_path);
         return -1;
     }
 
