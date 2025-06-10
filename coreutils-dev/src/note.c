@@ -40,11 +40,6 @@ version(void)
 static void
 add_note(const char *file, const char *note)
 {
-    /*if (setxattr(file, NOTE_XATTR, note, strlen(note), 0) != 0)
-    {
-        perror("setxattr");
-        exit(EXIT_FAILURE);
-    }*/
     if (assign_note(file, note) != 0)
     {
     	fprintf(stderr, "Error assigning note to %s\n", file);
@@ -54,37 +49,7 @@ add_note(const char *file, const char *note)
 
 static void
 show_note(const char *file)
-{
-    /*ssize_t size = getxattr(file, NOTE_XATTR, NULL, 0);
-    if (size < 0)
-    {
-        if (errno == ENODATA)
-        {
-            printf("No note set.\n");
-            return;
-        }
-        perror("getxattr");
-        exit(EXIT_FAILURE);
-    }
-
-    char *buffer = malloc(size + 1);
-    if (!buffer)
-    {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
-
-    if (getxattr(file, NOTE_XATTR, buffer, size) < 0)
-    {
-        perror("getxattr");
-        free(buffer);
-        exit(EXIT_FAILURE);
-    }
-
-    buffer[size] = '\0';
-    printf("%s\n", buffer);
-    free(buffer);*/
-    
+{   
     char *note = NULL;
     if (show_file_note(file, &note) != 0)
     {
@@ -107,17 +72,6 @@ show_note(const char *file)
 static void
 remove_note(const char *file)
 {
-    /*if (removexattr(file, NOTE_XATTR) != 0)
-    {
-        if (errno == ENODATA)
-        {
-            printf("No note to remove.\n");
-            return;
-        }
-        perror("removexattr");
-        exit(EXIT_FAILURE);
-    }*/
-    
     if (deassign_note(file) != 0)
     {
     	printf("No note to remove.\n");
@@ -140,7 +94,6 @@ main(int argc, char *argv[])
 
     if (strcmp(argv[1], "-add") == 0)
     {
-    	printf("It joined this line.... for -add");
         if (argc != 4)
             usage(argv[0]);
         add_note(argv[2], argv[3]);
