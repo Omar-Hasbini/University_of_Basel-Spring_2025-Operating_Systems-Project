@@ -880,30 +880,32 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
     json_object_object_foreach(db, key, val) {
         if (!val || !json_object_is_type(val, json_type_array)) continue;
 
-        size_t size_current_val = json_object_array_length(val);
-        if (size_current_val >= 1) {
-            char** temp = realloc(*result_files, (*count_out + 1) * sizeof(char*));
+        if (strcmp(key, ALL_TAGS_KEY) != 0) {
+            size_t size_current_val = json_object_array_length(val);
+            if (size_current_val >= 1) {
+                char** temp = realloc(*result_files, (*count_out + 1) * sizeof(char*));
 
-            if (!temp) {
-                fprintf(stderr, "Error: could not allocate memory for the list of files.\n");
-                json_object_put(db);
-                return -1;
-            }
+                if (!temp) {
+                    fprintf(stderr, "Error: could not allocate memory for the list of files.\n");
+                    json_object_put(db);
+                    return -1;
+                }
 
-            *result_files = temp;
-            (*result_files)[*count_out] = strdup(key);
-            if (!(*result_files)[*count_out]) {
-                fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
+                *result_files = temp;
+                (*result_files)[*count_out] = strdup(key);
+                if (!(*result_files)[*count_out]) {
+                    fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
 
-                free_string_array(*result_files, *count_out);
-                *result_files = NULL;
-                *count_out = 0;
+                    free_string_array(*result_files, *count_out);
+                    *result_files = NULL;
+                    *count_out = 0;
 
-                json_object_put(db);
-                return -1;
-            }
-            (*count_out)++;
-        }  
+                    json_object_put(db);
+                    return -1;
+                }
+                (*count_out)++;
+            }  
+        }
     }	
 
     json_object_put(db);
