@@ -1104,8 +1104,8 @@ int remove_tag_globally(const char* tag) {
         ssize_t index = -1;
         
         
-        for (ssize_t i = 0; i < size_current_val; i++ ) {
-            char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
+        for (ssize_t i = 0; i < size_current_val; i++) {
+            const char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
 
             if (strcmp(current_tag, tag) == 0) {
                 index = i;
@@ -1128,6 +1128,14 @@ int remove_tag_globally(const char* tag) {
         json_object_object_del(db, json_object_get_string(json_object_array_get_idx(list_to_delete, i)));
     }
 
+    if (save_db(db) != 0) {
+        fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
+        json_object_put(db);
+        free(absolute_path);
+        return -1;
+    }
+    
+    json_object_put(list_to_delete);
     json_object_put(db);
     return 0;
 }

@@ -43,7 +43,7 @@ void print_usage() {
         fprintf(stderr, "  tagger assign <file_path> <tag>\n");
         fprintf(stderr, "  tagger deassign <file_path> <tag>\n");
         fprintf(stderr, "  tagger file-has-tag <file_path> <tag>\n");
-//      fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>\n");
+        fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>    (NOT IMPLEMENTED)\n");
         fprintf(stderr, "\n");
         fprintf(stderr, "See LICENSE for details. This tool is provided for educational purposes only.\n");
         fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
-            printf("Total: %zu tags\n", count_out);
+            printf("Total: %zu tag(s).\n", count_out);
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", all_tags[i]);
                 free(all_tags[i]);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
             
-            printf("Total: %zu tags\n", count_out);
+            printf("Total: %zu tag(s).\n", count_out);
             printf("List:\n");
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
@@ -108,8 +108,9 @@ int main(int argc, char *argv[]) {
 
             free(result_files);  
             return 0;
+
         } else if (strcmp(argv[1], "help") == 0) { 
-            
+
             printf("For more information, consult the man page by typing in the shell's terminal: man tagger\n");
             return 0;
 
@@ -130,7 +131,7 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
-            printf("Total: %zu tags\n", count_out);
+            printf("Total: %zu tag(s).\n", count_out);
             printf("List:\n");
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", file_tags[i]);
@@ -151,7 +152,7 @@ int main(int argc, char *argv[]) {
                 return -1;
             }
 
-            printf("Total: %zu tags\n", count_out);
+            printf("Total: %zu tag(s).\n", count_out);
             printf("List of files with this tag:\n");
             for (size_t i = 0; i < count_out; i++) {
                 printf("%s\n", result_files[i]);
@@ -263,18 +264,23 @@ int main(int argc, char *argv[]) {
                 printf("Outcome: The tag is not assigned to this file.\n");
             }
             return 0;
-            
-        // } 
-        // else if (strcmp(argv[1], "rename-tag")) {
-        //     int status = rename_tag(argv[2], argv[3]):;
 
-        //     if (status == -1) {
-        //         fprintf(stderr, "Error: command failed. See previous output for details.\n");
-        //         return -1;
-        //     }
+// Not implemented
+ /*           
+        } 
+        else if (strcmp(argv[1], "rename-tag")) {
+            int status = rename_tag(argv[2], argv[3]):;
 
-        //     printf("Success: tag was renamed and this change was propagated throughout the DB.\n");
-        //     return 0;
+            if (status == -1) {
+                fprintf(stderr, "Error: command failed. See previous output for details.\n");
+                return -1;
+            }
+
+            printf("Success: tag was renamed and this change was propagated throughout the DB.\n");
+            return 0;
+*/
+// 
+
         } else {
             // Unreachable code but may be necessary to avoid compiler error
             // No turns out it is reachable.
