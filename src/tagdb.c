@@ -9,9 +9,22 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
     can be implemented if time allows:
         - groups of files or groups of tags
         - copy_and_assign_tags_from (seems redundant when considering the option above)
-        - distribute with apt
+        - distribute with apt      
         - auto-complete terminal
 */ 
+
+/*
+    This library prints out to stdout and stderr, which shouldn't be the case ideally
+    as a library should not concern itself with this and since it floods these communication channels.
+    Nevertheless it works out for this project's use case, however such an implementation should be avoided
+    in the future.
+*/
+
+/*
+    The code has been tested and cleaned up moderately, however this + development was done 
+    under a rather short deadline. Thus, further testing and refactoring,
+    as well as treating with precaution is desirable.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,17 +40,7 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 // Collision is impossible, since we store the full path of a file, which will include at least the "/" from the root dir.
 #define ALL_TAGS_KEY "__meta__:all_tags"
 
-/*
-    This library prints out to stdout and stderr, which shouldn't be the case ideally
-    as a library should not concern itself with this and since it floods these communication channels
-    Nevertheless it works out for this project's use case, however such an implementation should be avoided
-    in the future.
-*/
 
-/*
-    The code has been tested and cleaned up partially, however it is still affected by a short deadline. 
-    Thus, further testing, refactoring and treating with precaution is desirable.
-*/
 
 // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
 char* get_home() {
@@ -185,6 +188,11 @@ int create_db() {
 
 // Source (with personal modification): https://www.youtube.com/watch?v=dQyXuFWylm4
 struct json_object* load_tag_db() {
+    /*
+        Apparently there is this function from the library:
+        json_object* json_object_from_file(const char *filename); 
+        which greatly simplifies the code below.
+    */
     if (!check_tagdb_exists()) {
         int status = create_db();
         if (status == -1) {
@@ -224,6 +232,7 @@ struct json_object* load_tag_db() {
     if (!buffer) {
         fprintf(stderr, "Error: could not allocate memory for buffer while loading the DB.\n");
         free(full_path);
+        fclose(fp);
         return NULL;
     }
 
@@ -902,14 +911,16 @@ int count_files_with_tag(const char* tag, size_t* count_out) {
         fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
-    (*count_out) = 0;
-
+    *count_out = 0;
 
     json_object_object_foreach(db, key, val) {
         if (strcmp(key, ALL_TAGS_KEY) != 0) {
+            // To protect against corrupted DB entries.
+            if (!json_object_is_type(val, json_type_array)) continue;
+
             size_t size_current_val = json_object_array_length(val);
             for (size_t i = 0; i < size_current_val; i++ ) {
-                char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
+                const char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
 
                 if (strcmp(current_tag, tag) == 0) {
                     (*count_out)++;
@@ -930,9 +941,14 @@ int remove_tag_globally(const char* tag) {
         return -1;
     }
 
+    json_object* list_to_delete = json_object_new_array();
+    
     json_object_object_foreach(db, key, val) {
+        if (!json_object_is_type(val, json_type_array)) continue;
+
         ssize_t size_current_val = json_object_array_length(val);
         ssize_t index = -1;
+        
         
         for (ssize_t i = 0; i < size_current_val; i++ ) {
             char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
@@ -947,9 +963,15 @@ int remove_tag_globally(const char* tag) {
             json_object_array_del_idx(val, index, 1);
             // File had only 1 tag which was removed
             if (size_current_val == 1) {
-                json_object_object_del(db, key);
+                json_object_array_add(list_to_delete, json_object_new_string(key));
             }
         }
+    }
+
+    size_t len_arr = json_object_array_length(list_to_delete);
+
+    for (size_t i = 0; i < len_arr; i++) {
+        json_object_object_del(db, json_object_get_string(json_object_array_get_idx(list_to_delete, i)));
     }
 
     json_object_put(db);

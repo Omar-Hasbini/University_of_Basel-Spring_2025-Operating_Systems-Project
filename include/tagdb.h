@@ -5,6 +5,12 @@ Context: University of Basel, Operating Systems, Spring 2025
 License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
 */ 
 
+/*
+    The code has been tested and cleaned up moderately, however this + development was done 
+    under a rather short deadline. Thus, further testing and refactoring,
+    as well as treating with precaution is desirable.
+*/
+
 #ifndef TAGDB_H
 #define TAGDB_H
 
