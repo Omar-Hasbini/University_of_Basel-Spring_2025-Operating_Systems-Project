@@ -7,6 +7,7 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 
 /*
     can be implemented if time allows:
+        - GUI
         - groups of files or groups of tags
         - copy_and_assign_tags_from (seems redundant when considering the option above)
         - distribute with apt      
@@ -459,11 +460,8 @@ int deassign_tag(const char *file_name, const char *tag) {
         dynamically. However due to a relatively short deadline this implementation will have to do.
     */
 
-    
-
-    //
-    
-    // Save before so that you can get a correct result with count_files_with_tag()
+    // Very subtle error - save before so that you can get a correct result with count_files_with_tag()
+    // Otherwise it's inconsistent.
     if (save_db(db) != 0) {
         fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
         json_object_put(db);
