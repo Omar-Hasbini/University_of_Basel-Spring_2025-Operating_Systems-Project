@@ -1,5 +1,0 @@
-[Shell Search Provider]
-DesktopId=@appid@.desktop
-BusName=@appid@
-ObjectPath=/org/gnome/Nautilus@profile@/SearchProvider
-Version=2
