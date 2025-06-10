@@ -460,6 +460,17 @@ int deassign_tag(const char *file_name, const char *tag) {
     */
 
     
+
+    //
+    
+    // Save before so that you can get a correct result with count_files_with_tag()
+    if (save_db(db) != 0) {
+        fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
+        json_object_put(db);
+        free(absolute_path);
+        return -1;
+    }
+
     size_t count_out = 0;
 
     if (count_files_with_tag(tag, &count_out) == 0 && count_out == 0) {
@@ -482,8 +493,6 @@ int deassign_tag(const char *file_name, const char *tag) {
 
         }
     }
-    //
-    
 
     if (save_db(db) != 0) {
         fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
