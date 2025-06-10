@@ -108,6 +108,11 @@ int main(int argc, char *argv[]) {
 
             free(result_files);  
             return 0;
+        } else if (strcmp(argv[1], "help") == 0) { 
+            
+            printf("For more information, consult the man page by typing in the shell's terminal: man tagger\n");
+            return 0;
+
         } else {
             fprintf(stderr, "Error: unknown command\n");
             print_usage();
@@ -218,9 +223,6 @@ int main(int argc, char *argv[]) {
             printf("Success: tag was removed globally.\n");
             return 0;
         
-        } else if (strcmp(argv[1], "help") == 0) { 
-            printf("For more information, consult the man page by typing in the shell's terminal: man tagger\n");
-            return 0;
         } else {
             fprintf(stderr, "Error: unknown command\n");
             print_usage();
