@@ -216,6 +216,12 @@ struct json_object* load_note_db() {
 }
 
 int assign_note(const char *file_path, const char *note) {
+
+    if (!note) {
+        fprintf(stderr, "Error: <note> is NULL.\n");
+        return -1;
+    }
+
     char *absolute_path = realpath(file_path, NULL);
 
     if (!absolute_path) {
@@ -257,6 +263,12 @@ int assign_note(const char *file_path, const char *note) {
 }
 
 int deassign_note(const char *file_path, const char *note) {
+
+        if (!note) {
+            fprintf(stderr, "Error: <note> is NULL.\n");
+            return -1;
+        }
+
         char *absolute_path = realpath(file_path, NULL);
         if (!absolute_path) {
             perror("realpath failed");
@@ -300,6 +312,11 @@ int deassign_note(const char *file_path, const char *note) {
 }
 
  int show_file_note(const char *file_path, char** file_note) {
+
+    if (!file_note) {
+        fprintf(stderr, "Error: <file_note> is NULL.\n");
+        return -1;
+    }
 
     char *absolute_path = realpath(file_path, NULL);
     if (!absolute_path) {
