@@ -658,13 +658,14 @@ int deassign_all_tags_systemwide() {
 int count_tags(const char* file_name, size_t* count_out) {
     char *absolute_path = realpath(file_name, NULL);
     if (!absolute_path) {
-        if (access(file_name, F_OK) == 0) {
-            fprintf(stderr, "Warning: realpath failed, using raw path\n");
-            absolute_path = strdup(file_name);
-        } else {
-            perror("realpath failed");
-            return -1;
-        }
+        perror("realpath failed");
+        return -1;
+    }
+
+    if (!count_out) {
+        fprintf(stderr, "Error: count_out is NULL.\n");
+        free(absolute_path);
+        return -1;
     }
 
     json_object* db = load_tag_db();
@@ -677,11 +678,16 @@ int count_tags(const char* file_name, size_t* count_out) {
     json_object* file_entry;
     json_object_object_get_ex(db, absolute_path, &file_entry);
 
-    if (!file_entry) {
+    if (!file_entry ) {
+        fprintf(stderr, "Warning: file has no key in the DB.\n");
+        *count_out = 0;
+    } else if (!json_object_is_type(file_entry, json_type_array)) {
+        fprintf(stderr, "Warning: file's entry seems to be corrupted.\n");
         *count_out = 0;
     } else { 
         *count_out = json_object_array_length(file_entry);   
     }
+
     free(absolute_path);
     json_object_put(db);
     return 0;
