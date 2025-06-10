@@ -580,14 +580,15 @@ int list_file_tags(const char *file_name, char*** file_tags, size_t* count_out) 
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
         return -1;
     }
 
     json_object* file_entry;
     json_object_object_get_ex(db, absolute_path, &file_entry);
 
-    if (!file_entry || json_object_array_length(file_entry) == 0) {
-        fprintf(stderr, "Error: file has no entry in the DB or the set of its tags is empty.\n");
+    if (!file_entry || !json_object_is_type(file_entry, json_type_array) || json_object_array_length(file_entry) == 0) {
+        fprintf(stderr, "Error: file has no key and/or entry in the DB, its entry is corrupted or the set of its tags is empty.\n");
         *count_out = 0;
         *file_tags = NULL;
         json_object_put(db);
@@ -600,12 +601,32 @@ int list_file_tags(const char *file_name, char*** file_tags, size_t* count_out) 
     if (!(*file_tags)) {
         json_object_put(db);
         fprintf(stderr, "Error: could not allocate memory for the list of tags.\n");
+        free(absolute_path);
         return -1;
     }
 
-    for (int i = 0; i < *count_out; i++) {
+    for (size_t i = 0; i < *count_out; i++) {
         json_object* current_entry = json_object_array_get_idx(file_entry, i);
-        (*file_tags)[i] = strdup(json_object_get_string(current_entry)); 
+        const char* current_str = json_object_get_string(current_entry);
+
+        if (!current_str) {
+            fprintf(stderr, "Warning: encountered corrupted tag in DB.\n");
+        }
+
+        const char* tag_to_copy = current_str ? current_str : "<corrupted>";
+        (*file_tags)[i] = strdup(tag_to_copy); 
+
+        if (!(*file_tags)[i]) {
+            fprintf(stderr, "Error: memory allocation failed for tag at index %d.\n", i);
+
+            free_string_array(*file_tags, &i);
+            free(*file_tags);
+            *file_tags = NULL;
+            *count_out = 0;
+            free(absolute_path);
+            json_object_put(db);
+            return 0; 
+        }
     }
     
     free(absolute_path);
