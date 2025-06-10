@@ -5,6 +5,19 @@ Context: University of Basel, Operating Systems, Spring 2025
 License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-Operating_Systems-Project
 */ 
 
+/*
+    The library this CLI tool uses prints out to stdout and stderr, which shouldn't be the case ideally
+    as a library should not concern itself with this and since it floods these communication channels.
+    Nevertheless it works out for this project's use case, however such an implementation should be avoided
+    in the future.
+*/
+
+/*
+    The code has been tested and cleaned up moderately, however this + development was done 
+    under a rather short deadline. Thus, further testing and refactoring,
+    as well as treating with precaution is desirable.
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include "tagdb.h"
@@ -12,10 +25,12 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 void print_usage() {
         fprintf(stderr, "\n");
         fprintf(stderr, "Usage (N.B.: <file_path> can be relative or absolute):\n");
+        fprintf(stderr, "\n");
         fprintf(stderr, "  tagger help\n");
         fprintf(stderr, "  tagger list\n");
         fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
         fprintf(stderr, "  tagger list-all-files-with-tags\n");
+        fprintf(stderr, "\n");
         fprintf(stderr, "  tagger list <file_path>\n");
         fprintf(stderr, "  tagger search <tag>\n");
         fprintf(stderr, "  tagger count-tags <file_path>\n");
@@ -24,6 +39,7 @@ void print_usage() {
         fprintf(stderr, "  tagger assign-all-tags-to-file <file_path>\n");
         fprintf(stderr, "  tagger count-files-with-tag <tag>\n");
         fprintf(stderr, "  tagger remove-tag-globally <tag>\n");
+        fprintf(stderr, "\n");
         fprintf(stderr, "  tagger assign <file_path> <tag>\n");
         fprintf(stderr, "  tagger deassign <file_path> <tag>\n");
         fprintf(stderr, "  tagger file-has-tag <file_path> <tag>\n");
@@ -61,7 +77,7 @@ int main(int argc, char *argv[]) {
             }
             free(all_tags);  
             return 0;
-            
+
         } else if (strcmp(argv[1], "deassign-all-tags-systemwide") == 0){
             int status = deassign_all_tags_systemwide();
 

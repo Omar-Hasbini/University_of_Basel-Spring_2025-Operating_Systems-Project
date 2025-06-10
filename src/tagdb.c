@@ -534,13 +534,14 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
     json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
 
-    if (!all_tags_entry || json_object_array_length(all_tags_entry) == 0) {
-        // "/__all_tags__" does not exist yet.
+    if (!all_tags_entry || !json_object_is_type(all_tags_entry, json_type_array) || json_object_array_length(all_tags_entry) == 0) {
+
         fprintf(stderr, "Error: there is no collection with all the tags in the DB.\n");
         *count_out = 0;
         json_object_put(db);
         *all_tags = NULL;
         return -1;
+
     }   
     
     *count_out = json_object_array_length(all_tags_entry); 
@@ -554,7 +555,24 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
 
     for (int i = 0; i < *count_out; i++) {
         json_object* current_entry = json_object_array_get_idx(all_tags_entry, i);
-        (*all_tags)[i] = strdup(json_object_get_string(current_entry)); 
+        const char* current_str = json_object_get_string(current_entry);
+
+        if (!current_str) {
+            fprintf(stderr, "Warning: encountered corrupted tag in DB.\n");
+        }
+
+        const char* tag_to_copy = current_str ? current_str : "<corrupted>";
+        (*all_tags)[i] = strdup(tag_to_copy); 
+
+        if (!(*all_tags)[i]) {
+            fprintf(stderr, "Error: memory allocation failed for tag at index %d.\n", i);
+
+            free_string_array(*all_tags, &i);
+            *all_tags = NULL;
+            *count_out = 0;
+            json_object_put(db);
+            return -1; 
+        }
     }
     
     json_object_put(db);
