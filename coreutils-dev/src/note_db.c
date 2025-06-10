@@ -13,7 +13,9 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 #include <sys/types.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <errno.h>
 #include "tagdb.h"
+
 
 /*
     The code has been tested and cleaned up partially, however it is still affected by a short deadline. 
@@ -129,7 +131,12 @@ int create_db() {
 
     full_path[index + 1] = '\0';
 
-    mkdir(full_path, 0700);
+    if (mkdir(full_path, 0700) != 0 && errno != EEXIST) {
+        perror("mkdir failed");
+        free(full_path);
+        return -1;
+    }
+
     json_object* db = json_object_new_object();
 
     int status = save_db(db);
@@ -235,8 +242,9 @@ int assign_note(const char *file_path, const char *note) {
         return -1;
     }
 
-    if (note == NULL || strlen(note) == 0) {
-        fprintf(stderr, "Error: tag is empty.\n");
+    if (strlen(note) == 0) {
+        fprintf(stderr, "Error: note is empty.\n");
+        free(absolute_path);
         return -1;
     }
 
@@ -262,12 +270,7 @@ int assign_note(const char *file_path, const char *note) {
     return 0;
 }
 
-int deassign_note(const char *file_path, const char *note) {
-
-        if (!note) {
-            fprintf(stderr, "Error: <note> is NULL.\n");
-            return -1;
-        }
+int deassign_note(const char *file_path) {
 
         char *absolute_path = realpath(file_path, NULL);
         if (!absolute_path) {
@@ -284,6 +287,7 @@ int deassign_note(const char *file_path, const char *note) {
         json_object* db = load_note_db();
         if (!db) {
             fprintf(stderr, "Error: could not load the DB.\n");
+            free(absolute_path);
             return -1;
         }
 
@@ -327,6 +331,7 @@ int deassign_note(const char *file_path, const char *note) {
     json_object* db = load_note_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
         return -1;
     }
 
