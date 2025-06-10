@@ -922,6 +922,9 @@ int count_files_with_tag(const char* tag, size_t* count_out) {
             for (size_t i = 0; i < size_current_val; i++ ) {
                 const char* current_tag = json_object_get_string(json_object_array_get_idx(val, i));
 
+                // Assume error => no match
+                if (!current_tag) continue;
+
                 if (strcmp(current_tag, tag) == 0) {
                     (*count_out)++;
                     break;
