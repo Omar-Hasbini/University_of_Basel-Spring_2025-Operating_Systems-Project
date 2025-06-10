@@ -1131,10 +1131,9 @@ int remove_tag_globally(const char* tag) {
     if (save_db(db) != 0) {
         fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
         json_object_put(db);
-        free(absolute_path);
         return -1;
     }
-    
+
     json_object_put(list_to_delete);
     json_object_put(db);
     return 0;
