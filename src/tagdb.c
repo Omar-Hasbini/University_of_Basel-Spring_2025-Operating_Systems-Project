@@ -32,6 +32,7 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 #include <sys/stat.h>
 #include <json-c/json.h>
 #include <sys/types.h>
+#include <errno.h>
 #include <unistd.h>
 #include <pwd.h>
 #include "tagdb.h"
@@ -725,7 +726,7 @@ int deassign_all_tags_systemwide() {
     free(full_path);
 
     if (status != 0) {
-        perror("Error: could not deassign all tags.")
+        perror("Error: could not deassign all tags.");
         return -1;
     }   
 
@@ -1042,7 +1043,7 @@ int rename_tag(const char* old_tag, const char* new_tag) {
 
 int count_files_with_tag(const char* tag, size_t* count_out) {
 
-    if (!count_out || !result_files) {
+    if (!count_out || !tag) {
         fprintf(stderr, "Error: <count_out> or <tag> is NULL.\n");
         return -1;
     }
