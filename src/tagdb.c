@@ -453,7 +453,37 @@ int deassign_tag(const char *file_name, const char *tag) {
         }
     }
     // TO-DO: sync globally
+    /*
+        This implemnetation is not efficient,  it takes O(1) memory, but leads to O(n) runtime
+        A more appropriate solution would be to store a mapping for the number used and update this
+        dynamically. However due to a relatively short deadline this implementation will have to do.
+    */
+
+    
+    size_t count_out = 0;
+
+    if (count_files_with_tag(tag, &count_out) == 0 && count_out == 0) {
+        json_object_object_foreach(db, key, val) {
+            size_t size_current_val = json_object_array_length(val);
+            for (int i = 0; i < size_current_val; i++ ) {
+                json_object* current_tag = json_object_array_get_idx(val, i);
+                const char* current_string = json_object_get_string(current_tag);
+
+                if (!current_string) {
+                    fprintf(stderr, "Warning: encountered corrupted tag in DB.\n");
+                }
+
+                if (strcmp(current_string, tag) == 0) {
+                    json_object_array_del_idx(val, i, 1);
+                    break;
+                }
+            }
+
+
+        }
+    }
     //
+    
 
     if (save_db(db) != 0) {
         fprintf(stdout, "Error: could not save the DB after successful deletion.\n");
@@ -503,8 +533,13 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
             size_t size_current_val = json_object_array_length(val);
             for (int i = 0; i < size_current_val; i++ ) {
                 json_object* current_tag = json_object_array_get_idx(val, i);
+                const char* current_string = json_object_get_string(current_tag);
 
-                if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+                if (!current_string) {
+                    fprintf(stderr, "Warning: encountered corrupted tag in DB.\n");
+                }
+
+                if (strcmp(current_string, tag) == 0) {
                     
                     char** temp = realloc(*result_files, (*count_out + 1) * sizeof(char*));
 
