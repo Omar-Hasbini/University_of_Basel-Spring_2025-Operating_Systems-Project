@@ -100,6 +100,12 @@ char* get_db_path() {
 }
 
 int save_db(json_object* db) {
+
+    if (!db) {
+        fprintf(stderr, "Error: <db> is NULL.\n");
+        return -1;
+    }
+
     char* full_path = get_db_path();
 
     if (!full_path) {
@@ -270,6 +276,12 @@ struct json_object* load_tag_db() {
 }
 
 int assign_tag(const char *file_name, const char *tag) {
+
+    if (!tag) {
+        fprintf(stderr, "Error: <tag> is NULL.\n");
+        return -1;
+    }
+
     char *absolute_path = realpath(file_name, NULL);
 
     if (!absolute_path) {
@@ -374,6 +386,12 @@ int assign_tag(const char *file_name, const char *tag) {
 }
 
 int deassign_tag(const char *file_name, const char *tag) {
+
+    if (!tag) {
+        fprintf(stderr, "Error: <tag> is NULL.\n");
+        return -1;
+    }
+
     char *absolute_path = realpath(file_name, NULL);
     if (!absolute_path) {
         perror("realpath failed");
@@ -459,14 +477,14 @@ int deassign_tag(const char *file_name, const char *tag) {
 */
 int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
 
-    json_object* db = load_tag_db();
-    if (!db) {
-        fprintf(stderr, "Error: could not load the DB.\n");
+    if (!count_out || !result_files) {
+        fprintf(stderr, "Error: <count_out> or <result_files> is NULL.\n");
         return -1;
     }
 
-    if (!count_out) {
-        fprintf(stderr, "Error: count_out is NULL.\n");
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
 
@@ -476,6 +494,10 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
     json_object_object_foreach(db, key, val) {
 
         if (strcmp(key, ALL_TAGS_KEY) != 0) {
+            if (!json_object_is_type(val, json_type_array)) {
+                fprintf(stderr, "Warning: corrupted entry found for this file %s.\n", key);
+                continue;
+            }
 
             size_t size_current_val = json_object_array_length(val);
             for (int i = 0; i < size_current_val; i++ ) {
@@ -495,6 +517,9 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
                     (*result_files)[*count_out] = strdup(key);
                     if (!(*result_files)[*count_out]) {
                         fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
+                        free_string_array(result_files, *count_out);
+                        *result_files = NULL;
+                        *count_out = 0;
                         json_object_put(db);
                         return -1;
                     }
@@ -519,14 +544,14 @@ int search_by_tag(const char *tag, char*** result_files, size_t* count_out) {
 */
 int list_all_tags(char*** all_tags, size_t* count_out) {
     
-    json_object* db = load_tag_db();
-    if (!db) {
-        fprintf(stderr, "Error: could not load the DB.\n");
+    if (!count_out || !all_tags) {
+        fprintf(stderr, "Error: <count_out> or <all_tags> is NULL.\n");
         return -1;
     }
 
-    if (!count_out) {
-        fprintf(stderr, "Error: count_out is NULL.\n");
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
 
@@ -581,15 +606,14 @@ int list_all_tags(char*** all_tags, size_t* count_out) {
 
 int list_file_tags(const char *file_name, char*** file_tags, size_t* count_out) {
 
-    char *absolute_path = realpath(file_name, NULL);
-    if (!absolute_path) {
-        perror("realpath failed");
+    if (!count_out || !file_tags) {
+        fprintf(stderr, "Error: <count_out> or <file_tags> is NULL.\n");
         return -1;
     }
 
-    if (!count_out) {
-        fprintf(stderr, "Error: count_out is NULL.\n");
-        free(absolute_path);
+    char *absolute_path = realpath(file_name, NULL);
+    if (!absolute_path) {
+        perror("realpath failed");
         return -1;
     }
 
@@ -709,15 +733,15 @@ int deassign_all_tags_systemwide() {
 }
 
 int count_tags(const char* file_name, size_t* count_out) {
-    char *absolute_path = realpath(file_name, NULL);
-    if (!absolute_path) {
-        perror("realpath failed");
+
+    if (!count_out) {
+        fprintf(stderr, "Error: <count_out> is NULL.\n");
         return -1;
     }
 
-    if (!count_out) {
-        fprintf(stderr, "Error: count_out is NULL.\n");
-        free(absolute_path);
+    char *absolute_path = realpath(file_name, NULL);
+    if (!absolute_path) {
+        perror("realpath failed");
         return -1;
     }
 
@@ -747,6 +771,12 @@ int count_tags(const char* file_name, size_t* count_out) {
     Returns 1 if tag exists, 0 if not.
 */
 int tag_exists(const char* tag) {
+
+    if (!tag) {
+        fprintf(stderr, "Error: <count_out> or <file_tags> is NULL.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
@@ -781,11 +811,17 @@ int tag_exists(const char* tag) {
     Returns 1 if file has tag assigned, 0 if not.
 */
 int file_has_tag(const char* file_name, const char* tag) {
+    if (!tag) {
+        fprintf(stderr, "Error: <tag> is NULL.\n");
+        return -1;
+    }
+
     char *absolute_path = realpath(file_name, NULL);
     if (!absolute_path) {
         perror("realpath failed");
         return -1;
     }
+
 
     json_object* db = load_tag_db();
     if (!db) {
@@ -829,14 +865,14 @@ int file_has_tag(const char* file_name, const char* tag) {
 }
 
 int list_all_files_with_tags(char*** result_files, size_t* count_out) {
-    json_object* db = load_tag_db();
-    if (!db) {
-        fprintf(stderr, "Error: could not load the DB.\n");
+    if (!count_out || !result_files) {
+        fprintf(stderr, "Error: <count_out> or <result_files> is NULL.\n");
         return -1;
     }
 
-    if (!count_out) {
-        fprintf(stderr, "Error: count_out is NULL.\n");
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
 
@@ -1005,14 +1041,15 @@ int rename_tag(const char* old_tag, const char* new_tag) {
 */
 
 int count_files_with_tag(const char* tag, size_t* count_out) {
-    json_object* db = load_tag_db();
-    if (!db) {
-        fprintf(stderr, "Error: could not load the DB.\n");
+
+    if (!count_out || !result_files) {
+        fprintf(stderr, "Error: <count_out> or <tag> is NULL.\n");
         return -1;
     }
 
-    if (!count_out) {
-        fprintf(stderr, "Error: count_out is NULL.\n");
+    json_object* db = load_tag_db();
+    if (!db) {
+        fprintf(stderr, "Error: could not load the DB.\n");
         return -1;
     }
 
@@ -1043,6 +1080,12 @@ int count_files_with_tag(const char* tag, size_t* count_out) {
 }
 
 int remove_tag_globally(const char* tag) {
+
+    if (!tag) {
+        fprintf(stderr, "Error: <tag> is NULL.\n");
+        return -1;
+    }
+
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
