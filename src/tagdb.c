@@ -733,6 +733,7 @@ int file_has_tag(const char* file_name, const char* tag) {
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
         return -1;
     }
 
@@ -745,13 +746,21 @@ int file_has_tag(const char* file_name, const char* tag) {
         return 0;
     }
 
+    if (!json_object_is_type(file_entry, json_type_array)) {
+        fprintf(stderr, "Error: the entry seems to be corrupted for %s.\n", absolute_path);
+        free(absolute_path);
+        json_object_put(db);
+        return -1;
+    }
+
     int file_has_tag = 0;     
 
-    int len = json_object_array_length(file_entry);  
+    const int len = json_object_array_length(file_entry);  
     for (int i = 0; i < len; i++ ) {
         json_object* current_tag = json_object_array_get_idx(file_entry, i);
+        const char* current_str = json_object_get_string(current_tag);
 
-        if (strcmp(json_object_get_string(current_tag), tag) == 0) {
+        if (current_str && strcmp(current_str, tag) == 0) {
             file_has_tag = 1;
             break;
         }
