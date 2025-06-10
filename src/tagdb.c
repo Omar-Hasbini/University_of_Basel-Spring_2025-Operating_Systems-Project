@@ -634,11 +634,10 @@ int deassign_all_tags(const char *file_name) {
         return -1;
     }
 
-    json_object* empty_array = json_object_new_array();
-
     json_object *existing;
+    // This should never occur since if a file's entry ends up with 0 tags, the key gets deleted in "deassign_tag()".
     if (!json_object_object_get_ex(db, absolute_path, &existing)) {
-        fprintf(stderr, "Warning: file had no tags assigned. It's key will be removed from the DB.\n");
+        fprintf(stderr, "Warning: file had no tags assigned. Its key will be removed from the DB.\n");
     }
 
     json_object_object_del(db, absolute_path);
