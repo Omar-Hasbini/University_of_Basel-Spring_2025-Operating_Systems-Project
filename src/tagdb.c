@@ -697,18 +697,18 @@ int tag_exists(const char* tag) {
         return -1;
     }
 
-    json_object* file_entry;
-    json_object_object_get_ex(db, ALL_TAGS_KEY, &file_entry);
+    json_object* all_tags_entry;
+    json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
-    if (!file_entry || !json_object_is_type(file_entry, json_type_array)) {
+    if (!all_tags_entry || !json_object_is_type(all_tags_entry, json_type_array)) {
         fprintf(stderr, "Warning: the entry for \"%s\" does not exist yet or seems to be corrupted.\n", ALL_TAGS_KEY);
         json_object_put(db);
         return 0;
     } 
 
-    const int len = json_object_array_length(file_entry);  
+    const int len = json_object_array_length(all_tags_entry);  
     for (int i = 0; i < len; i++) {
-        json_object* current_tag = json_object_array_get_idx(file_entry, i);
+        json_object* current_tag = json_object_array_get_idx(all_tags_entry, i);
         const char* current_str = json_object_get_string(current_tag);
 
         if (current_str && strcmp(current_str, tag) == 0) {
