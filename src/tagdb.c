@@ -40,7 +40,14 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 // Collision is impossible, since we store the full path of a file, which will include at least the "/" from the root dir.
 #define ALL_TAGS_KEY "__meta__:all_tags"
 
+static void free_string_array(char** string_arr, size_t count) {
 
+    for (size_t i = 0; i < count; i++) {
+        free(string_arr[i]);
+    }
+    free(string_arr);
+
+}
 
 // Source (with personal modification): https://community.unix.com/t/getting-home-directory/248085/2
 char* get_home() {
@@ -750,7 +757,6 @@ int file_has_tag(const char* file_name, const char* tag) {
         }
     }
 
-
     free(absolute_path);
     json_object_put(db);
     return file_has_tag;
@@ -764,6 +770,8 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
     }
 
     json_object_object_foreach(db, key, val) {
+        if (!val || !json_object_is_type(val, json_type_array)) continue;
+
         size_t size_current_val = json_object_array_length(val);
         if (size_current_val >= 1) {
             char** temp = realloc(*result_files, (*count_out + 1) * sizeof(char*));
@@ -778,6 +786,11 @@ int list_all_files_with_tags(char*** result_files, size_t* count_out) {
             (*result_files)[*count_out] = strdup(key);
             if (!(*result_files)[*count_out]) {
                 fprintf(stderr, "Error: could not allocate memory for a filename in the list.\n");
+
+                free_string_array(*result_files, *count_out);
+                *result_files = NULL;
+                *count_out = 0;
+
                 json_object_put(db);
                 return -1;
             }
@@ -842,7 +855,7 @@ int assign_all_tags_to_file(const char* file_path) {
         if (current_tag) {
             json_object_array_add(arr_with_all_tags, json_object_new_string(current_tag));
         } else {
-            fprintf(stderr, "Error: it seems like a tag was corrupted and couldn't be assigned. Proceeding with the rest of tags.\n");
+            fprintf(stderr, "Error: could not assign tag (corrupted). Proceeding.\n");
         }
     }
 
@@ -995,3 +1008,5 @@ int remove_tag_globally(const char* tag) {
     json_object_put(db);
     return 0;
 }
+
+
