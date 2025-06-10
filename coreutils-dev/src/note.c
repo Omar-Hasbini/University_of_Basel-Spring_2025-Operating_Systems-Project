@@ -45,6 +45,9 @@ add_note(const char *file, const char *note)
     	fprintf(stderr, "Error assigning note to %s\n", file);
     	exit(EXIT_FAILURE);
     }
+    else {
+    	printf("Note successfully stored.");
+    }
 }
 
 static void
