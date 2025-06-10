@@ -650,6 +650,10 @@ int deassign_all_tags(const char *file_name) {
     return 0;
 }
 
+/*
+    Deletes the DB for the user.
+    If DB doesn't exist it will fail and report the outcome.
+*/
 int deassign_all_tags_systemwide() {
     char* full_path = get_db_path();
 
@@ -662,7 +666,7 @@ int deassign_all_tags_systemwide() {
     free(full_path);
 
     if (status != 0) {
-        fprintf(stderr, "Error: could not deassign all tags.\n");
+        perror("Error: could not deassign all tags.")
         return -1;
     }   
 
