@@ -808,27 +808,42 @@ int assign_all_tags_to_file(const char* file_path) {
     json_object* db = load_tag_db();
     if (!db) {
         fprintf(stderr, "Error: could not load the DB.\n");
+        free(absolute_path);
         return -1;
     }
 
     json_object* all_tags_entry;
     json_object_object_get_ex(db, ALL_TAGS_KEY, &all_tags_entry);
 
-    size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
 
-    if (!all_tags_entry || len_arr_all_tags == 0) {
-        fprintf(stderr, "Error: there are no tags yet in the DB and so none can be assigned to this file.\n");
+    if (!json_object_is_type(all_tags_entry, json_type_array)) {
+        fprintf(stderr, "Error: the \"all_tags_entry\" is missing, the DB seems to not have been created yet.\n");
         json_object_put(db);
         free(absolute_path);
         return -1;
     }
 
+    size_t len_arr_all_tags = json_object_array_length(all_tags_entry);
+
     json_object* arr_with_all_tags = json_object_new_array();
+
+    if (!arr_with_all_tags) {
+        fprintf(stderr, "Error: could not allocate memory for json_object arr with all tags.\n");
+        json_object_put(db);
+        free(absolute_path);
+        return -1;
+    }
 
     // Safe overwrite due to monotonicity S_1 >= S_0 because $S_1 := S_0 \cup \{all tags\}$
     for (size_t i = 0; i < len_arr_all_tags; i++) {
-        char* current_tag = json_object_get_string(json_object_array_get_idx(all_tags_entry, i));
-        json_object_array_add(arr_with_all_tags, json_object_new_string(current_tag));
+        json_object* tag_obj = json_object_array_get_idx(all_tags_entry, i);
+        char* current_tag = json_object_get_string(tag_obj);
+
+        if (current_tag) {
+            json_object_array_add(arr_with_all_tags, json_object_new_string(current_tag));
+        } else {
+            fprintf(stderr, "Error: it seems like a tag was corrupted and couldn't be assigned. Proceeding with the rest of tags.\n");
+        }
     }
 
     json_object_object_add(db, absolute_path, arr_with_all_tags);
