@@ -1,8 +1,0 @@
-Files:
-
-Depends-on:
-obstack-printf-posix-tests
-
-configure.ac:
-
-Makefile.am:

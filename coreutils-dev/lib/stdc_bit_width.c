@@ -1,1 +1,0 @@
-/mnt/shared/University_of_Basel-Spring_2025-Operating_Systems-Project/coreutils-dev/gnulib/lib/stdc_bit_width.c
