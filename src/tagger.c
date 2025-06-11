@@ -36,11 +36,11 @@ void print_usage() {
     int use_emoji = loc && strstr(loc, "UTF-8");
 
     // Taxonomy
-    general     = use_emoji ? "📁 General Commands"       : "[*] General Commands";
-    assignment  = use_emoji ? "📥 Assignment Commands"    : "[+] Assignment Commands";
-    deassignment= use_emoji ? "🗑️ Deassignment Commands"  : "[-] Deassignment Commands";
-    queries     = use_emoji ? "❓ Query Commands"          : "[?] Query Commands";
-    maintenance = use_emoji ? "🛠️ Maintenance Commands"   : "[!] Maintenance Commands";
+    general     = use_emoji ? "General Commands 📁:"       : "[*] General Commands";
+    assignment  = use_emoji ? "Assignment Commands 📥:"    : "[+] Assignment Commands";
+    deassignment= use_emoji ? "Deassignment Commands 🗑️:"  : "[-] Deassignment Commands";
+    queries     = use_emoji ? "Query Commands ❓:"          : "[?] Query Commands";
+    maintenance = use_emoji ? "Maintenance Commands 🛠️:"   : "[!] Maintenance Commands";
 
     fprintf(stderr, "\nUsage (N.B.: <file_path> can be relative or absolute):\n");
     fprintf(stderr, "  tagger help\n");
