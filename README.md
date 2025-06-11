@@ -1,5 +1,7 @@
 ## Final commit
 
+**Abbreviated hash:** 6053f80
+
 ## 🛠️ Installation
 
 To build and install the project locally:
