@@ -5,7 +5,7 @@ CC = gcc
 OUT = note
 
 # .c files to compile
-SRCS = coreutils-dev/src/note.c coreutils-dev/src/note_db.c
+SRCS = src/note.c src/note_db.c
 
 # Directory with .h files
 INCLUDES = -Iinclude

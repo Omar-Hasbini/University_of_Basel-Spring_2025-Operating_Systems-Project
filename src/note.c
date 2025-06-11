@@ -46,7 +46,7 @@ add_note(const char *file, const char *note)
     	exit(EXIT_FAILURE);
     }
     else {
-    	printf("Note successfully stored.");
+    	printf("Note successfully stored.\n");
     }
 }
 
@@ -78,6 +78,10 @@ remove_note(const char *file)
     if (deassign_note(file) != 0)
     {
     	printf("No note to remove.\n");
+    }
+    else 
+    {
+    	printf("Note was successfully removed.\n");
     }
 }
 
