@@ -20,35 +20,61 @@ License: Check https://github.com/Omar-Hasbini/University_of_Basel-Spring_2025-O
 
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
 #include "tagdb.h"
 
+
 void print_usage() {
-        fprintf(stderr, "\n");
-        fprintf(stderr, "Usage (N.B.: <file_path> can be relative or absolute):\n");
-        fprintf(stderr, "\n");
-        fprintf(stderr, "  tagger help\n");
-        fprintf(stderr, "  tagger list\n");
-        fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
-        fprintf(stderr, "  tagger list-all-files-with-tags\n");
-        fprintf(stderr, "\n");
-        fprintf(stderr, "  tagger list <file_path>\n");
-        fprintf(stderr, "  tagger search <tag>\n");
-        fprintf(stderr, "  tagger count-tags <file_path>\n");
-        fprintf(stderr, "  tagger deassign-all-tags <file_path>\n");
-        fprintf(stderr, "  tagger tag-exists <tag>\n");
-        fprintf(stderr, "  tagger assign-all-tags-to-file <file_path>\n");
-        fprintf(stderr, "  tagger count-files-with-tag <tag>\n");
-        fprintf(stderr, "  tagger remove-tag-globally <tag>\n");
-        fprintf(stderr, "\n");
-        fprintf(stderr, "  tagger assign <file_path> <tag>\n");
-        fprintf(stderr, "  tagger deassign <file_path> <tag>\n");
-        fprintf(stderr, "  tagger file-has-tag <file_path> <tag>\n");
-        fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>    (NOT IMPLEMENTED)\n");
-        fprintf(stderr, "\n");
-        fprintf(stderr, "See LICENSE for details. This tool is provided for educational purposes only.\n");
-        fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
-        fprintf(stderr, "and provides no warranty, liability, or guarantee. It is not intended for use in\n");
-        fprintf(stderr, "any critical systems, including but not limited to flight control.\n");
+    const char* general;
+    const char* assignment;
+    const char* deassignment;
+    const char* queries;
+    const char* maintenance;
+
+    // Detect UTF-8 locale support
+    const char* loc = setlocale(LC_CTYPE, "");
+    int use_emoji = loc && strstr(loc, "UTF-8");
+
+    // Taxonomy
+    general     = use_emoji ? "📁 General Commands"       : "[*] General Commands";
+    assignment  = use_emoji ? "📥 Assignment Commands"    : "[+] Assignment Commands";
+    deassignment= use_emoji ? "🗑️ Deassignment Commands"  : "[-] Deassignment Commands";
+    queries     = use_emoji ? "❓ Query Commands"          : "[?] Query Commands";
+    maintenance = use_emoji ? "🛠️ Maintenance Commands"   : "[!] Maintenance Commands";
+
+    fprintf(stderr, "\nUsage (N.B.: <file_path> can be relative or absolute):\n");
+    fprintf(stderr, "  tagger help\n");
+    fprintf(stderr, "  tagger list\n");
+    fprintf(stderr, "\n");
+
+    fprintf(stderr, "%s\n", general);
+    fprintf(stderr, "  tagger list <file_path>\n");
+    fprintf(stderr, "  tagger list-all-files-with-tags\n");
+    fprintf(stderr, "  tagger search <tag>\n");
+
+    fprintf(stderr, "\n%s\n", assignment);
+    fprintf(stderr, "  tagger assign <file_path> <tag>\n");
+    fprintf(stderr, "  tagger assign-all-tags-to-file <file_path>\n");
+
+    fprintf(stderr, "\n%s\n", deassignment);
+    fprintf(stderr, "  tagger deassign <file_path> <tag>\n");
+    fprintf(stderr, "  tagger deassign-all-tags <file_path>\n");
+    fprintf(stderr, "  tagger deassign-all-tags-systemwide\n");
+    fprintf(stderr, "  tagger remove-tag-globally <tag>\n");
+
+    fprintf(stderr, "\n%s\n", queries);
+    fprintf(stderr, "  tagger count-tags <file_path>\n");
+    fprintf(stderr, "  tagger count-files-with-tag <tag>\n");
+    fprintf(stderr, "  tagger tag-exists <tag>\n");
+    fprintf(stderr, "  tagger file-has-tag <file_path> <tag>\n");
+
+    fprintf(stderr, "\n%s\n", maintenance);
+    fprintf(stderr, "  tagger rename-tag <old_tag> <new_tag>    (NOT IMPLEMENTED)\n");
+
+    fprintf(stderr, "\nSee LICENSE for details. This tool is provided for educational purposes only.\n");
+    fprintf(stderr, "Use these commands at your own discretion. The author assumes no responsibility\n");
+    fprintf(stderr, "and provides no warranty, liability, or guarantee. It is not intended for use in\n");
+    fprintf(stderr, "any critical systems, including but not limited to flight control.\n");
 }
 
 int main(int argc, char *argv[]) {
