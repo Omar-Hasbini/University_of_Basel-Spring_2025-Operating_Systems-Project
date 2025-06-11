@@ -1,8 +1,20 @@
-# University_of_Basel-Spring_2025-Operating_Systems-Project
-A repository to work on the project part of the Operating Systems course, given at the University of Basel, Spring 2025.
+# University of Basel – Spring 2025 – Operating Systems Project
 
-Project ID: 9
-https://docs.google.com/spreadsheets/d/19OyypSy1iTlggMreg_XjHePQgDlTyR7q/edit?gi=&gid=674830600#gid=674830600
+This repository contains the code and materials for the **Operating Systems Project** at the University of Basel, Spring Semester 2025.
 
-More information on course directory on ADAM:
-https://adam.unibas.ch/ilias.php?baseClass=ilrepositorygui&ref_id=1905489
+- **Project ID**: 9  
+- 📄 [Project Spreadsheet](https://docs.google.com/spreadsheets/d/19OyypSy1iTlggMreg_XjHePQgDlTyR7q/edit#gid=674830600)
+
+---
+
+## 🔧 Features
+
+This project provides three features, each in its own Git branch with installation instructions:
+
+- `feature-notes` 
+- `feature-labels`
+- `feature-origin` 
+
+---
+
+Please refer to the respective feature branches for setup details.  
