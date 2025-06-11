@@ -1,7 +1,12 @@
-## Final commit:
+## Final commit
 
-## Installation:
+d300d49
+
+## Installation
+
 To build and install the project locally:
+
+```bash
 git pull
 make install
 
